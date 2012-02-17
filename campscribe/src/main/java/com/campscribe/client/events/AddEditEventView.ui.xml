@@ -1,0 +1,32 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>Description:</td>
+				<td>
+					<g:TextBox ui:field="description" />
+				</td>
+			</tr>
+			<tr>
+				<td>Start Date:</td>
+				<td>
+					<d:DatePicker ui:field="startDate" />
+				</td>
+			</tr>
+			<tr>
+				<td>End Date:</td>
+				<td>
+					<d:DatePicker ui:field="endDate" />
+				</td>
+			</tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 
