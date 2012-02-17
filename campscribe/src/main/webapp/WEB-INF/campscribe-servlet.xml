@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- the application context definition for the springapp DispatcherServlet -->
+
+  <bean name="index.cs" class="com.campscribe.controller.web.IndexController"/>
+  <bean name="meritBadges.cs" class="com.campscribe.controller.web.MeritBadgeController"/>
+  <bean name="events.cs" class="com.campscribe.controller.web.EventController"/>
+  <bean name="scouts.cs" class="com.campscribe.controller.web.ScoutController"/>
+  <bean name="clazzes.cs" class="com.campscribe.controller.web.ClazzController"/>
+  <bean name="admin.cs" class="com.campscribe.controller.web.AdminController"/>
+  <bean name="reports.cs" class="com.campscribe.controller.web.ReportsController"/>
+
+</beans>

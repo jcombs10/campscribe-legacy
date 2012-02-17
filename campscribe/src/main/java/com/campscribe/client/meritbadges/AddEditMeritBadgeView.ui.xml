@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>Badge Name:</td>
+				<td>
+					<g:TextBox ui:field="badgeName" />
+				</td>
+			</tr>
+			<tr>
+				<td>BSA Advancement ID:</td>
+				<td>
+					<g:TextBox ui:field="bsaAdvancementId" />
+				</td>
+			</tr>
+			<tr>
+				<td>Eagle Required?</td>
+				<td>
+					<g:CheckBox ui:field="eagleRequired" />
+				</td>
+			</tr>
+            <tr>
+                <td>Requirements:</td>
+                <td>
+                    <g:ListBox ui:field="reqCount" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <g:FlowPanel ui:field="reqsPanel" />
+                </td>
+            </tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 
