@@ -3,6 +3,7 @@ package com.campscribe.controller.services;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,18 +35,18 @@ public class EventServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/events/{id}",headers="Accept=application/json")
-	public @ResponseBody Event getEvent(@RequestParam long id) {
+	public @ResponseBody Event getEvent(@PathVariable long id) {
 		return eventMgr.getEvent(id);
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/events/{id}",headers="Accept=application/json")
-	public @ResponseBody Event updateEvent(@RequestParam long id, @RequestBody Event e) {
+	public @ResponseBody Event updateEvent(@PathVariable long id, @RequestBody Event e) {
 		eventMgr.updateEvent(e);
 		return e;
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value = "/events/{id}",headers="Accept=application/json")
-	public @ResponseBody void deleteEvent(@RequestParam long id) {
+	public @ResponseBody void deleteEvent(@PathVariable long id) {
 		eventMgr.deleteEvent(id);
 	}
 

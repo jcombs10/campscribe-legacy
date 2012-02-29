@@ -3,6 +3,7 @@ package com.campscribe.business;
 import java.util.List;
 
 import com.campscribe.dao.EventDao;
+import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 
 public class EventManager {
@@ -25,6 +26,11 @@ public class EventManager {
 
 	public void updateEvent(Event e) {
 		EventDao.INSTANCE.add(e);
+	}
+
+	public void addClazz(Long id, Clazz c) {
+		EventDao.INSTANCE.addClazz(id, c);
+		
 	}
 
 }

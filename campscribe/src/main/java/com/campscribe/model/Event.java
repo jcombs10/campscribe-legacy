@@ -1,26 +1,32 @@
 package com.campscribe.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.jdo.annotations.Persistent;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
+import com.google.appengine.api.datastore.Key;
+
 @Entity
 public class Event {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String description;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Key id;
+    private String description;
 	private Date startDate;
 	private Date endDate;
-	@Persistent(mappedBy="event")
-	private List<Clazz> clazzes;
+	
+	@OneToMany(mappedBy="event", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Clazz> clazzes = new ArrayList<Clazz>();
 	
 	private FastDateFormat formatter = null;
 	
@@ -32,11 +38,11 @@ public class Event {
 		this.formatter = FastDateFormat.getInstance("MM/dd/yyyy");
 	}
 	
-	public Long getId() {
+	public Key getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Key id) {
 		this.id = id;
 	}
 
@@ -85,6 +91,13 @@ public class Event {
 
 	public void setClazzes(List<Clazz> clazzes) {
 		this.clazzes = clazzes;
+	}
+
+	public void addClazz(Clazz c) {
+		if (clazzes == null) {
+			clazzes = new ArrayList<Clazz>();
+		}
+		clazzes.add(c);
 	}
 
 }

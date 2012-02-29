@@ -1,21 +1,23 @@
 package com.campscribe.model;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import com.google.appengine.api.datastore.Key;
 
-@PersistenceCapable
+@Entity
 public class Clazz {
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Key id;
 	private String description;
 
     private Long mbId;
-    @Persistent
+    @ManyToOne(fetch=FetchType.LAZY)
     private Event event;
 
 	public Clazz() {
@@ -26,12 +28,12 @@ public class Clazz {
 		this.mbId = mbId;
 	}
 	
-	public Key getKey() {
-		return key;
+	public Key getId() {
+		return id;
 	}
 
-	public void setKey(Key key) {
-		this.key = key;
+	public void setId(Key id) {
+		this.id = id;
 	}
 
 	public String getDescription() {
@@ -46,7 +48,7 @@ public class Clazz {
 		return mbId;
 	}
 
-	public void setMb(Long mbId) {
+	public void setMbId(Long mbId) {
 		this.mbId = mbId;
 	}
 
