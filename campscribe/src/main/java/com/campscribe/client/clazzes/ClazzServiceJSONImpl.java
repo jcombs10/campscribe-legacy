@@ -8,7 +8,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 
 public class ClazzServiceJSONImpl implements ClazzService {
@@ -20,7 +19,7 @@ public class ClazzServiceJSONImpl implements ClazzService {
 
 	@Override
 	public void addClazz(ClazzDTO c) {
-		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "/service/events/");
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "/service/events/"+c.getEventId()+"/classes/");
 		rb.setHeader("Content-Type","application/json");
 		rb.setHeader("Accept","application/json");
 

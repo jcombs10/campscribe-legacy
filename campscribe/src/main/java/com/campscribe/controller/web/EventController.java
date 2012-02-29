@@ -2,6 +2,8 @@ package com.campscribe.controller.web;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -12,17 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
+import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
 
 @Controller
 public class EventController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 	private EventManager eventMgr;
-	private ClazzManager clazzMgr;
-
+	private MeritBadgeManager mbMgr;
+	
 	@RequestMapping("/addEvent.cs")
 	public ModelAndView addEvent(@RequestParam("description") String description, @RequestParam("startDate") Date startDate, @RequestParam("endDate") Date endDate)
 	            throws ServletException, IOException {
@@ -72,9 +75,18 @@ public class EventController {
 
 	        ModelAndView mav = new ModelAndView("viewEvent.jsp");
 	        mav.addObject("event", getEventManager().getEvent(eventId));
+	        mav.addObject("mbLookup", getMbNameLookup());
 	        
 	        return mav;
 	    }
+
+	private Map<Long, MeritBadge> getMbNameLookup() {
+		Map<Long, MeritBadge> mbLookup = new HashMap<Long, MeritBadge>();
+		for(MeritBadge mb:getMeritBadgeManager().listMeritBadges()) {
+			mbLookup.put(mb.getId(), mb);
+		}
+		return mbLookup;
+	}
 
 	private EventManager getEventManager() {
 		if (eventMgr == null) {
@@ -83,11 +95,11 @@ public class EventController {
 		return eventMgr;
 	}
 
-	private ClazzManager getClazzManager() {
-		if (clazzMgr == null) {
-			clazzMgr = new ClazzManager();
+	private MeritBadgeManager getMeritBadgeManager() {
+		if (mbMgr == null) {
+			mbMgr = new MeritBadgeManager();
 		}
-		return clazzMgr;
+		return mbMgr;
 	}
 
 }
