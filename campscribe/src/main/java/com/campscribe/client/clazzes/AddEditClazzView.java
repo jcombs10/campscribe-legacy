@@ -6,8 +6,11 @@ import java.util.List;
 import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.client.meritbadges.MeritBadgeService;
 import com.campscribe.client.meritbadges.MeritBadgeServiceJSONImpl;
+import com.campscribe.client.staff.StaffService;
+import com.campscribe.client.staff.StaffServiceJSONImpl;
 import com.campscribe.shared.ClazzDTO;
 import com.campscribe.shared.MeritBadgeDTO;
+import com.campscribe.shared.StaffDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
@@ -28,10 +31,12 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 
 	@UiField TextBox description;
 	@UiField ListBox meritBadge;
+	@UiField ListBox staff;
 	
 	private Long eventId = Long.valueOf(-1);
 
 	ClazzService clazzService = new ClazzServiceJSONImpl();
+	StaffService staffService = new StaffServiceJSONImpl();
 	MeritBadgeService mbService = new MeritBadgeServiceJSONImpl();
 
 	private static AddEditClazzViewUiBinder uiBinder = GWT
@@ -43,12 +48,13 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 
 	public AddEditClazzView() {
 		initWidget(uiBinder.createAndBindUi(this));
+
 		mbService.getMeritBadges(new RequestCallback() {
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String s = response.getText();
-				List<MeritBadgeDTO> badges = parseJsonData(s);
+				List<MeritBadgeDTO> badges = parseMBJsonData(s);
 				for (MeritBadgeDTO b:badges) {
 					meritBadge.addItem(b.getBadgeName(), b.getId().toString());
 				}
@@ -60,9 +66,27 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 			}
 
 		});
+
+		staffService.getStaffList(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+				String s = response.getText();
+				List<StaffDTO> staffList = parseStaffJsonData(s);
+				for (StaffDTO sDTO:staffList) {
+					staff.addItem(sDTO.getName(), sDTO.getId().toString());
+				}
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
 	}
 
-	private List<MeritBadgeDTO> parseJsonData(String json) {
+	private List<MeritBadgeDTO> parseMBJsonData(String json) {
 		
 		List<MeritBadgeDTO> badges = new ArrayList<MeritBadgeDTO>();
 
@@ -92,6 +116,34 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 		return badges;
 	}
 
+	private List<StaffDTO> parseStaffJsonData(String json) {
+		
+		List<StaffDTO> badges = new ArrayList<StaffDTO>();
+
+		JSONValue value = JSONParser.parseLenient(json);
+		JSONArray mbArray = value.isArray();
+
+//		Window.alert("Got response: " + json);
+		if (mbArray != null) {
+			for (int i=0; i<=mbArray.size()-1; i++) {
+				JSONObject mbObj = mbArray.get(i).isObject();
+
+				String name = mbObj.get("name").isString().stringValue();
+				double id = mbObj.get("id").isNumber().doubleValue();
+
+				StaffDTO b = new StaffDTO();
+				b.setName(name);
+				Double d = Double.valueOf(id);
+				b.setId(d.longValue());
+				
+				badges.add(b);
+			}
+
+		}
+		
+		return badges;
+	}
+
 
 	@Override
 	public void onSave() {
@@ -100,6 +152,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 
 	private ClazzDTO getData() {
 		ClazzDTO c = new ClazzDTO(description.getText(), Long.valueOf(meritBadge.getValue(meritBadge.getSelectedIndex())));
+		c.setStaffId(Long.valueOf(staff.getValue(staff.getSelectedIndex())));
 		c.setEventId(getEventIdFromPage());
 		return c;
 	}

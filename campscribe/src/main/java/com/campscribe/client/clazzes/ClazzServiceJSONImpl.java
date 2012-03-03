@@ -56,6 +56,8 @@ public class ClazzServiceJSONImpl implements ClazzService {
 		sb.append(c.getDescription());
 		sb.append("\",\"mbId\":\"");
 		sb.append(c.getMbId());
+		sb.append("\",\"staffId\":\"");
+		sb.append(c.getStaffId());
 		sb.append("\",\"eventId\":\"");
 		sb.append(c.getEventId());
 		sb.append("\"}");

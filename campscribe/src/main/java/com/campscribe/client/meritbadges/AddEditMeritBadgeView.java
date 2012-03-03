@@ -155,7 +155,7 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
-					Window.alert(""+event.getCharCode());
+//					Window.alert(""+event.getCharCode());
 					if (!Character.isDigit(event.getCharCode())) {
 						event.stopPropagation();
 					}

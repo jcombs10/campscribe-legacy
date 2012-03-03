@@ -16,7 +16,8 @@ public class Clazz {
     private Key id;
 	private String description;
 
-    private Long mbId;
+    private Long staffId;
+	private Long mbId;
     @ManyToOne(fetch=FetchType.LAZY)
     private Event event;
 
@@ -58,6 +59,14 @@ public class Clazz {
 
 	public void setEvent(Event event) {
 		this.event = event;
+	}
+
+    public Long getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(Long staffId) {
+		this.staffId = staffId;
 	}
 
 }

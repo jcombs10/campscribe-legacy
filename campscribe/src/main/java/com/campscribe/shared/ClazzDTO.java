@@ -5,7 +5,8 @@ public class ClazzDTO {
     private String key;
 	private String description;
 
-    private Long mbId;
+    private Long staffId;
+	private Long mbId;
     private Long eventId;
 
 	public ClazzDTO() {
@@ -38,6 +39,18 @@ public class ClazzDTO {
 
 	public void setMb(Long mbId) {
 		this.mbId = mbId;
+	}
+
+	public void setMbId(Long mbId) {
+		this.mbId = mbId;
+	}
+
+    public Long getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(Long staffId) {
+		this.staffId = staffId;
 	}
 
 	public Long getEventId() {

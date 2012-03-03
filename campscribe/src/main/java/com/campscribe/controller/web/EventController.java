@@ -1,7 +1,6 @@
 package com.campscribe.controller.web;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
-import com.campscribe.model.Event;
+import com.campscribe.business.StaffManager;
 import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Staff;
 
 @Controller
 public class EventController {
@@ -25,22 +25,8 @@ public class EventController {
 	protected final Log logger = LogFactory.getLog(getClass());
 	private EventManager eventMgr;
 	private MeritBadgeManager mbMgr;
+	private StaffManager staffMgr;
 	
-	@RequestMapping("/addEvent.cs")
-	public ModelAndView addEvent(@RequestParam("description") String description, @RequestParam("startDate") Date startDate, @RequestParam("endDate") Date endDate)
-	            throws ServletException, IOException {
-
-	        logger.info("Returning events view");
-
-	        Event e = new Event(description, startDate, endDate);
-	        getEventManager().addEvent(e);
-	        
-	        ModelAndView mav = new ModelAndView("events.jsp");
-	        mav.addObject("events", getEventManager().listEvents());
-	        
-	        return mav;
-	    }
-
 	@RequestMapping("/events.cs")
 	public ModelAndView listEvents()
 	            throws ServletException, IOException {
@@ -76,6 +62,7 @@ public class EventController {
 	        ModelAndView mav = new ModelAndView("viewEvent.jsp");
 	        mav.addObject("event", getEventManager().getEvent(eventId));
 	        mav.addObject("mbLookup", getMbNameLookup());
+	        mav.addObject("staffLookup", getStaffLookup());
 	        
 	        return mav;
 	    }
@@ -86,6 +73,14 @@ public class EventController {
 			mbLookup.put(mb.getId(), mb);
 		}
 		return mbLookup;
+	}
+
+	private Map<Long, Staff> getStaffLookup() {
+		Map<Long, Staff> staffLookup = new HashMap<Long, Staff>();
+		for(Staff s:getStaffManager().listStaff()) {
+			staffLookup.put(s.getId(), s);
+		}
+		return staffLookup;
 	}
 
 	private EventManager getEventManager() {
@@ -100,6 +95,13 @@ public class EventController {
 			mbMgr = new MeritBadgeManager();
 		}
 		return mbMgr;
+	}
+
+	private StaffManager getStaffManager() {
+		if (staffMgr == null) {
+			staffMgr = new StaffManager();
+		}
+		return staffMgr;
 	}
 
 }

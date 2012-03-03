@@ -30,6 +30,7 @@ public class ClazzServiceController {
 	public @ResponseBody ClazzDTO addClazzToEvent(@PathVariable Long id, @RequestBody ClazzDTO clazzDTO) {
 		System.err.println("addClazz called");
 		Clazz c = new Clazz(clazzDTO.getDescription(), clazzDTO.getMbId());
+		c.setStaffId(clazzDTO.getStaffId());
 		
 		eventMgr.addClazz(id, c);
 		return clazzDTO;
