@@ -21,6 +21,12 @@
 					<g:ListBox ui:field="meritBadge" />
 				</td>
 			</tr>
+            <tr>
+                <td>Taught By:</td>
+                <td>
+                    <g:ListBox ui:field="staff" />
+                </td>
+            </tr>
 		</table>
 	</g:HTMLPanel>
 </ui:UiBinder> 

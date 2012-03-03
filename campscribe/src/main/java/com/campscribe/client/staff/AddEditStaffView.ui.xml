@@ -1,0 +1,39 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>Name:</td>
+				<td>
+					<g:TextBox ui:field="name" />
+				</td>
+			</tr>
+			<tr>
+				<td>User ID:</td>
+				<td>
+					<g:TextBox ui:field="userId" />
+				</td>
+			</tr>
+            <tr>
+                <td>Roles:</td>
+                <td>
+                    <g:CheckBox ui:field="counselor" text="Counselor"/><br />
+                    <g:CheckBox ui:field="areaDirector" text="Area Director"/><br />
+                    <g:CheckBox ui:field="campAdmin" text="Camp Admin"/><br />
+                </td>
+            </tr>
+            <tr>
+                <td>Program Area:</td>
+                <td>
+                    <g:ListBox ui:field="programArea" />
+                </td>
+            </tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

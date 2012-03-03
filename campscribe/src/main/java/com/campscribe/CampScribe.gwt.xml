@@ -19,6 +19,7 @@
   <entry-point class='com.campscribe.client.Event'/>
   <entry-point class='com.campscribe.client.Clazz'/>
   <entry-point class='com.campscribe.client.Scout'/>
+  <entry-point class='com.campscribe.client.Staff'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>

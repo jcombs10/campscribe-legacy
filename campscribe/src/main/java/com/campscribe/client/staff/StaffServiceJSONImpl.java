@@ -1,8 +1,8 @@
-package com.campscribe.client.scouts;
+package com.campscribe.client.staff;
 
 import java.util.logging.Logger;
 
-import com.campscribe.shared.ScoutDTO;
+import com.campscribe.shared.StaffDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -10,16 +10,16 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 
-public class ScoutServiceJSONImpl implements ScoutService {
+public class StaffServiceJSONImpl implements StaffService {
 
-	private Logger log = Logger.getLogger("ScoutServiceJSONImpl");
+	private Logger log = Logger.getLogger("StaffServiceJSONImpl");
 
-	public ScoutServiceJSONImpl() {
+	public StaffServiceJSONImpl() {
 	}
 
 	@Override
-	public void addScout(ScoutDTO s) {
-		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "/service/scouts/");
+	public void addStaff(StaffDTO s) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "/service/staff/");
 		rb.setHeader("Content-Type","application/json");
 		rb.setHeader("Accept","application/json");
 
@@ -49,19 +49,42 @@ public class ScoutServiceJSONImpl implements ScoutService {
 
 	}
 
-	private String buildJSON(ScoutDTO s) {
+	@Override
+	public void getStaffList(RequestCallback cb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/staff/");
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(cb);
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	private String buildJSON(StaffDTO s) {
 		StringBuilder sb = new StringBuilder("{ \"id\":\"");
 		sb.append(s.getId());
-		sb.append("\",\"firstName\":\"");
-		sb.append(s.getFirstName());
-		sb.append("\",\"lastName\":\"");
-		sb.append(s.getLastName());
-		sb.append("\",\"rank\":\"");
-		sb.append(s.getRank());
-		sb.append("\",\"unitType\":\"");
-		sb.append(s.getUnitType());
-		sb.append("\",\"unitNumber\":\"");
-		sb.append(s.getUnitNumber());
+		sb.append("\",\"name\":\"");
+		sb.append(s.getName());
+		sb.append("\",\"userId\":\"");
+		sb.append(s.getUserId());
+		sb.append("\",\"roles\":[");
+		int i = 0;
+		for (String str:s.getRoles()) {
+			if (i > 0) {
+				sb.append(",");
+			}
+			sb.append("\"");
+			sb.append(str);
+			sb.append("\"");
+			i++;
+		}
+		sb.append("],\"programArea\":\"");
+		sb.append(s.getProgramArea());
 		sb.append("\"}");
 		return sb.toString();
 	}
