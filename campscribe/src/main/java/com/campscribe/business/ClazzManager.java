@@ -15,8 +15,16 @@ public class ClazzManager {
 		ClazzDao.INSTANCE.remove(id);
 	}
 
+	public Clazz getClazz(String id) {
+		return ClazzDao.INSTANCE.get(id);
+	}
+
 	public List<Clazz> listClazzes() {
 		return ClazzDao.INSTANCE.listClazzes();
+	}
+
+	public void addScoutsToClazz(String clazzId, List<Long> scoutList) {
+		ClazzDao.INSTANCE.addScoutsToClazz(clazzId, scoutList);
 	}
 
 }

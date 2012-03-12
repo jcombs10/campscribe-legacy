@@ -20,7 +20,11 @@ public class ScoutManager {
 	}
 
 	public List<Scout> listScouts() {
-		return ScoutDao.INSTANCE.listScouts();
+		return ScoutDao.INSTANCE.listScouts(null, null, null);
+	}
+
+	public List<Scout> listScouts(String name, String unitType, String unitNumber) {
+		return ScoutDao.INSTANCE.listScouts(name, unitType, unitNumber);
 	}
 
 	public void updateScout(Scout e) {

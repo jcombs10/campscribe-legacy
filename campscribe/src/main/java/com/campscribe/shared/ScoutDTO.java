@@ -81,4 +81,8 @@ public class ScoutDTO {
 		this.unitNumber = unitNumber;
 	}
 
+	public String getDisplayName() {
+		return firstName + " " + lastName;
+	}
+
 }

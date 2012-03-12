@@ -1,13 +1,18 @@
 package com.campscribe.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 @Entity
 public class Clazz {
@@ -20,6 +25,8 @@ public class Clazz {
 	private Long mbId;
     @ManyToOne(fetch=FetchType.LAZY)
     private Event event;
+    
+    private List<Long> scoutIds = new ArrayList<Long>();
 
 	public Clazz() {
 	}
@@ -67,6 +74,19 @@ public class Clazz {
 
 	public void setStaffId(Long staffId) {
 		this.staffId = staffId;
+	}
+
+	public List<Long> getScoutIds() {
+		return scoutIds;
+	}
+
+	public void setScoutIds(List<Long> scoutIds) {
+		this.scoutIds = scoutIds;
+	}
+
+	@Transient
+	public String getEncodedKey() {
+		return KeyFactory.keyToString(id);
 	}
 
 }
