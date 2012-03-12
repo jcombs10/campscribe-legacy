@@ -8,6 +8,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 
 public class ScoutServiceJSONImpl implements ScoutService {
@@ -64,6 +65,29 @@ public class ScoutServiceJSONImpl implements ScoutService {
 		sb.append(s.getUnitNumber());
 		sb.append("\"}");
 		return sb.toString();
+	}
+
+	@Override
+	public void searchScouts(String name, String unitType, String unitNumber, RequestCallback callback) {
+		StringBuilder url = new StringBuilder("/service/scouts/");
+		url.append("?name=");
+		url.append(name);
+		url.append("&unitType=");
+		url.append(unitType);
+		url.append("&unitNumber=");
+		url.append(unitNumber);
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url.toString());
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(callback);
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+
 	}
 
 }

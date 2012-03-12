@@ -6,7 +6,5 @@
   <a href="scouts.cs">Scouts</a>
   <br />
   <a href="staff.cs">Staff</a>
-  <br />
-  <a href="clazzes.cs">Classes</a>
 </body>
 </html>

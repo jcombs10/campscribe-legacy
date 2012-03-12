@@ -16,36 +16,46 @@ import com.campscribe.shared.ScoutDTO;
 @Controller
 public class ScoutServiceController {
 
-//	@Autowired
+	// @Autowired
 	ScoutManager scoutMgr = new ScoutManager();
 
-	@RequestMapping(method=RequestMethod.GET, value = "/scouts/",headers="Accept=application/json")
-	public @ResponseBody List<Scout> getAllScouts() {
-		List<Scout> scouts = scoutMgr.listScouts();
+	@RequestMapping(method = RequestMethod.GET, value = "/scouts/", headers = "Accept=application/json")
+	public @ResponseBody
+	List<Scout> getScouts(
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "unitType", required = false) String unitType,
+			@RequestParam(value = "unitNumber", required = false) String unitNumber) {
+		List<Scout> scouts = scoutMgr.listScouts(name, unitType, unitNumber);
 		return scouts;
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value = "/scouts/",headers="Accept=application/json")
-	public @ResponseBody Scout addScout(@RequestBody ScoutDTO scoutDTO) {
+	@RequestMapping(method = RequestMethod.POST, value = "/scouts/", headers = "Accept=application/json")
+	public @ResponseBody
+	Scout addScout(@RequestBody ScoutDTO scoutDTO) {
 		System.err.println("addScout called");
-		Scout e = new Scout(scoutDTO.getFirstName(), scoutDTO.getLastName(), scoutDTO.getRank(), scoutDTO.getUnitType(), scoutDTO.getUnitNumber());
+		Scout e = new Scout(scoutDTO.getFirstName(), scoutDTO.getLastName(),
+				scoutDTO.getRank(), scoutDTO.getUnitType(),
+				scoutDTO.getUnitNumber());
 		scoutMgr.addScout(e);
 		return e;
 	}
 
-	@RequestMapping(method=RequestMethod.GET, value = "/scouts/{id}",headers="Accept=application/json")
-	public @ResponseBody Scout getScout(@RequestParam long id) {
+	@RequestMapping(method = RequestMethod.GET, value = "/scouts/{id}", headers = "Accept=application/json")
+	public @ResponseBody
+	Scout getScout(@RequestParam long id) {
 		return scoutMgr.getScout(id);
 	}
 
-	@RequestMapping(method=RequestMethod.PUT, value = "/scouts/{id}",headers="Accept=application/json")
-	public @ResponseBody Scout updateScout(@RequestParam long id, @RequestBody Scout e) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/scouts/{id}", headers = "Accept=application/json")
+	public @ResponseBody
+	Scout updateScout(@RequestParam long id, @RequestBody Scout e) {
 		scoutMgr.updateScout(e);
 		return e;
 	}
 
-	@RequestMapping(method=RequestMethod.DELETE, value = "/scouts/{id}",headers="Accept=application/json")
-	public @ResponseBody void deleteScout(@RequestParam long id) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/scouts/{id}", headers = "Accept=application/json")
+	public @ResponseBody
+	void deleteScout(@RequestParam long id) {
 		scoutMgr.deleteScout(id);
 	}
 

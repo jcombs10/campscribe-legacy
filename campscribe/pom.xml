@@ -236,6 +236,9 @@
                 <version>2.4.0</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <gwt.style>PRETTY</gwt.style>
+                        </configuration>
                         <goals>
                             <goal>compile</goal>
                         </goals>

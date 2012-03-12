@@ -20,10 +20,10 @@
 	</tr>
 	<c:forEach var="clazz" items="${event.clazzes}">
 		<tr>
-			<td><c:out value="${clazz.description}" /></td>
+			<td><a href="viewClazz.cs?id=${clazz.encodedKey}"><c:out value="${clazz.description}" /></a></td>
             <td><c:out value="${mbLookup[clazz.mbId].badgeName}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
-			<td><a href="deleteClazz.cs?id=${clazz.id}"><img
+			<td><a href="deleteClazz.cs?id=${clazz.id.id}"><img
 					src="images/16x16/delete.png" alt="Delete"></a></td>
 		</tr>
 	</c:forEach>

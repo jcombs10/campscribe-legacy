@@ -11,10 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 @Entity
 public class Event {
@@ -70,19 +72,22 @@ public class Event {
 		this.endDate = endDate;
 	}
 
+	@Transient
 	public String getStartDateDisplayStr() {
 		return startDate==null?"":getFormatter().format(startDate);
 	}
 
+	@Transient
+	public String getEndDateDisplayStr() {
+		return endDate==null?"":getFormatter().format(endDate);
+	}
+
+	@Transient
 	private FastDateFormat getFormatter() {
 		if (formatter == null) {
 			formatter = FastDateFormat.getInstance("MM/dd/yyyy");
 		}
 		return formatter;
-	}
-
-	public String getEndDateDisplayStr() {
-		return endDate==null?"":getFormatter().format(endDate);
 	}
 
 	public List<Clazz> getClazzes() {
@@ -98,6 +103,11 @@ public class Event {
 			clazzes = new ArrayList<Clazz>();
 		}
 		clazzes.add(c);
+	}
+
+	@Transient
+	public String getEncodedKey() {
+		return KeyFactory.keyToString(id);
 	}
 
 }

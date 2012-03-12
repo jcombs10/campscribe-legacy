@@ -75,4 +75,5 @@ public class Scout {
 	public String getDisplayName() {
 		return firstName + " " + lastName;
 	}
+
 }
