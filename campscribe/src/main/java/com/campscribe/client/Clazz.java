@@ -4,6 +4,7 @@ import com.campscribe.client.clazzes.AddEditClazzView;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -29,6 +30,7 @@ public class Clazz implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		addGWTActionTriggers(this);
 		
 		final Button addButton = new Button("Add Class");
 
@@ -53,5 +55,17 @@ public class Clazz implements EntryPoint {
 				dialogBox.center();
 			}
 		});
+	}
+	
+	private native void addGWTActionTriggers(Clazz module)/*-{
+	    $wnd.ClazzGWT = {
+	        trackProgress: function(clazzKey) {
+	            module.@com.campscribe.client.Clazz::editClazzProgress(Ljava/lang/String;)(clazzKey);
+	        }
+	    };
+	}-*/;
+	
+	public void editClazzProgress(String clazzKey) {
+		Window.alert("It Worked!! "+clazzKey);
 	}
 }
