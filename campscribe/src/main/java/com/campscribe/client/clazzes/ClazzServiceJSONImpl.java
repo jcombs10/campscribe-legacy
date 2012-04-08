@@ -99,6 +99,23 @@ public class ClazzServiceJSONImpl implements ClazzService {
 
 	}
 
+	@Override
+    public void getClazz(Long eventId, Long clazzId, RequestCallback callback) {
+		log.info("Getting /service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(callback);
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+
+    }
+    
 	private String buildJSON(List<ScoutDTO> sList) {
 		StringBuilder sb = new StringBuilder("[ ");
 		boolean firstOne = true;

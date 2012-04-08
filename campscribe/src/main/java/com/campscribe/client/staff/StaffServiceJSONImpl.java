@@ -50,6 +50,22 @@ public class StaffServiceJSONImpl implements StaffService {
 	}
 
 	@Override
+	public void getStaff(String id, RequestCallback cb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/staff/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(cb);
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
 	public void getStaffList(RequestCallback cb) {
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/staff/");
 		rb.setHeader("Content-Type","application/json");
@@ -72,6 +88,8 @@ public class StaffServiceJSONImpl implements StaffService {
 		sb.append(s.getName());
 		sb.append("\",\"userId\":\"");
 		sb.append(s.getUserId());
+		sb.append("\",\"password\":\"");
+		sb.append(s.getPassword());
 		sb.append("\",\"roles\":[");
 		int i = 0;
 		for (String str:s.getRoles()) {

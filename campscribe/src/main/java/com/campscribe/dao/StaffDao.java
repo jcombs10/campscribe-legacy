@@ -3,6 +3,7 @@ package com.campscribe.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.campscribe.model.Staff;
@@ -32,6 +33,20 @@ public enum StaffDao {
 		try {
 			Staff e = em.find(Staff.class, id);
 			return e;
+		} finally {
+			em.close();
+		}
+	}
+
+	public Staff getByUserName(String userName) {
+		EntityManager em = EMFService.get().createEntityManager();
+		try {
+			Query q = em.createQuery("select s from Staff s where s.userId = :userId");
+			q.setParameter("userId", userName);
+			Staff s = (Staff) q.getSingleResult();
+			return s;
+		} catch (NoResultException NRE) {
+			return null;
 		} finally {
 			em.close();
 		}

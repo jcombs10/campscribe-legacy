@@ -8,6 +8,8 @@ public interface StaffService {
 
     public void addStaff(StaffDTO s);
 
-	public void getStaffList(RequestCallback cb);
+    public void getStaff(String s, RequestCallback cb);
+
+    public void getStaffList(RequestCallback cb);
     
 }

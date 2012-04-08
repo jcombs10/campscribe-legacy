@@ -3,6 +3,7 @@ package com.campscribe.controller.services;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,13 +29,13 @@ public class StaffServiceController {
 	@RequestMapping(method=RequestMethod.POST, value = "/staff/",headers="Accept=application/json")
 	public @ResponseBody Staff addStaff(@RequestBody StaffDTO staffDTO) {
 		System.err.println("addStaff called");
-		Staff e = new Staff(staffDTO.getName(), staffDTO.getUserId(), staffDTO.getRoles(), staffDTO.getProgramArea());
+		Staff e = new Staff(staffDTO.getName(), staffDTO.getUserId(), staffDTO.getPassword(), staffDTO.getRoles(), staffDTO.getProgramArea());
 		staffMgr.addStaff(e);
 		return e;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/staff/{id}",headers="Accept=application/json")
-	public @ResponseBody Staff getStaff(@RequestParam long id) {
+	public @ResponseBody Staff getStaff(@PathVariable long id) {
 		return staffMgr.getStaff(id);
 	}
 

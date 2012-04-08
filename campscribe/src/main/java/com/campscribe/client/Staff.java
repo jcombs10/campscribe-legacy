@@ -20,16 +20,11 @@ public class Staff implements EntryPoint {
 			+ "connection and try again.";
 
 	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-//	private final GreetingServiceAsync greetingService = GWT
-//			.create(GreetingService.class);
-
-	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+		addGWTActionTriggers(this);
+
 		final Button addButton = new Button("Add");
 
 		// We can add style names to widgets
@@ -47,11 +42,26 @@ public class Staff implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		addButton.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.center();
 			}
 		});
 	}
+
+	private native void addGWTActionTriggers(Staff module)/*-{
+        $wnd.StaffGWT = {
+            editStaff: function(id) {
+                module.@com.campscribe.client.Staff::editStaff(Ljava/lang/String;)(id);
+            }
+        };
+    }-*/;
+
+	public void editStaff(String id) {
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Staff", new AddEditStaffView(id));
+		dialogBox.setAnimationEnabled(true);
+		dialogBox.center();
+	}
+
 }

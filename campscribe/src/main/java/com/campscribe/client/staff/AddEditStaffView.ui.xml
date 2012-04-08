@@ -14,12 +14,18 @@
 					<g:TextBox ui:field="name" />
 				</td>
 			</tr>
-			<tr>
-				<td>User ID:</td>
-				<td>
-					<g:TextBox ui:field="userId" />
-				</td>
-			</tr>
+            <tr>
+                <td>User ID:</td>
+                <td>
+                    <g:TextBox ui:field="userId" />
+                </td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td>
+                    <g:PasswordTextBox ui:field="password" />
+                </td>
+            </tr>
             <tr>
                 <td>Roles:</td>
                 <td>

@@ -31,6 +31,22 @@
 			<version>${org.springframework.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>3.0.3.RELEASE</version>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>3.0.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>3.0.3.RELEASE</version>
+        </dependency>
+
 		<!-- Google App Engine meta-package -->
 		<dependency>
 			<groupId>net.kindleit</groupId>
@@ -229,23 +245,23 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <gwt.style>PRETTY</gwt.style>
-                        </configuration>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.4.0</version>
+				<executions>
+					<execution>
+						<configuration>
+							<gwt.style>PRETTY</gwt.style>
+						</configuration>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Upload application to the appspot automatically, during release:perform -->
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
@@ -288,9 +304,9 @@
 		<gae.application.version>test</gae.application.version>
 
 		<datanucleus.version>1.1.5</datanucleus.version>
- 
-        <gwt.style>PRETTY</gwt.style>
- 	</properties>
+
+		<gwt.style>PRETTY</gwt.style>
+	</properties>
 
 	<profiles>
 		<!-- We can configure our integration server to activate this profile and 

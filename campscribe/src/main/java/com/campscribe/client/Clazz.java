@@ -1,10 +1,10 @@
 package com.campscribe.client;
 
 import com.campscribe.client.clazzes.AddEditClazzView;
+import com.campscribe.client.clazzes.TrackClazzProgressView;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -66,6 +66,9 @@ public class Clazz implements EntryPoint {
 	}-*/;
 	
 	public void editClazzProgress(String clazzKey) {
-		Window.alert("It Worked!! "+clazzKey);
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Track Progress", new TrackClazzProgressView(clazzKey));
+		dialogBox.setAnimationEnabled(true);
+		dialogBox.center();
 	}
+
 }

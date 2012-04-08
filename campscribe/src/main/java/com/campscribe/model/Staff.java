@@ -14,17 +14,19 @@ public class Staff {
 	private Long id;
 	private String name;
 	private String userId;
+	private String password;
 	private List<String> roles;
 	private String programArea;
 	
 	public Staff() {
 	}
 	
-	public Staff(String name, String userId, List<String> roles,
+	public Staff(String name, String userId, String password, List<String> roles,
 			String programArea) {
 		super();
 		this.name = name;
 		this.userId = userId;
+		this.password = password;
 		this.roles = roles;
 		this.programArea = programArea;
 	}
@@ -67,6 +69,14 @@ public class Staff {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
