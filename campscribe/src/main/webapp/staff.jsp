@@ -11,6 +11,7 @@
         <th>Roles</th>
         <th>Program Area</th>
         <th></th>
+        <th></th>
     </tr>
     <c:forEach var="staffMember" items="${staff}">
       <tr>
@@ -18,13 +19,15 @@
         <td><c:out value="${staffMember.userId}" /></td>
         <td>
             <c:forEach var="role" items="${staffMember.roles}">
-                <c:out value="${role}" />
+                <c:out value="${roleLookup[role]}" />
                 <br>
             </c:forEach>
         </td>
         <td><c:out value="${staffMember.programArea}" /> </td>
         <td><a href="deleteStaff.cs?id=${staffMember.id}"><img
-						src="images/16x16/delete.png" alt="Delete"></a></td>
+                        src="images/16x16/delete.png" alt="Delete"></a></td>
+        <td><a href="#" onclick="StaffGWT.editStaff('<c:out value="${staffMember.id}"/>');" ><img
+                        src="images/16x16/edit.gif" alt="Edit"></a></td>
       </tr>
     </c:forEach>
   </table>
