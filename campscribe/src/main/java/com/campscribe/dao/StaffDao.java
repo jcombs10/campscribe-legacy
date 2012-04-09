@@ -31,9 +31,9 @@ public enum StaffDao {
 	public Staff get(long id) {
 		EntityManager em = EMFService.get().createEntityManager();
 		try {
-			Staff e = em.find(Staff.class, id);
-			e.getRoles();
-			return e;
+			Staff s = em.find(Staff.class, id);
+			s.getRoles();
+			return s;
 		} finally {
 			em.close();
 		}
@@ -45,6 +45,7 @@ public enum StaffDao {
 			Query q = em.createQuery("select s from Staff s where s.userId = :userId");
 			q.setParameter("userId", userName);
 			Staff s = (Staff) q.getSingleResult();
+			s.getRoles();
 			return s;
 		} catch (NoResultException NRE) {
 			return null;
