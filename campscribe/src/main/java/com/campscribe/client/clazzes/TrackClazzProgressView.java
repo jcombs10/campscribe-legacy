@@ -106,7 +106,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		//			@Override
 		//			public void onResponseReceived(Request request, Response response) {
 		//				String s = response.getText();
-		//				List<StaffDTO> staffList = parseStaffJsonData(s);
+		//				List<StaffDTO> staffList = parseStaffListJsonData(s);
 		//				for (StaffDTO sDTO:staffList) {
 		//					staff.addItem(sDTO.getName(), sDTO.getId().toString());
 		//				}

@@ -1,18 +1,15 @@
 package com.campscribe.client.staff;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.campscribe.client.CampScribeBodyWidget;
-import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.StaffDTO;
-import com.campscribe.shared.TrackProgressDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -22,13 +19,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AddEditStaffView extends Composite implements CampScribeBodyWidget {
+
+	private Logger logger = Logger.getLogger("AddEditStaffView");
 
 	@UiField TextBox name;
 	@UiField TextBox userId;
@@ -37,6 +35,8 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 	@UiField CheckBox areaDirector;
 	@UiField CheckBox campAdmin;
 	@UiField ListBox programArea;
+	
+	private Long id = Long.valueOf(-1);
 
 	StaffService staffService = new StaffServiceJSONImpl();
 
@@ -71,8 +71,10 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String str = response.getText();
+				logger.info("getStaff response: " + str);
 				StaffDTO c = parseStaffJsonData(str);
 
+				AddEditStaffView.this.id = c.getId();
 				name.setText(c.getName());
 				userId.setText(c.getUserId());
 				password.setText(c.getPassword());
@@ -81,10 +83,10 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 					counselor.setValue(true);
 				}
 				if (c.getRoles().contains("area_director")) {
-					counselor.setValue(true);
+					areaDirector.setValue(true);
 				}
 				if (c.getRoles().contains("camp_admin")) {
-					counselor.setValue(true);
+					campAdmin.setValue(true);
 				}
 
 				for (int i=0; i<programArea.getItemCount(); i++) {
@@ -104,7 +106,11 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 
 	@Override
 	public void onSave() {
-		staffService.addStaff(getData());
+		if (id.equals(-1)) {
+			staffService.addStaff(getData());
+		} else {
+			staffService.updateStaff(getData());
+		}
 	}
 
 	private StaffDTO getData() {
@@ -119,6 +125,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 			roles.add("camp_admin");
 		}
 		StaffDTO e = new StaffDTO(name.getText(), userId.getText(), password.getText(), roles, programArea.getValue(programArea.getSelectedIndex()));
+		e.setId(id);
 		return e;
 	}
 
@@ -127,8 +134,6 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 	}
 
 	private StaffDTO parseStaffJsonData(String json) {
-
-		StaffDTO staff = new StaffDTO();
 
 		JSONValue value = JSONParser.parseLenient(json);
 
@@ -139,14 +144,25 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 		String name = mbObj.get("name").isString().stringValue();
 		String userId = mbObj.get("userId").isString().stringValue();
 		String password = mbObj.get("password").isString().stringValue();
+		String programArea = mbObj.get("programArea").isString().stringValue();
+		JSONArray roleArray = mbObj.get("roles").isArray();
+		ArrayList<String> roles = new ArrayList<String>();
+		if (roleArray != null) {
+			for (int i=0; i<=roleArray.size()-1; i++) {
+				String roleObj = roleArray.get(i).isString().stringValue();
+				roles.add(roleObj);
+			}
+		}
 
-		StaffDTO b = new StaffDTO();
-		b.setName(name);
+		StaffDTO staff = new StaffDTO();
+		staff.setName(name);
 		Double d = Double.valueOf(id);
-		b.setId(d.longValue());
-		b.setName(name);
-		b.setUserId(userId);
-		b.setPassword(password);
+		staff.setId(d.longValue());
+		staff.setName(name);
+		staff.setUserId(userId);
+		staff.setPassword(password);
+		staff.setProgramArea(programArea);
+		staff.setRoles(roles);
 
 		return staff;
 	}

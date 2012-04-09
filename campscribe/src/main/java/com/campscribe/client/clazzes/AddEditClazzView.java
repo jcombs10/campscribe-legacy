@@ -72,7 +72,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String s = response.getText();
-				List<StaffDTO> staffList = parseStaffJsonData(s);
+				List<StaffDTO> staffList = parseStaffListJsonData(s);
 				for (StaffDTO sDTO:staffList) {
 					staff.addItem(sDTO.getName(), sDTO.getId().toString());
 				}
@@ -116,7 +116,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 		return badges;
 	}
 
-	private List<StaffDTO> parseStaffJsonData(String json) {
+	private List<StaffDTO> parseStaffListJsonData(String json) {
 		
 		List<StaffDTO> badges = new ArrayList<StaffDTO>();
 

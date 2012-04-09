@@ -32,6 +32,7 @@ public enum StaffDao {
 		EntityManager em = EMFService.get().createEntityManager();
 		try {
 			Staff e = em.find(Staff.class, id);
+			e.getRoles();
 			return e;
 		} finally {
 			em.close();
