@@ -28,7 +28,7 @@
 		<sec:authorize access="hasRole('camp_admin')">
 			<a href="admin.cs">Administration</a>
 		</sec:authorize>
-		<sec:authorize access="hasRole('area_director')">
+		<sec:authorize access="hasAnyRole('area_director', 'camp_admin')">
 			<a href="reports.cs">Reports</a>
 		</sec:authorize>
 		<sec:authorize access="isAuthenticated()">
