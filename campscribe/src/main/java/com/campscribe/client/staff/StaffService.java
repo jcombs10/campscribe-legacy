@@ -12,4 +12,6 @@ public interface StaffService {
 
     public void getStaffList(RequestCallback cb);
     
+    public void updateStaff(StaffDTO s);
+
 }

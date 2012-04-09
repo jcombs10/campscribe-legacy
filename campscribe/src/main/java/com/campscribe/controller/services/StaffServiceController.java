@@ -40,7 +40,7 @@ public class StaffServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/staff/{id}",headers="Accept=application/json")
-	public @ResponseBody Staff updateStaff(@RequestParam long id, @RequestBody Staff e) {
+	public @ResponseBody Staff updateStaff(@PathVariable long id, @RequestBody Staff e) {
 		staffMgr.updateStaff(e);
 		return e;
 	}
