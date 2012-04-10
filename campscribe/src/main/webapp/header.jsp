@@ -25,12 +25,15 @@
 		class="leftfloat marginBottom10" />
 	<div class="logoTitle">CampScribe Advancement Tracker</div>
 	<div id="menuBar">
-		<sec:authorize access="hasRole('camp_admin')">
+		<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
 			<a href="admin.cs">Administration</a>
 		</sec:authorize>
-		<sec:authorize access="hasAnyRole('area_director', 'camp_admin')">
-			<a href="reports.cs">Reports</a>
-		</sec:authorize>
+        <sec:authorize access="hasAnyRole('counselor', 'area_director', 'camp_admin', 'system_admin')">
+            <a href="tracking.cs">Tracking</a>
+        </sec:authorize>
+        <sec:authorize access="hasAnyRole('area_director', 'camp_admin', 'system_admin')">
+            <a href="reports.cs">Reports</a>
+        </sec:authorize>
 		<sec:authorize access="isAuthenticated()">
 			<a href="/j_spring_security_logout" class="rightfloat">Logout</a>
 		</sec:authorize>

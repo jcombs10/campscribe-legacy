@@ -1,5 +1,8 @@
 package com.campscribe.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -10,6 +13,7 @@ public class Requirement {
 	private String reqType = SIMPLE;
 	private int howManyToChoose = 0;
 	private int optionCount = 0;
+	private List<Requirement> subRequirements = new ArrayList<Requirement>();
 
 	public String getReqType() {
 		return reqType;
@@ -33,6 +37,14 @@ public class Requirement {
 
 	public void setOptionCount(int optionCount) {
 		this.optionCount = optionCount;
+	}
+
+	public List<Requirement> getSubRequirements() {
+		return subRequirements;
+	}
+
+	public void setSubRequirements(List<Requirement> subRequirements) {
+		this.subRequirements = subRequirements;
 	}
 
 }

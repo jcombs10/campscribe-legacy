@@ -24,10 +24,10 @@
             </c:forEach>
         </td>
         <td><c:out value="${staffMember.programArea}" /> </td>
-        <td><a href="deleteStaff.cs?id=${staffMember.id}"><img
-                        src="images/16x16/delete.png" alt="Delete"></a></td>
         <td><a href="#" onclick="StaffGWT.editStaff('<c:out value="${staffMember.id}"/>');" ><img
                         src="images/16x16/edit.gif" alt="Edit"></a></td>
+        <td><a href="deleteStaff.cs?id=${staffMember.id}"><img
+                        src="images/16x16/delete.png" alt="Delete"></a></td>
       </tr>
     </c:forEach>
   </table>

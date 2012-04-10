@@ -1,10 +1,12 @@
-<%@ include file="header.jsp" %>
-  <a href="meritBadges.cs">Merit Badges</a>
-  <br />
-  <a href="events.cs">Events</a>
-  <br />
-  <a href="scouts.cs">Scouts</a>
-  <br />
-  <a href="staff.cs">Staff</a>
+<%@ include file="header.jsp"%>
+<sec:authorize access="hasRole('system_admin')">
+	<a href="meritBadges.cs">Merit Badges</a>
+	<br />
+</sec:authorize>
+<a href="events.cs">Events</a>
+<br />
+<a href="scouts.cs">Scouts</a>
+<br />
+<a href="staff.cs">Staff</a>
 </body>
 </html>

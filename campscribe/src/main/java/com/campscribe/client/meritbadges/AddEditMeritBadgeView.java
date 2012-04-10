@@ -2,6 +2,7 @@ package com.campscribe.client.meritbadges;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.shared.MeritBadgeDTO;
@@ -11,12 +12,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.EventPreview;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,12 +32,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWidget {
 
+	private Logger logger = Logger.getLogger("AddEditMeritBadgeView");
+
 	@UiField TextBox badgeName;
 	@UiField TextBox bsaAdvancementId;
 	@UiField CheckBox eagleRequired;
 	@UiField ListBox reqCount;
 	@UiField FlowPanel reqsPanel;
 	private List<RequirementLineItem> reqSelectList = new ArrayList<RequirementLineItem>();
+
+	private Long id = null;
 
 	MeritBadgeService mbService = new MeritBadgeServiceJSONImpl();
 
@@ -64,6 +71,32 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 		badgeName.setFocus(true);
 	}
 
+	public AddEditMeritBadgeView(String id) {
+		this();
+
+		mbService.getMeritBadge(id, new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+				String str = response.getText();
+				logger.info("getStaff response: " + str);
+				MeritBadgeDTO c = parseMeritBadgeJsonData(str);
+
+				AddEditMeritBadgeView.this.id = c.getId();
+				badgeName.setText(c.getBadgeName());
+				bsaAdvancementId.setText(c.getBsaAdvancementId());
+				eagleRequired.setValue(c.isEagleRequired());
+
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+	}
+
 	private void setupReqs() {
 		reqsPanel.clear();
 		reqSelectList.clear();
@@ -80,7 +113,11 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 	@Override
 	public void onSave() {
-		mbService.addMeritBadge(getData());
+		if (id == null) {
+			mbService.addMeritBadge(getData());
+		} else {
+			mbService.updateMeritBadge(getData());
+		}
 	}
 
 	private MeritBadgeDTO getData() {
@@ -93,6 +130,9 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 			reqDto.setHowManyToChoose(reqItem.getHowManyToChoose());
 			reqDto.setOptionCount(reqItem.getOptionCount());
 			requirements.add(reqDto);
+		}
+		if (id != null) {
+			mb.setId(id);
 		}
 		mb.setRequirements(requirements);
 		return mb;
@@ -155,9 +195,10 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
-//					Window.alert(""+event.getCharCode());
+					Window.alert(""+event.getCharCode());
 					if (!Character.isDigit(event.getCharCode())) {
-						event.stopPropagation();
+						Window.alert("stopping propogation");
+						event.preventDefault();
 					}
 				}
 
@@ -194,6 +235,28 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 			return lb.getValue(lb.getSelectedIndex());
 		}
 
+	}
+
+	private MeritBadgeDTO parseMeritBadgeJsonData(String json) {
+
+		JSONValue value = JSONParser.parseLenient(json);
+
+		//		Window.alert("Got response: " + json);
+		JSONObject mbObj = value.isObject();
+
+		double id = mbObj.get("id").isNumber().doubleValue();
+		String bsaAdvancementId = mbObj.get("bsaAdvancementId").isString().stringValue();
+		String badgeName = mbObj.get("badgeName").isString().stringValue();
+		Boolean eagleRequired = mbObj.get("eagleRequired").isBoolean().booleanValue();
+
+		MeritBadgeDTO mb = new MeritBadgeDTO();
+		mb.setBadgeName(badgeName);
+		Double d = Double.valueOf(id);
+		mb.setId(d.longValue());
+		mb.setBsaAdvancementId(bsaAdvancementId);
+		mb.setEagleRequired(eagleRequired);
+
+		return mb;
 	}
 
 }

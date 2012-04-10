@@ -29,6 +29,7 @@ public class MeritBadge implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		addGWTActionTriggers(this);
 		
 		final Button addButton = new Button("Add");
 
@@ -53,4 +54,19 @@ public class MeritBadge implements EntryPoint {
 			}
 		});
 	}
+
+	private native void addGWTActionTriggers(MeritBadge module)/*-{
+        $wnd.MeritBadgeGWT = {
+            editMeritBadge: function(id) {
+                module.@com.campscribe.client.MeritBadge::editMeritBadge(Ljava/lang/String;)(id);
+            }
+        };
+    }-*/;
+
+	public void editMeritBadge(String id) {
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Merit Badge", new AddEditMeritBadgeView(id));
+		dialogBox.setAnimationEnabled(true);
+		dialogBox.center();
+	}
+
 }
