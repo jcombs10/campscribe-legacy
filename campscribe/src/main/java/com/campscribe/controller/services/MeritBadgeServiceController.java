@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,12 +55,12 @@ public class MeritBadgeServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/meritbadges/{id}",headers="Accept=application/json")
-	public @ResponseBody MeritBadge getMeritBadge(@RequestParam long id) {
+	public @ResponseBody MeritBadge getMeritBadge(@PathVariable long id) {
 		return mbMgr.getMeritBadge(id);
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/meritbadges/{id}",headers="Accept=application/json")
-	public @ResponseBody MeritBadge updateMeritBadge(@RequestParam long id, @RequestBody MeritBadge mb) {
+	public @ResponseBody MeritBadge updateMeritBadge(@PathVariable long id, @RequestBody MeritBadge mb) {
 		mbMgr.updateMeritBadge(mb);
 		return mb;
 	}

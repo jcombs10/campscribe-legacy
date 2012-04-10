@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.campscribe.shared.MeritBadgeDTO;
 import com.campscribe.shared.RequirementDTO;
+import com.campscribe.shared.StaffDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -51,6 +52,22 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 	}
 
 	@Override
+	public void getMeritBadge(String id, RequestCallback cb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/meritbadges/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(cb);
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
 	public void getMeritBadges(RequestCallback cb) {
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/meritbadges/");
 		rb.setHeader("Content-Type","application/json");
@@ -62,6 +79,38 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 			rb.send();
 		} catch (RequestException e) {
 			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void updateMeritBadge(MeritBadgeDTO mb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.PUT, "/service/meritbadges/"+mb.getId());
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+//		Window.alert("sending  MB" + buildJSON(mb));
+		rb.setRequestData(buildJSON(mb));
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
 		}
 
 	}

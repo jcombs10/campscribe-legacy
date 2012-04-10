@@ -36,7 +36,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 	@UiField CheckBox campAdmin;
 	@UiField ListBox programArea;
 	
-	private Long id = Long.valueOf(-1);
+	private Long id = null;
 
 	StaffService staffService = new StaffServiceJSONImpl();
 
@@ -106,7 +106,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 
 	@Override
 	public void onSave() {
-		if (id.equals(-1)) {
+		if (id == null) {
 			staffService.addStaff(getData());
 		} else {
 			staffService.updateStaff(getData());
@@ -125,7 +125,9 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 			roles.add("camp_admin");
 		}
 		StaffDTO e = new StaffDTO(name.getText(), userId.getText(), password.getText(), roles, programArea.getValue(programArea.getSelectedIndex()));
-		e.setId(id);
+		if (id != null) {
+			e.setId(id);
+		}
 		return e;
 	}
 

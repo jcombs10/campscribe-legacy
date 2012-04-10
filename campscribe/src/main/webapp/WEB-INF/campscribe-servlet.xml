@@ -14,6 +14,7 @@
   <bean name="clazzes.cs" class="com.campscribe.controller.web.ClazzController"/>
   <bean name="admin.cs" class="com.campscribe.controller.web.AdminController"/>
   <bean name="reports.cs" class="com.campscribe.controller.web.ReportsController"/>
+  <bean name="tracking.cs" class="com.campscribe.controller.web.TrackingController"/>
   <bean name="staff.cs" class="com.campscribe.controller.web.StaffController"/>
 
 </beans>
