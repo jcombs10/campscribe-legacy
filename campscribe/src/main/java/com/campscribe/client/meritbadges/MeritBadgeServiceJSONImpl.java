@@ -1,10 +1,10 @@
 package com.campscribe.client.meritbadges;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.campscribe.shared.MeritBadgeDTO;
 import com.campscribe.shared.RequirementDTO;
-import com.campscribe.shared.StaffDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -40,8 +40,8 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 
 		});
 
-//		Window.alert("sending  MB" + buildJSON(mb));
-		rb.setRequestData(buildJSON(mb));
+//		Window.alert("sending  MB" + buildJSON(mb, mb.getRequirements()));
+		rb.setRequestData(buildJSON(mb, mb.getRequirements()));
 
 		try {
 			rb.send();
@@ -105,7 +105,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 		});
 
 //		Window.alert("sending  MB" + buildJSON(mb));
-		rb.setRequestData(buildJSON(mb));
+		rb.setRequestData(buildJSON(mb, mb.getRequirements()));
 
 		try {
 			rb.send();
@@ -115,7 +115,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 
 	}
 
-	private String buildJSON(MeritBadgeDTO mb) {
+	private String buildJSON(MeritBadgeDTO mb, List<RequirementDTO> requirements) {
 		StringBuilder sb = new StringBuilder("{ \"id\":\"");
 		sb.append(mb.getId());
 		sb.append("\",\"badgeName\":\"");
@@ -124,19 +124,33 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 		sb.append(mb.getBsaAdvancementId());
 		sb.append("\",\"eagleRequired\":\"");
 		sb.append(mb.isEagleRequired());
-		sb.append("\",\"requirements\":[");
+		sb.append("\",\"requirementsStr\":\"[");
 		int i = 0;
-		for (RequirementDTO reqDto:mb.getRequirements()) {
+		for (RequirementDTO reqDto:requirements) {
 			if (i > 0) {
 				sb.append(",");
 			}
-			sb.append("{ \"reqType\":\"");
-			sb.append(reqDto.getReqType());
-			sb.append("\",\"howManyToChoose\":\"");
-			sb.append(reqDto.getHowManyToChoose());
-			sb.append("\",\"optionCount\":\"");
-			sb.append(reqDto.getOptionCount());
-			sb.append("\" }");
+			sb.append(dtoToJSON(reqDto));
+			i++;
+		}
+		sb.append("]\"}");
+		return sb.toString();
+	}
+
+	private Object dtoToJSON(RequirementDTO reqDto) {
+		StringBuilder sb = new StringBuilder("{ @@reqType@@:@@");
+		sb.append(reqDto.getReqType());
+		sb.append("@@,@@howManyToChoose@@:@@");
+		sb.append(reqDto.getHowManyToChoose());
+		sb.append("@@,@@optionCount@@:@@");
+		sb.append(reqDto.getOptionCount());
+		sb.append("@@,@@subRequirements@@:[");
+		int i = 0;
+		for (RequirementDTO subReqDto:reqDto.getSubRequirements()) {
+			if (i > 0) {
+				sb.append(",");
+			}
+			sb.append(dtoToJSON(subReqDto));
 			i++;
 		}
 		sb.append("]}");

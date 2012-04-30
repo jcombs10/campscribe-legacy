@@ -3,12 +3,14 @@ package com.campscribe.shared;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MeritBadgeDTO {
 	
 	private Long id = Long.valueOf(-1);
     private String bsaAdvancementId = "";
 	private String badgeName = "";
 	private Boolean eagleRequired = Boolean.FALSE;
+	private String requirementsStr = "";
 	private List<RequirementDTO> requirements = new ArrayList<RequirementDTO>();
 	
 	public MeritBadgeDTO() {
@@ -53,6 +55,14 @@ public class MeritBadgeDTO {
 		this.eagleRequired = eagleRequired==null?Boolean.FALSE:eagleRequired;
 	}
 
+	public String getRequirementsStr() {
+		return requirementsStr;
+	}
+
+	public void setRequirementsStr(String requirementsStr) {
+		this.requirementsStr = requirementsStr;
+	}
+
 	public List<RequirementDTO> getRequirements() {
 		return requirements;
 	}
@@ -60,4 +70,5 @@ public class MeritBadgeDTO {
 	public void setRequirements(List<RequirementDTO> requirements) {
 		this.requirements = requirements;
 	}
+
 }

@@ -1,15 +1,11 @@
 package com.campscribe.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+
+import com.google.appengine.api.datastore.Text;
 
 @Entity
 public class MeritBadge {
@@ -20,9 +16,8 @@ public class MeritBadge {
     private String bsaAdvancementId;
 	private String badgeName;
 	private Boolean eagleRequired = Boolean.FALSE;
-    @Embedded
-    @OneToMany(cascade=CascadeType.PERSIST)
-	private List<Requirement> requirements = new ArrayList<Requirement>();
+	
+	private String requirementsStr;
 	
 	public MeritBadge(String badgeName, Boolean eagleRequired) {
 		this.badgeName = badgeName;
@@ -63,11 +58,12 @@ public class MeritBadge {
 		this.eagleRequired = eagleRequired==null?Boolean.FALSE:eagleRequired;
 	}
 
-	public List<Requirement> getRequirements() {
-		return requirements;
+	public String getRequirementsStr() {
+		return requirementsStr;
 	}
 
-	public void setRequirements(List<Requirement> requirements) {
-		this.requirements = requirements;
+	public void setRequirementsStr(String requirementsStr) {
+		this.requirementsStr = requirementsStr;
 	}
+
 }
