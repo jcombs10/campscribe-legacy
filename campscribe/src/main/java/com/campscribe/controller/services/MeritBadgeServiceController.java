@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.model.MeritBadge;
-import com.campscribe.model.Requirement;
 import com.campscribe.shared.MeritBadgeDTO;
-import com.campscribe.shared.RequirementDTO;
+import com.google.appengine.api.datastore.Text;
 
 @Controller
 public class MeritBadgeServiceController {
 
-//	@Autowired
+	//	@Autowired
 	MeritBadgeManager mbMgr = new MeritBadgeManager();
 
 	@RequestMapping(method=RequestMethod.GET, value = "/meritbadges/",headers="Accept=application/json")
@@ -39,30 +38,37 @@ public class MeritBadgeServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value = "/meritbadges/",headers="Accept=application/json")
-	public @ResponseBody MeritBadge addMeritBadge(@RequestBody MeritBadgeDTO mbDTO) {
+	public @ResponseBody MeritBadgeDTO addMeritBadge(@RequestBody MeritBadgeDTO mbDTO) {
 		System.err.println("addMeritBadge called");
 		MeritBadge mb = new MeritBadge(mbDTO.getBadgeName(), mbDTO.isEagleRequired());
 		mb.setBsaAdvancementId(mbDTO.getBsaAdvancementId());
-		ArrayList<Requirement> reqs = new ArrayList<Requirement>();
-		for (RequirementDTO reqDTO:mbDTO.getRequirements()) {
-			Requirement req = new Requirement();
-			req.setReqType(reqDTO.getReqType());
-			reqs.add(req);
-		}
-		mb.setRequirements(reqs);
+		mb.setRequirementsStr(mbDTO.getRequirementsStr());
 		mbMgr.addMeritBadge(mb);
-		return mb;
+		return mbDTO;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/meritbadges/{id}",headers="Accept=application/json")
-	public @ResponseBody MeritBadge getMeritBadge(@PathVariable long id) {
-		return mbMgr.getMeritBadge(id);
+	public @ResponseBody MeritBadgeDTO getMeritBadge(@PathVariable long id) {
+		MeritBadge mb = mbMgr.getMeritBadge(id);
+		
+		MeritBadgeDTO mbDTO = new MeritBadgeDTO();
+		mbDTO.setId(mb.getId());
+		mbDTO.setBadgeName(mb.getBadgeName());
+		mbDTO.setEagleRequired(mb.isEagleRequired());
+		mbDTO.setBsaAdvancementId(mb.getBsaAdvancementId());
+		mbDTO.setRequirementsStr(mb.getRequirementsStr());
+		return mbDTO;
+
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/meritbadges/{id}",headers="Accept=application/json")
-	public @ResponseBody MeritBadge updateMeritBadge(@PathVariable long id, @RequestBody MeritBadge mb) {
+	public @ResponseBody MeritBadgeDTO updateMeritBadge(@PathVariable long id, @RequestBody MeritBadgeDTO mbDTO) {
+		MeritBadge mb = new MeritBadge(mbDTO.getBadgeName(), mbDTO.isEagleRequired());
+		mb.setId(mbDTO.getId());
+		mb.setBsaAdvancementId(mbDTO.getBsaAdvancementId());
+		mb.setRequirementsStr(mbDTO.getRequirementsStr());
 		mbMgr.updateMeritBadge(mb);
-		return mb;
+		return mbDTO;
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value = "/meritbadges/{id}",headers="Accept=application/json")

@@ -1,12 +1,12 @@
 package com.campscribe.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
-public class Requirement {
+public class Requirement implements Serializable {
+	private static final long serialVersionUID = 1437339843977370688L;
+	
 	public static String SIMPLE = "Simple";
 	public static String N_OF_M = "Choose";
 	

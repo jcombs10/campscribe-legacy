@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -73,6 +74,7 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 	public AddEditMeritBadgeView(String id) {
 		this();
+		this.id = Long.valueOf(id);
 
 		mbService.getMeritBadge(id, new RequestCallback() {
 
@@ -86,6 +88,7 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 				badgeName.setText(c.getBadgeName());
 				bsaAdvancementId.setText(c.getBsaAdvancementId());
 				eagleRequired.setValue(c.isEagleRequired());
+				setupReqs(c.getRequirements());
 
 			}
 
@@ -97,16 +100,27 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 		});
 	}
 
+	protected void setupReqs(List<RequirementDTO> requirements) {
+		reqSelectList.clear();
+		reqsPanel.clear();
+		reqCount.setSelectedIndex(requirements.size()-1);
+		int i = 0;
+		for (RequirementDTO req:requirements) {
+			reqsPanel.add(createRequirementSelect(i+1, req));
+			i++;
+		}
+	}
+
 	private void setupReqs() {
 		reqsPanel.clear();
 		reqSelectList.clear();
 		for (int i=0; i<=reqCount.getSelectedIndex(); i++) {
-			reqsPanel.add(createRequirementSelect(i+1));
+			reqsPanel.add(createRequirementSelect(i+1, null));
 		}
 	}
 
-	private Widget createRequirementSelect(int i) {
-		RequirementLineItem reqSelect = new RequirementLineItem(i);
+	private Widget createRequirementSelect(int i, RequirementDTO req) {
+		RequirementLineItem reqSelect = new RequirementLineItem(i, 0, req);
 		reqSelectList.add(reqSelect);
 		return reqSelect;
 	}
@@ -129,9 +143,10 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 			reqDto.setReqType(reqItem.getReqType());
 			reqDto.setHowManyToChoose(reqItem.getHowManyToChoose());
 			reqDto.setOptionCount(reqItem.getOptionCount());
+			reqDto.setSubRequirements(reqItem.getSubRequirements());
 			requirements.add(reqDto);
 		}
-		if (id != null) {
+		if (id != null && !id.equals(-1)) {
 			mb.setId(id);
 		}
 		mb.setRequirements(requirements);
@@ -147,31 +162,65 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 		private TextBox howManyToChoose;
 		private Label ofLabel; 
 		private TextBox optionCount;
+		private FlowPanel subReqPanel;
 
-		public RequirementLineItem(int i) {
+		private List<RequirementLineItem> subReqSelectList = new ArrayList<RequirementLineItem>();
+		private int level;
+		private int i;
+		private final char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
+		public RequirementLineItem(int i, int level, RequirementDTO req) {
+			this.i = i;
+			this.level = level;
 			HorizontalPanel hp = new HorizontalPanel();
-			Label l = new Label(Integer.toString(i)+".");
+			Label l = null;
+			if (level == 0) {
+				l = new Label(Integer.toString(i)+". ");
+			} else if (level == 1) {
+					l = new Label(Character.toString(chars[i])+". ");
+					l.addStyleName("paddingLeft20");
+			} else if (level == 2) {
+				l = new Label(Integer.toString(i+1)+". ");
+				l.addStyleName("paddingLeft40");
+			}
 			hp.add(l);
 
 			lb = new ListBox();
 			lb.addItem(RequirementDTO.SIMPLE);
 			lb.addItem(RequirementDTO.N_OF_M);
+			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				lb.setSelectedIndex(1);
+			}
 			hp.add(lb);
 
 			howManyToChoose = new TextBox();
 			howManyToChoose.setVisibleLength(2);
 			howManyToChoose.setVisible(false);
+			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				howManyToChoose.setText(Integer.toString(req.getHowManyToChoose()));
+				howManyToChoose.setVisible(true);
+			}
 			hp.add(howManyToChoose);
 
 			ofLabel = new Label(" of ");
 			ofLabel.setVisible(false);
+			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				ofLabel.setVisible(true);
+			}
 			hp.add(ofLabel);
 
 			optionCount = new TextBox();
 			optionCount.setVisible(false);
 			optionCount.setVisibleLength(2);
+			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				optionCount.setText(Integer.toString(req.getOptionCount()));
+				optionCount.setVisible(true);
+			}
 			hp.add(optionCount);
 			add(hp);
+			
+			subReqPanel = new FlowPanel();
+			add(subReqPanel);
 
 			lb.addChangeHandler(new ChangeHandler() {
 
@@ -195,9 +244,7 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
-					Window.alert(""+event.getCharCode());
 					if (!Character.isDigit(event.getCharCode())) {
-						Window.alert("stopping propogation");
 						event.preventDefault();
 					}
 				}
@@ -205,16 +252,42 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 			};
 			howManyToChoose.addKeyPressHandler(numericHandler);
 			optionCount.addKeyPressHandler(numericHandler);
+			optionCount.addChangeHandler(new ChangeHandler() {
+
+				@Override
+				public void onChange(ChangeEvent event) {
+					subReqPanel.clear();
+					subReqSelectList.clear();
+					for (int i=0; i<getOptionCount(); i++) {
+						RequirementLineItem subRli = new RequirementLineItem(i, RequirementLineItem.this.level+1, null);
+						subReqPanel.add(subRli);
+						subReqSelectList.add(subRli);
+					}
+				}
+				
+			});
 			
-//			Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
-//
-//				@Override
-//				public void onPreviewNativeEvent(NativePreviewEvent event) {
-//					if (event.)
-//					
-//				}
-//				
-//			});
+			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				for (RequirementDTO subReq:req.getSubRequirements()) {
+					RequirementLineItem subRli = new RequirementLineItem(i, RequirementLineItem.this.level+1, subReq);
+					subReqPanel.add(subRli);
+					subReqSelectList.add(subRli);
+				}
+			}
+
+		}
+
+		public List<RequirementDTO> getSubRequirements() {
+			List<RequirementDTO> requirements = new ArrayList<RequirementDTO>();
+			for (RequirementLineItem reqItem:subReqSelectList) {
+				RequirementDTO reqDto = new RequirementDTO();
+				reqDto.setReqType(reqItem.getReqType());
+				reqDto.setHowManyToChoose(reqItem.getHowManyToChoose());
+				reqDto.setOptionCount(reqItem.getOptionCount());
+				reqDto.setSubRequirements(reqItem.getSubRequirements());
+				requirements.add(reqDto);
+			}
+			return requirements;
 		}
 
 		public int getOptionCount() {
@@ -241,7 +314,7 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 
 		JSONValue value = JSONParser.parseLenient(json);
 
-		//		Window.alert("Got response: " + json);
+		Window.alert("Got response: " + json);
 		JSONObject mbObj = value.isObject();
 
 		double id = mbObj.get("id").isNumber().doubleValue();
@@ -255,8 +328,33 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 		mb.setId(d.longValue());
 		mb.setBsaAdvancementId(bsaAdvancementId);
 		mb.setEagleRequired(eagleRequired);
-
+		
+		String jsonStr = mbObj.get("requirementsStr").isString().stringValue().replaceAll("@@", "\"");
+//		Window.alert("Got requirementsStr: " + jsonStr);
+		JSONValue reqsValue = JSONParser.parseLenient(jsonStr);
+		JSONArray reqsArray = reqsValue.isArray();
+		List<RequirementDTO> reqDTOList = parseRequirementsJsonData(reqsArray);
+		mb.setRequirements(reqDTOList);
+		
 		return mb;
+	}
+
+	private List<RequirementDTO> parseRequirementsJsonData(JSONArray reqsArray) {
+//		Window.alert("Got here with array of size "+reqsArray.size());
+		List<RequirementDTO> requirements = new ArrayList<RequirementDTO>();
+
+		for (int i=0; i<reqsArray.size(); i++) {
+			JSONObject reqObj = reqsArray.get(i).isObject();
+//			Window.alert("Got here with reqObj "+reqObj);
+			RequirementDTO reqDTO = new RequirementDTO();
+			reqDTO.setHowManyToChoose(Integer.parseInt(reqObj.get("howManyToChoose").isString().stringValue()));
+			reqDTO.setOptionCount(Integer.parseInt(reqObj.get("optionCount").isString().stringValue()));
+			reqDTO.setReqType(reqObj.get("reqType").isString().stringValue());
+			reqDTO.setSubRequirements(parseRequirementsJsonData(reqObj.get("subRequirements").isArray()));
+			requirements.add(reqDTO);
+		}
+		
+		return requirements;
 	}
 
 }

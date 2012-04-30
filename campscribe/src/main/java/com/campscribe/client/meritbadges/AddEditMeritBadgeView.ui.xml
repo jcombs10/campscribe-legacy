@@ -5,6 +5,11 @@
 		.important {
 			font-weight: bold;
 		}
+		
+		.reqsBlock {
+	        max-height: 250px;
+            width: 100%;
+	    }
 	</ui:style>
 	<g:HTMLPanel>
 		<table>
@@ -26,18 +31,15 @@
 					<g:CheckBox ui:field="eagleRequired" />
 				</td>
 			</tr>
-            <tr>
-                <td>Requirements:</td>
-                <td>
-                    <g:ListBox ui:field="reqCount" />
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <g:FlowPanel ui:field="reqsPanel" />
-                </td>
-            </tr>
+			<tr>
+				<td>Requirements:</td>
+				<td>
+					<g:ListBox ui:field="reqCount" />
+				</td>
+			</tr>
 		</table>
+		<g:ScrollPanel styleName="{style.reqsBlock}">
+			<g:FlowPanel ui:field="reqsPanel" />
+		</g:ScrollPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 
