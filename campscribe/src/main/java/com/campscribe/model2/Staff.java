@@ -1,4 +1,4 @@
-package com.campscribe.model;
+package com.campscribe.model2;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import javax.persistence.Id;
 @Entity
 public class Staff {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String userId;

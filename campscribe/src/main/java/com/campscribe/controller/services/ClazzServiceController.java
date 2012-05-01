@@ -28,7 +28,7 @@ public class ClazzServiceController {
 		Clazz c = new Clazz(clazzDTO.getDescription(), clazzDTO.getMbId());
 		c.setStaffId(clazzDTO.getStaffId());
 		
-		eventMgr.addClazz(id, c);
+//		eventMgr.addClazz(id, c);
 		return clazzDTO;
 	}
 

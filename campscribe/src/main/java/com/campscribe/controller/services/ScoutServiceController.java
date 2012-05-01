@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ScoutManager;
-import com.campscribe.model.Scout;
+import com.campscribe.model2.Scout;
 import com.campscribe.shared.ScoutDTO;
 
 @Controller

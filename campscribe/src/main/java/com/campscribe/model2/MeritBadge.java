@@ -8,7 +8,7 @@ public class MeritBadge {
 	
 	@Id
 	private Long id;
-    private String bsaAdvancementId;
+	private String bsaAdvancementId;
 	private String badgeName;
 	private Boolean eagleRequired = Boolean.FALSE;
 	
@@ -22,14 +22,15 @@ public class MeritBadge {
 		this.eagleRequired = eagleRequired==null?Boolean.FALSE:eagleRequired;
 	}
 	
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
-    public String getBsaAdvancementId() {
+	public String getBsaAdvancementId() {
 		return bsaAdvancementId;
 	}
 

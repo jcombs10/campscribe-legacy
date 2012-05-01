@@ -16,8 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
-import com.campscribe.model.MeritBadge;
-import com.campscribe.model.Staff;
+import com.campscribe.model2.MeritBadge;
+import com.campscribe.model2.Staff;
 
 @Controller
 public class EventController {
