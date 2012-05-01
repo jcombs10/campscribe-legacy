@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.StaffManager;
-import com.campscribe.model.Staff;
+import com.campscribe.model2.Staff;
 import com.campscribe.shared.StaffDTO;
 
 @Controller

@@ -11,7 +11,7 @@
 	</tr>
 	<c:forEach var="event" items="${events}">
 		<tr>
-			<td><a href="viewEvent.cs?id=${event.id.id}"><c:out value="${event.description}" /></a></td>
+			<td><a href="viewEvent.cs?id=${event.id}"><c:out value="${event.description}" /></a></td>
 			<td><c:out value="${event.startDateDisplayStr}" /></td>
 			<td><c:out value="${event.endDateDisplayStr}" /></td>
 			<td><a href="deleteEvent.cs?id=${event.id}"><img

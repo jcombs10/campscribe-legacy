@@ -1,30 +1,24 @@
-package com.campscribe.model;
+package com.campscribe.model2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Parent;
 
 @Entity
 public class Clazz {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Key id;
+    private Long id;
 	private String description;
 
     private Long staffId;
 	private Long mbId;
-    @ManyToOne(fetch=FetchType.LAZY)
-//    private Event event;
+    @Parent
+    private Key<Event> event;
     
     private List<Long> scoutIds = new ArrayList<Long>();
 
@@ -36,11 +30,11 @@ public class Clazz {
 		this.mbId = mbId;
 	}
 	
-	public Key getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Key id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -84,9 +78,9 @@ public class Clazz {
 		this.scoutIds = scoutIds;
 	}
 
-	@Transient
-	public String getEncodedKey() {
-		return KeyFactory.keyToString(id);
-	}
-
+//	@Transient
+//	public String getEncodedKey() {
+//		return KeyFactory.keyToString(id);
+//	}
+//
 }

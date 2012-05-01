@@ -1,67 +1,58 @@
 package com.campscribe.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
-import com.campscribe.model.Staff;
+import com.campscribe.model2.Staff;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Query;
 
 public enum StaffDao {
 	INSTANCE;
 	
-	public List<Staff> listStaff() {
-		EntityManager em = EMFService.get().createEntityManager();
-		
-		//Read the existing entries
-		Query q = em.createQuery("select s from Staff s order by s.name desc");
-		List<Staff> staffList = q.getResultList();
-		return staffList;
-	}
-	
 	public void add(Staff s) {
 		synchronized(this) {
-			EntityManager em = EMFService.get().createEntityManager();
-			em.persist(s);
-			em.close();
+			Objectify ofy = ObjectifyService.begin();
+			ofy.put(s);
 		}
 	}
 
 	public Staff get(long id) {
-		EntityManager em = EMFService.get().createEntityManager();
-		try {
-			Staff s = em.find(Staff.class, id);
-			s.getRoles();
-			return s;
-		} finally {
-			em.close();
-		}
+		Objectify ofy = ObjectifyService.begin();
+		Staff s = ofy.get(Staff.class, id);
+		return s;
 	}
 
 	public Staff getByUserName(String userName) {
-		EntityManager em = EMFService.get().createEntityManager();
-		try {
-			Query q = em.createQuery("select s from Staff s where s.userId = :userId");
-			q.setParameter("userId", userName);
-			Staff s = (Staff) q.getSingleResult();
-			s.getRoles();
-			return s;
-		} catch (NoResultException NRE) {
-			return null;
-		} finally {
-			em.close();
-		}
+		Objectify ofy = ObjectifyService.begin();
+		Staff s = ofy.query(Staff.class).filter("userId", userName).get();
+		return s;
 	}
 
+	public List<Staff> listStaff() {
+//TODO - sorting
+		Objectify ofy = ObjectifyService.begin();
+		Query<Staff> q = ofy.query(Staff.class);
+		List<Staff> allStaff = new ArrayList<Staff>();
+		for (Staff s: q) {
+			allStaff.add(s);
+		}
+		return allStaff;
+	}
+	
 	public void remove(long id) {
-			EntityManager em = EMFService.get().createEntityManager();
-			try {
-				Staff s = em.find(Staff.class, id);
-				em.remove(s);
-			} finally {
-				em.close();
-			}
+		Objectify ofy = ObjectifyService.begin();
+		Key<Staff> s = new Key<Staff>(Staff.class, id);
+		ofy.delete(s);
+	}
+
+	public void update(Staff s) {
+		synchronized(this) {
+			Objectify ofy = ObjectifyService.begin();
+			ofy.put(s);
+		}
 	}
 
 }

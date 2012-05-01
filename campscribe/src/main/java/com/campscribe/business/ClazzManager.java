@@ -3,7 +3,7 @@ package com.campscribe.business;
 import java.util.List;
 
 import com.campscribe.dao.ClazzDao;
-import com.campscribe.model.Clazz;
+import com.campscribe.model2.Clazz;
 
 public class ClazzManager {
 	

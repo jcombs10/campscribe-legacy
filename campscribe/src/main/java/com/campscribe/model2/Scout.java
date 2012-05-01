@@ -1,20 +1,21 @@
-package com.campscribe.model;
+package com.campscribe.model2;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Scout {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String firstName;
 	private String lastName;
 	private String rank;
 	private String unitType;
 	private String unitNumber;
+	
+	public Scout() {
+	}
 	
 	public Scout(String firstName, String lastName, String rank, String unitType, String unitNumber) {
 		this.firstName = firstName;
@@ -72,6 +73,7 @@ public class Scout {
 		this.unitNumber = unitNumber;
 	}
 
+	@Transient
 	public String getDisplayName() {
 		return firstName + " " + lastName;
 	}

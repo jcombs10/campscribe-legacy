@@ -1,36 +1,27 @@
-package com.campscribe.model;
+package com.campscribe.model2;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-
 @Entity
 public class Event {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Key id;
+    private Long id;
     private String description;
 	private Date startDate;
 	private Date endDate;
+//	private ArrayList<Key<Clazz>> clazzes = new ArrayList<Key<Clazz>>();
 	
-	@OneToMany(mappedBy="event", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	private List<Clazz> clazzes = new ArrayList<Clazz>();
-	
+	@Transient
 	private FastDateFormat formatter = null;
+	
+	public Event() {
+	}
 	
 	public Event(String description, Date startDate, Date endDate) {
 		this.description = description;
@@ -40,11 +31,11 @@ public class Event {
 		this.formatter = FastDateFormat.getInstance("MM/dd/yyyy");
 	}
 	
-	public Key getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Key id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -90,24 +81,24 @@ public class Event {
 		return formatter;
 	}
 
-	public List<Clazz> getClazzes() {
-		return clazzes;
-	}
-
-	public void setClazzes(List<Clazz> clazzes) {
-		this.clazzes = clazzes;
-	}
-
-	public void addClazz(Clazz c) {
-		if (clazzes == null) {
-			clazzes = new ArrayList<Clazz>();
-		}
-		clazzes.add(c);
-	}
-
-	@Transient
-	public String getEncodedKey() {
-		return KeyFactory.keyToString(id);
-	}
-
+//	public ArrayList<Key<Clazz>> getClazzes() {
+//		return clazzes;
+//	}
+//
+//	public void setClazzes(ArrayList<Key<Clazz>> clazzes) {
+//		this.clazzes = clazzes;
+//	}
+//
+//	public void addClazz(Key<Clazz> c) {
+//		if (clazzes == null) {
+//			clazzes = new ArrayList<Key<Clazz>>();
+//		}
+//		clazzes.add(c);
+//	}
+//
+//	@Transient
+//	public String getEncodedKey() {
+//		return KeyFactory.keyToString(id);
+//	}
+//
 }

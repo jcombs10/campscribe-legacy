@@ -3,7 +3,7 @@
 <div id="clazzGWTBlock" />
 <p>
 <script type="text/javascript">
-    var eventId = "<c:out value="${event.id.id}"/>";
+    var eventId = "<c:out value="${event.id}"/>";
 </script>
 <h2>
 	<c:out value="${event.description}" />

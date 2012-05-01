@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.campscribe.model.Clazz;
+import com.campscribe.model2.Clazz;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -38,7 +38,7 @@ public enum ClazzDao {
 			Key k = KeyFactory.stringToKey(id);
 			Clazz c = em.find(Clazz.class, k);
 			//need to call size() to force lazy loading of the scoutIds list
-			c.getEvent();
+//			c.getEvent();
 			c.getScoutIds().size();
 	        em.getTransaction().commit();
 			return c;
@@ -66,7 +66,7 @@ public enum ClazzDao {
 			Key k = KeyFactory.stringToKey(clazzId);
 			Clazz c = em.find(Clazz.class, k);
 			//need to call size() to force lazy loading of the scoutIds list
-			c.getEvent();
+//			c.getEvent();
 			c.getScoutIds().size();
 			//weird - the list actually contains Integer references!
 			Iterator iter = scoutList.iterator();
