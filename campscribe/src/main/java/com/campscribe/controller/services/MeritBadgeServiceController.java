@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.MeritBadgeManager;
-import com.campscribe.model.MeritBadge;
+import com.campscribe.model2.MeritBadge;
 import com.campscribe.shared.MeritBadgeDTO;
-import com.google.appengine.api.datastore.Text;
 
 @Controller
 public class MeritBadgeServiceController {

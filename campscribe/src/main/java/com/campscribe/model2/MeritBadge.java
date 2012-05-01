@@ -1,23 +1,21 @@
-package com.campscribe.model;
+package com.campscribe.model2;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import com.google.appengine.api.datastore.Blob;
 
 @Entity
 public class MeritBadge {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
     private String bsaAdvancementId;
 	private String badgeName;
 	private Boolean eagleRequired = Boolean.FALSE;
 	
-	private Blob requirementsStr;
+	private String requirementsStr;
+	
+	public MeritBadge() {
+	}
 	
 	public MeritBadge(String badgeName, Boolean eagleRequired) {
 		this.badgeName = badgeName;
@@ -59,11 +57,11 @@ public class MeritBadge {
 	}
 
 	public String getRequirementsStr() {
-		return new String(requirementsStr.getBytes());
+		return requirementsStr;
 	}
 
 	public void setRequirementsStr(String requirementsStr) {
-		this.requirementsStr = new Blob(requirementsStr.getBytes());
+		this.requirementsStr = requirementsStr;
 	}
 
 }
