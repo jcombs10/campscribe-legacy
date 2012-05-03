@@ -32,9 +32,8 @@ public enum StaffDao {
 	}
 
 	public List<Staff> listStaff() {
-//TODO - sorting
 		Objectify ofy = ObjectifyService.begin();
-		Query<Staff> q = ofy.query(Staff.class);
+		Query<Staff> q = ofy.query(Staff.class).order("userId");
 		List<Staff> allStaff = new ArrayList<Staff>();
 		for (Staff s: q) {
 			allStaff.add(s);

@@ -26,9 +26,8 @@ public enum MeritBadgeDao {
 	}
 
 	public List<MeritBadge> listMeritBadges() {
-//TODO - sorting
 		Objectify ofy = ObjectifyService.begin();
-		Query<MeritBadge> q = ofy.query(MeritBadge.class);
+		Query<MeritBadge> q = ofy.query(MeritBadge.class).order("badgeName");
 		List<MeritBadge> allBadges = new ArrayList<MeritBadge>();
 		for (MeritBadge mb: q) {
 			allBadges.add(mb);

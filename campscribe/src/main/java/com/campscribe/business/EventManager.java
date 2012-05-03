@@ -5,7 +5,7 @@ package com.campscribe.business;
 import com.campscribe.dao.EventDao;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
-import com.campscribe.model2.Staff;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
 public class EventManager {
@@ -15,6 +15,7 @@ public class EventManager {
 	public void addEvent(Event e) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
@@ -24,6 +25,7 @@ public class EventManager {
 	public void deleteEvent(long id) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
@@ -33,6 +35,7 @@ public class EventManager {
 	public Event getEvent(long id) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
@@ -42,6 +45,7 @@ public class EventManager {
 	public List<Event> listEvents() {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
@@ -51,15 +55,31 @@ public class EventManager {
 	public void updateEvent(Event e) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
 		EventDao.INSTANCE.add(e);
 	}
 
-//	public void addClazz(Long id, Clazz c) {
-//		EventDao.INSTANCE.addClazz(id, c);
-//		
-//	}
-//
+	public void addClazz(Long id, Clazz c) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		EventDao.INSTANCE.addClazz(id, c);
+	}
+
+	public List<Clazz> getClazzes(List<Key<Clazz>> clazzKeys) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.getClazzes(clazzKeys);
+	}
+
 }

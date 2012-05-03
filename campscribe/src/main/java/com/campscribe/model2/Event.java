@@ -1,12 +1,16 @@
 package com.campscribe.model2;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.time.FastDateFormat;
+
+import com.googlecode.objectify.Key;
 
 @Entity
 public class Event {
@@ -15,7 +19,7 @@ public class Event {
     private String description;
 	private Date startDate;
 	private Date endDate;
-//	private ArrayList<Key<Clazz>> clazzes = new ArrayList<Key<Clazz>>();
+	private List<Key<Clazz>> clazzes = new ArrayList<Key<Clazz>>();
 	
 	@Transient
 	private FastDateFormat formatter = null;
@@ -63,6 +67,14 @@ public class Event {
 		this.endDate = endDate;
 	}
 
+	public List<Key<Clazz>> getClazzes() {
+		return clazzes;
+	}
+
+	public void setClazzes(List<Key<Clazz>> clazzes) {
+		this.clazzes = clazzes;
+	}
+
 	@Transient
 	public String getStartDateDisplayStr() {
 		return startDate==null?"":getFormatter().format(startDate);
@@ -81,21 +93,6 @@ public class Event {
 		return formatter;
 	}
 
-//	public ArrayList<Key<Clazz>> getClazzes() {
-//		return clazzes;
-//	}
-//
-//	public void setClazzes(ArrayList<Key<Clazz>> clazzes) {
-//		this.clazzes = clazzes;
-//	}
-//
-//	public void addClazz(Key<Clazz> c) {
-//		if (clazzes == null) {
-//			clazzes = new ArrayList<Key<Clazz>>();
-//		}
-//		clazzes.add(c);
-//	}
-//
 //	@Transient
 //	public String getEncodedKey() {
 //		return KeyFactory.keyToString(id);

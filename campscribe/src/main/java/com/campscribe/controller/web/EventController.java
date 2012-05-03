@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
+import com.campscribe.model2.Event;
 import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
 
@@ -60,7 +61,9 @@ public class EventController {
 	        logger.info("Returning event view");
 
 	        ModelAndView mav = new ModelAndView("viewEvent.jsp");
-	        mav.addObject("event", getEventManager().getEvent(eventId));
+	        Event e = getEventManager().getEvent(eventId);
+	        mav.addObject("event", e);
+	        mav.addObject("clazzes", getEventManager().getClazzes(e.getClazzes()));
 	        mav.addObject("mbLookup", getMbNameLookup());
 	        mav.addObject("staffLookup", getStaffLookup());
 	        

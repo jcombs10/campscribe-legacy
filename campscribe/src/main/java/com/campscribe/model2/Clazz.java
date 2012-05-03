@@ -54,14 +54,6 @@ public class Clazz {
 		this.mbId = mbId;
 	}
 
-//	public Event getEvent() {
-//		return event;
-//	}
-//
-//	public void setEvent(Event event) {
-//		this.event = event;
-//	}
-//
     public Long getStaffId() {
 		return staffId;
 	}
@@ -76,6 +68,14 @@ public class Clazz {
 
 	public void setScoutIds(List<Long> scoutIds) {
 		this.scoutIds = scoutIds;
+	}
+
+	public Key<Event> getEvent() {
+		return event;
+	}
+
+	public void setEvent(Key<Event> event) {
+		this.event = event;
 	}
 
 //	@Transient
