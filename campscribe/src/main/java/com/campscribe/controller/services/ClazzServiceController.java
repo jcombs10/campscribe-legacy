@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
-import com.campscribe.model.Clazz;
+import com.campscribe.model2.Clazz;
 import com.campscribe.shared.ClazzDTO;
 
 @Controller
@@ -28,7 +28,7 @@ public class ClazzServiceController {
 		Clazz c = new Clazz(clazzDTO.getDescription(), clazzDTO.getMbId());
 		c.setStaffId(clazzDTO.getStaffId());
 		
-//		eventMgr.addClazz(id, c);
+		eventMgr.addClazz(id, c);
 		return clazzDTO;
 	}
 

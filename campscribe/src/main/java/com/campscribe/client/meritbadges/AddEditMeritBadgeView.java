@@ -268,8 +268,9 @@ public class AddEditMeritBadgeView extends Composite implements CampScribeBodyWi
 			});
 			
 			if (req != null && RequirementDTO.N_OF_M.equals(req.getReqType())) {
+				int j = 0;
 				for (RequirementDTO subReq:req.getSubRequirements()) {
-					RequirementLineItem subRli = new RequirementLineItem(i, RequirementLineItem.this.level+1, subReq);
+					RequirementLineItem subRli = new RequirementLineItem(j++, RequirementLineItem.this.level+1, subReq);
 					subReqPanel.add(subRli);
 					subReqSelectList.add(subRli);
 				}

@@ -17,7 +17,7 @@ public enum ScoutDao {
 	public List<Scout> listScouts(String name, String unitType, String unitNumber) {
 		//TODO - sorting
 		Objectify ofy = ObjectifyService.begin();
-		Query<Scout> q = ofy.query(Scout.class);
+		Query<Scout> q = ofy.query(Scout.class).order("lastName").order("firstName");
 		if (StringUtils.isNotEmpty(name)) {
 			q = q.filter("lastName >=", name).filter("lastName <", "u’"+name+"’ + u’\ufffd’");
 		}
