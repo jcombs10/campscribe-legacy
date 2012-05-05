@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.MeritBadge;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -26,6 +27,12 @@ public enum EventDao {
 	public Event get(long id) {
 		Objectify ofy = ObjectifyService.begin();
 		Event e = ofy.get(Event.class, id);
+		return e;
+	}
+
+	public Event get(String eventName) {
+		Objectify ofy = ObjectifyService.begin();
+		Event e = ofy.query(Event.class).filter("description", eventName).get();
 		return e;
 	}
 
@@ -65,7 +72,6 @@ public enum EventDao {
 		
 		e.getClazzes().add(cKey);
 		ofy.put(e);
-		
 	}
 
 	public void deleteClazz(Long id) {
@@ -83,6 +89,14 @@ public enum EventDao {
 		
 		ofy.delete(c);
 		
+	}
+
+	public Clazz getClazz(Event e, String clazzDescription, Long mbId) {
+		Objectify ofy = ObjectifyService.begin();
+
+		Clazz c = ofy.query(Clazz.class).filter("description", clazzDescription).filter("mbId", mbId).ancestor(e).get();
+		
+		return c;
 	}
 
 	public List<Clazz> getClazzes(List<Key<Clazz>> clazzKeys) {

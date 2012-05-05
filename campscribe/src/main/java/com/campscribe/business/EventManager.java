@@ -12,6 +12,14 @@ public class EventManager {
 	
 	private static boolean registered = false;
 
+	public static boolean isRegistered() {
+		return registered;
+	}
+
+	public static void setRegistered(boolean registered) {
+		EventManager.registered = registered;
+	}
+
 	public void addEvent(Event e) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
@@ -42,6 +50,16 @@ public class EventManager {
 		return EventDao.INSTANCE.get(id);
 	}
 
+	public Event getEvent(String eventName) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.get(eventName);
+	}
+
 	public List<Event> listEvents() {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
@@ -70,6 +88,16 @@ public class EventManager {
 		}
 
 		EventDao.INSTANCE.addClazz(id, c);
+	}
+
+	public Clazz getClazz(Event e, String clazzDescription, Long mbId) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.getClazz(e, clazzDescription, mbId);
 	}
 
 	public void deleteClazz(Long id) {

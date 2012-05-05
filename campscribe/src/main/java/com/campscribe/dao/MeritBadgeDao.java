@@ -25,6 +25,12 @@ public enum MeritBadgeDao {
 		return mb;
 	}
 
+	public MeritBadge get(String badgeName) {
+		Objectify ofy = ObjectifyService.begin();
+		MeritBadge mb = ofy.query(MeritBadge.class).filter("badgeName", badgeName).get();
+		return mb;
+	}
+
 	public List<MeritBadge> listMeritBadges() {
 		Objectify ofy = ObjectifyService.begin();
 		Query<MeritBadge> q = ofy.query(MeritBadge.class).order("badgeName");
