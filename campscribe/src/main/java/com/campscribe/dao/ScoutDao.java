@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.campscribe.model2.Scout;
+import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -15,7 +16,6 @@ public enum ScoutDao {
 	INSTANCE;
 	
 	public List<Scout> listScouts(String name, String unitType, String unitNumber) {
-		//TODO - sorting
 		Objectify ofy = ObjectifyService.begin();
 		Query<Scout> q = ofy.query(Scout.class).order("lastName").order("firstName");
 		if (StringUtils.isNotEmpty(name)) {
@@ -51,6 +51,13 @@ public enum ScoutDao {
 		Objectify ofy = ObjectifyService.begin();
 		Key<Scout> s = new Key<Scout>(Scout.class, id);
 		ofy.delete(s);
+	}
+
+	public Scout get(String firstName, String lastName, String unitType,
+			String unitNumber) {
+		Objectify ofy = ObjectifyService.begin();
+		Scout s = ofy.query(Scout.class).filter("firstName", firstName).filter("lastName", lastName).filter("unitType", unitType).filter("unitNumber", unitNumber).get();
+		return s;
 	}
 
 }

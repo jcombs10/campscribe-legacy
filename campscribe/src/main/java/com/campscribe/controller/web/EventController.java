@@ -70,6 +70,25 @@ public class EventController {
 	        return mav;
 	    }
 
+	@RequestMapping("/deleteClazz.cs")
+	public ModelAndView deleteClazz(@RequestParam("id") long id)
+	            throws ServletException, IOException {
+
+	        logger.info("Returning clazzes view");
+
+	        long eventId = getEventManager().getEventForClazz(id).getId();
+	        getEventManager().deleteClazz(id);
+	        
+	        ModelAndView mav = new ModelAndView("viewEvent.jsp");
+	        Event e = getEventManager().getEvent(eventId);
+	        mav.addObject("event", e);
+	        mav.addObject("clazzes", getEventManager().getClazzes(e.getClazzes()));
+	        mav.addObject("mbLookup", getMbNameLookup());
+	        mav.addObject("staffLookup", getStaffLookup());
+	        
+	        return mav;
+	    }
+
 	private Map<Long, MeritBadge> getMbNameLookup() {
 		Map<Long, MeritBadge> mbLookup = new HashMap<Long, MeritBadge>();
 		for(MeritBadge mb:getMeritBadgeManager().listMeritBadges()) {

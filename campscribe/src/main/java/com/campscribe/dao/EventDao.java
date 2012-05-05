@@ -1,6 +1,8 @@
 package com.campscribe.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +29,15 @@ public enum EventDao {
 		return e;
 	}
 
-	public List<Event> listEvents() {
-		//TODO - sorting
+	public Clazz getClazz(long id) {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Event> q = ofy.query(Event.class);
+		Clazz c = ofy.get(Clazz.class, id);
+		return c;
+	}
+
+	public List<Event> listEvents() {
+		Objectify ofy = ObjectifyService.begin();
+		Query<Event> q = ofy.query(Event.class).order("startDate");
 		List<Event> allEvents = new ArrayList<Event>();
 		for (Event e: q) {
 			allEvents.add(e);
@@ -61,15 +68,52 @@ public enum EventDao {
 		
 	}
 
+	public void deleteClazz(Long id) {
+		Objectify ofy = ObjectifyService.begin();
+		Clazz c = getClazz(id);
+
+		if (c == null) {
+			throw new RuntimeException("Clazz " + id + " not found!");
+		}
+		
+		Key<Event> eKey = c.getEvent();
+		Event e = ofy.get(eKey);
+		e.getClazzes().remove(new Key<Clazz>(Clazz.class, id));
+		ofy.put(e);
+		
+		ofy.delete(c);
+		
+	}
+
 	public List<Clazz> getClazzes(List<Key<Clazz>> clazzKeys) {
-		//TODO - sorting
 		Objectify ofy = ObjectifyService.begin();
 		Map<Key<Clazz>, Clazz> clazzMap = ofy.get(clazzKeys);
 		List<Clazz> allClazzes = new ArrayList<Clazz>();
 		for (Clazz c: clazzMap.values()) {
 			allClazzes.add(c);
 		}
+		Collections.sort(allClazzes, new Comparator<Clazz>() {
+
+			@Override
+			public int compare(Clazz o1, Clazz o2) {
+				return o1.getDescription().compareToIgnoreCase(o2.getDescription());
+			}
+			
+		});
 		return allClazzes;
+	}
+
+	public Event getEventForClazz(long id) {
+		Objectify ofy = ObjectifyService.begin();
+		Clazz c = getClazz(id);
+
+		if (c == null) {
+			throw new RuntimeException("Clazz " + id + " not found!");
+		}
+		
+		Key<Event> eKey = c.getEvent();
+		Event e = ofy.get(eKey);
+		return e;
 	}
 
 }

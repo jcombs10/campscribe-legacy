@@ -8,5 +8,7 @@
 <a href="scouts.cs">Scouts</a>
 <br />
 <a href="staff.cs">Staff</a>
+<hr>
+<a href="upload.cs">Upload</a>
 </body>
 </html>

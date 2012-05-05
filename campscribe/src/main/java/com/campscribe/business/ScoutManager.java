@@ -37,6 +37,15 @@ public class ScoutManager {
 		return ScoutDao.INSTANCE.get(id);
 	}
 
+	public Scout getScout(String firstName, String lastName, String unitType, String unitNumber) {
+		if (!registered) {
+			ObjectifyService.register(Scout.class);
+			registered = true;
+		}
+
+		return ScoutDao.INSTANCE.get(firstName, lastName, unitType, unitNumber);
+	}
+
 	public List<Scout> listScouts() {
 		if (!registered) {
 			ObjectifyService.register(Scout.class);
