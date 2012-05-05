@@ -3,8 +3,8 @@
 <div id="scoutClazzGWTBlock" />
 <p>
 <script type="text/javascript">
-    var clazzId = "<c:out value="${clazz.encodedKey}"/>";
-    var eventId = "<c:out value="${clazz.event.encodedKey}"/>";
+    var clazzId = "<c:out value="${clazz.id}"/>";
+    var eventId = "<c:out value="${clazz.event.id}"/>";
 </script>
 <h2>
 	<c:out value="${clazz.description}" />
@@ -26,7 +26,7 @@
         <td><c:out value="${scoutLookup[scout].rank}" /></td>
         <td><c:out value="${scoutLookup[scout].unitType}" /> <c:out
                         value="${scoutLookup[scout].unitNumber}" /></td>
-        <td><a href="deleteScoutClazz.cs?clazzId=${clazz.id.id}&scoutId=${scout}"><img
+        <td><a href="deleteScoutClazz.cs?clazzId=${clazz.id}&scoutId=${scout}"><img
                         src="images/16x16/delete.png" alt="Delete"></a></td>
       </tr>
     </c:forEach>

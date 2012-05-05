@@ -21,7 +21,7 @@
 	</tr>
 	<c:forEach var="clazz" items="${clazzes}">
 		<tr>
-			<td><a href="viewClazz.cs?id=${clazz.id}"><c:out value="${clazz.description}" /></a></td>
+			<td><a href="viewClazz.cs?eventId=${event.id}&clazzId=${clazz.id}"><c:out value="${clazz.description}" /></a></td>
             <td><c:out value="${mbLookup[clazz.mbId].badgeName}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
             <td><a href="#" onclick="ClazzGWT.trackProgress('<c:out value="${clazz.id}"/>');" >Report Progress</a></td>

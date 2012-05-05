@@ -37,6 +37,15 @@ public class MeritBadgeManager {
 		return MeritBadgeDao.INSTANCE.get(id);
 	}
 
+	public MeritBadge getMeritBadge(String badgeName) {
+		if (!registered) {
+			ObjectifyService.register(MeritBadge.class);
+			registered = true;
+		}
+
+		return MeritBadgeDao.INSTANCE.get(badgeName);
+	}
+
 	public List<MeritBadge> listMeritBadges() {
 		if (!registered) {
 			ObjectifyService.register(MeritBadge.class);

@@ -1,84 +1,64 @@
 package com.campscribe.dao;
 
+ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import com.campscribe.model2.Clazz;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.campscribe.model2.Event;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Query;
 
 public enum ClazzDao {
 	INSTANCE;
 
-	public List<Clazz> listClazzes() {
-		EntityManager em = EMFService.get().createEntityManager();
-
-		//Read the existing entries
-		Query q = em.createQuery("select c from Clazz c order by c.description");
-		List<Clazz> clazzes = q.getResultList();
-		return clazzes;
-	}
-
 	public void add(Clazz c) {
 		synchronized(this) {
-			EntityManager em = EMFService.get().createEntityManager();
-			em.persist(c);
-			em.close();
+			Objectify ofy = ObjectifyService.begin();
+			ofy.put(c);
 		}
 	}
 
-	public Clazz get(String id) {
-		EntityManager em = EMFService.get().createEntityManager();
+	public Clazz get(long eventId, long clazzId) {
+		Objectify ofy = ObjectifyService.begin();
+		Key<Event> owner = new Key<Event>(Event.class, eventId);
+		Clazz c = ofy.get(new Key<Clazz>(owner, Clazz.class, clazzId));
+		return c;
+	}
 
-		em.getTransaction().begin();
-		try {
-			Key k = KeyFactory.stringToKey(id);
-			Clazz c = em.find(Clazz.class, k);
-			//need to call size() to force lazy loading of the scoutIds list
-//			c.getEvent();
-			c.getScoutIds().size();
-	        em.getTransaction().commit();
-			return c;
-		} finally {
-	        if (em.getTransaction().isActive()) {
-	            em.getTransaction().rollback();
-	        }
-			em.close();
+	public List<Clazz> listClazzes() {
+		Objectify ofy = ObjectifyService.begin();
+		Query<Clazz> q = ofy.query(Clazz.class).order("description");
+		List<Clazz> allClazzes = new ArrayList<Clazz>();
+		for (Clazz c: q) {
+			allClazzes.add(c);
 		}
+		return allClazzes;
 	}
 
 	public void remove(long id) {
-		EntityManager em = EMFService.get().createEntityManager();
-		try {
-			Clazz c = em.find(Clazz.class, id);
-			em.remove(c);
-		} finally {
-			em.close();
-		}
+		Objectify ofy = ObjectifyService.begin();
+		Key<Clazz> e = new Key<Clazz>(Clazz.class, id);
+		ofy.delete(e);
 	}
 
-	public void addScoutsToClazz(String clazzId, List<Long> scoutList) {
-		EntityManager em = EMFService.get().createEntityManager();
-		try {
-			Key k = KeyFactory.stringToKey(clazzId);
-			Clazz c = em.find(Clazz.class, k);
-			//need to call size() to force lazy loading of the scoutIds list
-//			c.getEvent();
-			c.getScoutIds().size();
-			//weird - the list actually contains Integer references!
-			Iterator iter = scoutList.iterator();
-			while (iter.hasNext()) {
-				Integer i = (Integer) iter.next();
-				if (!c.getScoutIds().contains(i)) {
-					c.getScoutIds().add(i.longValue());
-				}
-			}
-		} finally {
-			em.close();
+	public void addScoutsToClazz(long eventId, long clazzId, List<Long> scoutList) {
+		Objectify ofy = ObjectifyService.begin();
+		Clazz c = get(eventId, clazzId);
+
+		if (c == null) {
+			throw new RuntimeException("Clazz " + clazzId + " not found!");
 		}
+		
+		for (Long scoutId:scoutList) {
+			if (!c.getScoutIds().contains(scoutId)) {
+				c.getScoutIds().add(scoutId);
+			}
+		}
+		
+		ofy.put(c);
 	}
 
 }

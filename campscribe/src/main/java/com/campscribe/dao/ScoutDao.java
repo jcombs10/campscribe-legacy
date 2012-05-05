@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.campscribe.model2.Scout;
-import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -47,17 +46,17 @@ public enum ScoutDao {
 		return s;
 	}
 
-	public void remove(long id) {
-		Objectify ofy = ObjectifyService.begin();
-		Key<Scout> s = new Key<Scout>(Scout.class, id);
-		ofy.delete(s);
-	}
-
 	public Scout get(String firstName, String lastName, String unitType,
 			String unitNumber) {
 		Objectify ofy = ObjectifyService.begin();
 		Scout s = ofy.query(Scout.class).filter("firstName", firstName).filter("lastName", lastName).filter("unitType", unitType).filter("unitNumber", unitNumber).get();
 		return s;
+	}
+
+	public void remove(long id) {
+		Objectify ofy = ObjectifyService.begin();
+		Key<Scout> s = new Key<Scout>(Scout.class, id);
+		ofy.delete(s);
 	}
 
 }
