@@ -17,6 +17,7 @@ import com.campscribe.business.ClazzManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
+import com.campscribe.model2.Event;
 import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Scout;
 import com.campscribe.model2.Staff;
@@ -29,21 +30,6 @@ public class ClazzController {
 	private MeritBadgeManager mbMgr;
 	private StaffManager staffMgr;
 	private ScoutManager scoutMgr;
-
-	@RequestMapping("/deleteClazz.cs")
-	public ModelAndView deleteClazz(@RequestParam("id") long id)
-	            throws ServletException, IOException {
-
-	        logger.info("Returning clazzes view");
-
-	        getClazzManager().deleteClazz(id);
-	        
-	        ModelAndView mav = new ModelAndView("clazzes.jsp");
-	        mav.addObject("clazzes", getClazzManager().listClazzes());
-	        mav.addObject("meritBadges", getMeritBadgeManager().listMeritBadges());
-	        
-	        return mav;
-	    }
 
 	@RequestMapping("/viewClazz.cs")
 	public ModelAndView viewClazz(@RequestParam("id") String clazzId)

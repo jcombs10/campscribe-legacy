@@ -72,6 +72,16 @@ public class EventManager {
 		EventDao.INSTANCE.addClazz(id, c);
 	}
 
+	public void deleteClazz(Long id) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		EventDao.INSTANCE.deleteClazz(id);
+	}
+
 	public List<Clazz> getClazzes(List<Key<Clazz>> clazzKeys) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
@@ -80,6 +90,16 @@ public class EventManager {
 		}
 
 		return EventDao.INSTANCE.getClazzes(clazzKeys);
+	}
+
+	public Event getEventForClazz(long id) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.getEventForClazz(id);
 	}
 
 }
