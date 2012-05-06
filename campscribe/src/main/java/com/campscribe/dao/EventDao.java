@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -17,10 +16,10 @@ import com.googlecode.objectify.Query;
 public enum EventDao {
 	INSTANCE;
 
-	public void add(Event e) {
+	public Key<Event> add(Event e) {
 		synchronized(this) {
 			Objectify ofy = ObjectifyService.begin();
-			ofy.put(e);
+			return ofy.put(e);
 		}
 	}
 
@@ -58,7 +57,7 @@ public enum EventDao {
 		ofy.delete(e);
 	}
 
-	public void addClazz(Long id, Clazz c) {
+	public Key<Clazz> addClazz(Long id, Clazz c) {
 		Objectify ofy = ObjectifyService.begin();
 		Event e = get(id);
 
@@ -72,6 +71,7 @@ public enum EventDao {
 		
 		e.getClazzes().add(cKey);
 		ofy.put(e);
+		return cKey;
 	}
 
 	public void deleteClazz(Long id) {
@@ -91,7 +91,7 @@ public enum EventDao {
 		
 	}
 
-	public Clazz getClazz(Event e, String clazzDescription, Long mbId) {
+	public Clazz getClazz(Key<Event> e, String clazzDescription, Long mbId) {
 		Objectify ofy = ObjectifyService.begin();
 
 		Clazz c = ofy.query(Clazz.class).filter("description", clazzDescription).filter("mbId", mbId).ancestor(e).get();

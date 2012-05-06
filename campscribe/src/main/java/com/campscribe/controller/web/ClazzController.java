@@ -17,9 +17,12 @@ import com.campscribe.business.ClazzManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
+import com.campscribe.client.Event;
+import com.campscribe.model2.Clazz;
 import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Scout;
 import com.campscribe.model2.Staff;
+import com.googlecode.objectify.Key;
 
 @Controller
 public class ClazzController {
@@ -37,7 +40,9 @@ public class ClazzController {
 	        logger.info("Returning clazz view");
 
 	        ModelAndView mav = new ModelAndView("viewClazz.jsp");
-	        mav.addObject("clazz", getClazzManager().getClazz(eventId, clazzId));
+	        Key<Event> eKey = new Key<Event>(Event.class, eventId);
+	        Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
+	        mav.addObject("clazz", getClazzManager().getClazz(cKey));
 	        mav.addObject("scoutLookup", getScoutLookup());
 	        mav.addObject("staffLookup", getStaffLookup());
 	        mav.addObject("mbLookup", getMbLookup());
