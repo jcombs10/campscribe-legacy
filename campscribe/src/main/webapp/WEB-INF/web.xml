@@ -25,6 +25,11 @@
     </filter-mapping>
     
     <servlet>
+        <servlet-name>ProcessDoubleknotServlet</servlet-name>
+        <servlet-class>com.campscribe.backend.ProcessDoubleknotServlet</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>services</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -35,6 +40,11 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ProcessDoubleknotServlet</servlet-name>
+        <url-pattern>/processDoubleknot</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>services</servlet-name>

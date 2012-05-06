@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.model2.Clazz;
+import com.campscribe.model2.Event;
 import com.campscribe.shared.ClazzDTO;
+import com.googlecode.objectify.Key;
 
 @Controller
 public class ClazzServiceController {
@@ -36,7 +38,9 @@ public class ClazzServiceController {
 	public @ResponseBody void addScoutToClazz(@PathVariable String eventId, @PathVariable String clazzId, @RequestBody List<Long> scoutList) {
 		System.err.println("addScoutToClazz called");
 
-		clazzMgr.addScoutsToClazz(clazzId, scoutList);
+		Key<Event> eKey = new Key<Event>(Event.class, eventId);
+		Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
+		clazzMgr.addScoutsToClazz(cKey, scoutList);
 	}
 
 }

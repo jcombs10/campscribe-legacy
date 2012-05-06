@@ -11,9 +11,10 @@
     <http use-expressions="true">
         <intercept-url pattern="/favicon.ico" access="permitAll" />
         <intercept-url pattern="/" access="permitAll" />
+        <intercept-url pattern="/processDoubleknot/**" access="permitAll" />
         <intercept-url pattern="/service/**" access="permitAll" />
         <intercept-url pattern="/index.jsp" access="permitAll" />
-        <intercept-url pattern="/_ah/**" access="isAuthenticated()" />
+        <intercept-url pattern="/_ah/**" access="permitAll" />
         <intercept-url pattern="/*.cs" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="denyAll" />
         <form-login />
