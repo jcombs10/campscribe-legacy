@@ -110,6 +110,10 @@ public enum EventDao {
 
 			@Override
 			public int compare(Clazz o1, Clazz o2) {
+				if (o1.getDescription().equals(o2.getDescription())) {
+					//TODO - need to actually use badgeName as a tie breaker
+					return o1.getMbId().compareTo(o2.getMbId());
+				}
 				return o1.getDescription().compareToIgnoreCase(o2.getDescription());
 			}
 			
