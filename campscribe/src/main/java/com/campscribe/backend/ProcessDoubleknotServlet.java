@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,64 +51,148 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 
 		String csvString = req.getParameter("csv");
 
+		//first pass - look for scouts to add
 		CSVReader reader = new CSVReader(new StringReader(csvString));
-		String [] nextLine;
-		Key<Scout> lastScout = null;
-		Key<Event> lastEvent = null;
+		String [] nextLine = {};
+		Map<String, Key<Scout>> scoutIdMap = new HashMap<String, Key<Scout>>(); 
 		while ((nextLine = reader.readNext()) != null) {
-			log.info("processing line " + Arrays.toString(nextLine));
+			log.info("processing line looking for scouts" + Arrays.toString(nextLine));
 			//header or blank line found, skip to the next line
 			if (nextLine.length==0) {
 				log.warning("skipping blank line");
 				continue;
 			} else if ("Group (Registration)".equals(nextLine[0])) {
-				log.info("skipping header line");
+				log.fine("skipping header line");
 				continue;
-			}
-
-			Key<Scout> s = processScout(nextLine);
-			if (s == null) {
-				log.warning("could not find or create scout " + nextLine[1] + " " + nextLine[2]);
-				continue;
-			} else {
-				Key<Event> e = lastEvent;
-				if (lastScout==null || s.getId()!=lastScout.getId()) {
-					log.info("detected change of scout, checking for new event");
-					e = processEvent(nextLine[3], nextLine[5], nextLine[6]);
-				} else {
-					log.info("same scout as last line, checking for new clazz");
-					if (e == null) {
-						log.warning("could not find or create event " + nextLine[3]);
-						continue;
+			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
+				//every scout has a line with the camp address so we don't really need to look at other lines...
+				String[] unitFields = nextLine[0].split("[ (]");
+				String unitType = unitFields[0];
+				String unitNumber = unitFields[1];
+				String lastName = nextLine[1];
+				String firstName = nextLine[2];
+				
+				String keyStr = firstName+","+lastName+","+unitType+","+unitNumber;
+				
+				if (!scoutIdMap.containsKey(keyStr)) {
+					Key<Scout> s = processScout(firstName, lastName, unitType, unitNumber);
+					if (s == null) {
+						log.warning("could not find or create scout " + nextLine[1] + " " + nextLine[2]);
 					} else {
-						Key<Clazz> c = processClazz(e, nextLine[3]);
-						if (c == null) {
-							log.warning("could not find or create clazz " + nextLine[3]);
-							continue;
-						} else {
-							List<Long> scoutList = new ArrayList<Long>();
-							scoutList.add(s.getId());
-							clazzManager.addScoutsToClazz(c, scoutList);
-							log.info("added scout " + s.getId() + " to clazz " + c.getId());
-						}
+						scoutIdMap.put(keyStr, s);
 					}
+				} else {
+					log.fine("same scout as previous line " + nextLine[1] + " " + nextLine[2]);
 				}
-
-				lastScout = s;
-				lastEvent = e;
 			}
 
 		}
+		
+		//second pass - look for events to add
+		reader = new CSVReader(new StringReader(csvString));
+		Map<String, Key<Event>> eventIdMap = new HashMap<String, Key<Event>>(); 
+		while ((nextLine = reader.readNext()) != null) {
+			log.info("processing line looking for events" + Arrays.toString(nextLine));
+			//header or blank line found, skip to the next line
+			if (nextLine.length==0) {
+				log.warning("skipping blank line");
+				continue;
+			} else if ("Group (Registration)".equals(nextLine[0])) {
+				log.fine("skipping header line");
+				continue;
+			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
+				//every event has a line with the camp address so we don't really need to look at other lines...
+				if (!eventIdMap.containsKey(nextLine[3])) {
+					Key<Event> e = processEvent(nextLine[3], nextLine[5], nextLine[6]);
+					if (e == null) {
+						log.warning("could not find or create event " + nextLine[3]);
+					} else {
+						eventIdMap.put(nextLine[3], e);
+					}
+				} else {
+					log.fine("same event as previous line " + nextLine[3]);
+				}
+			}
+		}
 
+		//third pass - look for clazzes to add.  need to be aware of which event they go to
+		reader = new CSVReader(new StringReader(csvString));
+		Map<String, Key<Clazz>> clazzIdMap = new HashMap<String, Key<Clazz>>();
+		Key<Event> lastEventSeen = null;
+		while ((nextLine = reader.readNext()) != null) {
+			log.info("processing line looking for clazzes" + Arrays.toString(nextLine));
+			//header or blank line found, skip to the next line
+			if (nextLine.length==0) {
+				log.warning("skipping blank line");
+				continue;
+			} else if ("Group (Registration)".equals(nextLine[0])) {
+				log.fine("skipping header line");
+				continue;
+			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
+				lastEventSeen = eventIdMap.get(nextLine[3]);
+			} else if (nextLine.length>=5 && !nextLine[4].startsWith("581 Ibold Rd")) {
+				//handle some weirdness in the data coming from doubleknot
+				String eventDesc = nextLine[3].replace(" (Pool)", "").replace("0 - ", "0-").replace("0- ", "0-");
+				String clazzKeyStr = lastEventSeen.toString() + "," + eventDesc;
+				
+				if (!clazzIdMap.containsKey(clazzKeyStr)) {
+					Key<Clazz> c = processClazz(lastEventSeen, eventDesc);
+					if (c == null) {
+						log.warning("could not find or create clazz " + eventDesc);
+					} else {
+						clazzIdMap.put(clazzKeyStr, c);
+					}
+				} else {
+					log.fine("same clazz as previous line " + eventDesc);
+				}
+			}
+		}
+		
+		//fourth pass - look for scouts to add to clazzes.  need to be aware of which event they go to
+		reader = new CSVReader(new StringReader(csvString));
+		while ((nextLine = reader.readNext()) != null) {
+			log.info("processing line looking for scouts to add to clazzes" + Arrays.toString(nextLine));
+			//header or blank line found, skip to the next line
+			if (nextLine.length==0) {
+				log.warning("skipping blank line");
+				continue;
+			} else if ("Group (Registration)".equals(nextLine[0])) {
+				log.fine("skipping header line");
+				continue;
+			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
+				lastEventSeen = eventIdMap.get(nextLine[3]);
+			} else if (nextLine.length>=5 && !nextLine[4].startsWith("581 Ibold Rd")) {
+				String[] unitFields = nextLine[0].split("[ (]");
+				String unitType = unitFields[0];
+				String unitNumber = unitFields[1];
+				String lastName = nextLine[1];
+				String firstName = nextLine[2];
+				
+				String scoutKeyStr = firstName+","+lastName+","+unitType+","+unitNumber;
+
+				//handle some weirdness in the data coming from doubleknot
+				String eventDesc = nextLine[3].replace(" (Pool)", "").replace("0 - ", "0-").replace("0- ", "0-");
+				String clazzKeyStr = lastEventSeen.toString() + "," + eventDesc;
+				
+				if (clazzIdMap.containsKey(clazzKeyStr) && scoutIdMap.containsKey(scoutKeyStr)) {
+					Key<Clazz> c = clazzIdMap.get(clazzKeyStr);
+					Key<Scout> s = scoutIdMap.get(scoutKeyStr);
+
+					List<Long> scoutList = new ArrayList<Long>();
+					scoutList.add(s.getId());
+					clazzManager.addScoutsToClazz(c, scoutList);
+					log.info("added scout " + s.getId() + " to clazz " + c.getId());
+				} else {
+					log.warning("couldn't find clazz " + clazzKeyStr + " or scout " + scoutKeyStr + " in map ");
+				}
+			}
+		}
+		
 		log.severe("finished backend processing");
+		
 	}
 
-	private Key<Scout> processScout(String[] nextLine) {
-		String[] unitFields = nextLine[0].split("[ (]");
-		String unitType = unitFields[0];
-		String unitNumber = unitFields[1];
-		String lastName = nextLine[1];
-		String firstName = nextLine[2];
+	private Key<Scout> processScout(String firstName, String lastName, String unitType, String unitNumber) {
 		Scout aScout = scoutManager.getScout(firstName, lastName, unitType, unitNumber);
 		Key<Scout> sKey = null;
 
