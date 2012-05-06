@@ -4,19 +4,20 @@ import java.util.List;
 
 import com.campscribe.dao.ScoutDao;
 import com.campscribe.model2.Scout;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
 public class ScoutManager {
 	
 	private static boolean registered = false;
 
-	public void addScout(Scout s) {
+	public Key<Scout> addScout(Scout s) {
 		if (!registered) {
 			ObjectifyService.register(Scout.class);
 			registered = true;
 		}
 
-		ScoutDao.INSTANCE.add(s);
+		return ScoutDao.INSTANCE.add(s);
 	}
 
 	public void deleteScout(long id) {

@@ -33,10 +33,10 @@ public enum ScoutDao {
 		return allScouts;
 	}
 	
-	public void add(Scout s) {
+	public Key<Scout> add(Scout s) {
 		synchronized(this) {
 			Objectify ofy = ObjectifyService.begin();
-			ofy.put(s);
+			return ofy.put(s);
 		}
 	}
 

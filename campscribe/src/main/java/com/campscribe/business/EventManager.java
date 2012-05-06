@@ -20,14 +20,14 @@ public class EventManager {
 		EventManager.registered = registered;
 	}
 
-	public void addEvent(Event e) {
+	public Key<Event> addEvent(Event e) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
-		EventDao.INSTANCE.add(e);
+		return EventDao.INSTANCE.add(e);
 	}
 
 	public void deleteEvent(long id) {
@@ -80,17 +80,17 @@ public class EventManager {
 		EventDao.INSTANCE.add(e);
 	}
 
-	public void addClazz(Long id, Clazz c) {
+	public Key<Clazz> addClazz(Long id, Clazz c) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
 			registered = true;
 		}
 
-		EventDao.INSTANCE.addClazz(id, c);
+		return EventDao.INSTANCE.addClazz(id, c);
 	}
 
-	public Clazz getClazz(Event e, String clazzDescription, Long mbId) {
+	public Clazz getClazz(Key<Event> e, String clazzDescription, Long mbId) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);

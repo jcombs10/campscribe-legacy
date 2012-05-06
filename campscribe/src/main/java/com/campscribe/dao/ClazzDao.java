@@ -1,11 +1,9 @@
 package com.campscribe.dao;
 
  import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.campscribe.model2.Clazz;
-import com.campscribe.model2.Event;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -21,10 +19,9 @@ public enum ClazzDao {
 		}
 	}
 
-	public Clazz get(long eventId, long clazzId) {
+	public Clazz get(Key<Clazz> clazzKey) {
 		Objectify ofy = ObjectifyService.begin();
-		Key<Event> owner = new Key<Event>(Event.class, eventId);
-		Clazz c = ofy.get(new Key<Clazz>(owner, Clazz.class, clazzId));
+		Clazz c = ofy.get(clazzKey);
 		return c;
 	}
 
@@ -44,12 +41,12 @@ public enum ClazzDao {
 		ofy.delete(e);
 	}
 
-	public void addScoutsToClazz(long eventId, long clazzId, List<Long> scoutList) {
+	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Long> scoutList) {
 		Objectify ofy = ObjectifyService.begin();
-		Clazz c = get(eventId, clazzId);
+		Clazz c = get(clazzKey);
 
 		if (c == null) {
-			throw new RuntimeException("Clazz " + clazzId + " not found!");
+			throw new RuntimeException("Clazz " + clazzKey.getId() + " not found!");
 		}
 		
 		for (Long scoutId:scoutList) {
