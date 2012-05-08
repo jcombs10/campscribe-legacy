@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.googlecode.objectify.annotation.Cached;
+
+@Cached
 @Entity
 public class Scout {
 	@Id

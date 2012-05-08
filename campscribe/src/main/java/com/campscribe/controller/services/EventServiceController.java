@@ -34,14 +34,19 @@ public class EventServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/events/{id}",headers="Accept=application/json")
-	public @ResponseBody Event getEvent(@PathVariable long id) {
-		return eventMgr.getEvent(id);
+	public @ResponseBody EventDTO getEvent(@PathVariable long id) {
+		Event e = eventMgr.getEvent(id);
+		EventDTO dto = new EventDTO(e.getDescription(), e.getStartDate(), e.getEndDate());
+		dto.setId(e.getId());
+		return dto;
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/events/{id}",headers="Accept=application/json")
-	public @ResponseBody Event updateEvent(@PathVariable long id, @RequestBody Event e) {
+	public @ResponseBody EventDTO updateEvent(@PathVariable long id, @RequestBody Event e) {
 		eventMgr.updateEvent(e);
-		return e;
+		EventDTO dto = new EventDTO(e.getDescription(), e.getStartDate(), e.getEndDate());
+		dto.setId(e.getId());
+		return dto;
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value = "/events/{id}",headers="Accept=application/json")

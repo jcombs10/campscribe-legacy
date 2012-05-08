@@ -52,6 +52,54 @@ public class EventServiceJSONImpl implements EventService {
 
 	}
 
+	@Override
+	public void getEvent(String id, RequestCallback cb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(cb);
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void updateEvent(EventDTO e) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.PUT, "/service/events/"+e.getId());
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+//		Window.alert("sending  Event" + buildJSON(e));
+		rb.setRequestData(buildJSON(e));
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+
+	}
+
 	private String buildJSON(EventDTO e) {
 		StringBuilder sb = new StringBuilder("{ \"id\":\"");
 		sb.append(e.getId());

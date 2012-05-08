@@ -10,8 +10,8 @@
         <th>User Id</th>
         <th>Roles</th>
         <th>Program Area</th>
-        <th></th>
-        <th></th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
     <c:forEach var="staffMember" items="${staff}">
       <tr>
