@@ -29,7 +29,8 @@ public class Event implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+		addGWTActionTriggers(this);
+
 		final Button addButton = new Button("Add");
 
 		// We can add style names to widgets
@@ -54,4 +55,19 @@ public class Event implements EntryPoint {
 			}
 		});
 	}
+
+	private native void addGWTActionTriggers(Event module)/*-{
+        $wnd.EventGWT = {
+            editEvent: function(id) {
+                module.@com.campscribe.client.Event::editEvent(Ljava/lang/String;)(id);
+            }
+        };
+    }-*/;
+
+	public void editEvent(String id) {
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Event", new AddEditEventView(id));
+		dialogBox.setAnimationEnabled(true);
+		dialogBox.center();
+	}
+
 }

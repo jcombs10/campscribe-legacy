@@ -3,6 +3,9 @@ package com.campscribe.model2;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.googlecode.objectify.annotation.Cached;
+
+@Cached
 @Entity
 public class MeritBadge {
 	

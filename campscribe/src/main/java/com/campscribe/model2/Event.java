@@ -11,7 +11,9 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Cached;
 
+@Cached
 @Entity
 public class Event {
     @Id

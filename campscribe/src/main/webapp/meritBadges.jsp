@@ -7,8 +7,8 @@
 		<th></th>
 		<th>Merit Badge</th>
 		<th>BSA Advancement ID</th>
-		<th></th>
-		<th></th>
+		<th>Edit</th>
+		<th>Delete</th>
 	</tr>
 	<c:forEach var="meritBadge" items="${meritBadges}">
 		<tr>

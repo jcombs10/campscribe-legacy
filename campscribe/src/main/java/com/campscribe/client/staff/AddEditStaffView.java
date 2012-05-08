@@ -124,11 +124,11 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 		if (campAdmin.getValue()) {
 			roles.add("camp_admin");
 		}
-		StaffDTO e = new StaffDTO(name.getText(), userId.getText(), password.getText(), roles, programArea.getValue(programArea.getSelectedIndex()));
+		StaffDTO s = new StaffDTO(name.getText(), userId.getText(), password.getText(), roles, programArea.getValue(programArea.getSelectedIndex()));
 		if (id != null) {
-			e.setId(id);
+			s.setId(id);
 		}
-		return e;
+		return s;
 	}
 
 	@Override
