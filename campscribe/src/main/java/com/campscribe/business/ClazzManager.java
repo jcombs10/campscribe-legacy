@@ -5,6 +5,7 @@ import java.util.List;
 import com.campscribe.dao.ClazzDao;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.Scout;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -50,7 +51,7 @@ public class ClazzManager {
 		return ClazzDao.INSTANCE.listClazzes();
 	}
 
-	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Long> scoutList) {
+	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Key<Scout>> scoutList) {
 		if (!EventManager.isRegistered()) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);

@@ -19,6 +19,7 @@ import com.campscribe.business.StaffManager;
 import com.campscribe.model2.Event;
 import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
+import com.googlecode.objectify.Key;
 
 @Controller
 public class EventController {
@@ -89,18 +90,18 @@ public class EventController {
 	        return mav;
 	    }
 
-	private Map<Long, MeritBadge> getMbNameLookup() {
-		Map<Long, MeritBadge> mbLookup = new HashMap<Long, MeritBadge>();
+	private Map<Key<MeritBadge>, MeritBadge> getMbNameLookup() {
+		Map<Key<MeritBadge>, MeritBadge> mbLookup = new HashMap<Key<MeritBadge>, MeritBadge>();
 		for(MeritBadge mb:getMeritBadgeManager().listMeritBadges()) {
-			mbLookup.put(mb.getId(), mb);
+			mbLookup.put(new Key<MeritBadge>(MeritBadge.class, mb.getId()), mb);
 		}
 		return mbLookup;
 	}
 
-	private Map<Long, Staff> getStaffLookup() {
-		Map<Long, Staff> staffLookup = new HashMap<Long, Staff>();
+	private Map<Key<Staff>, Staff> getStaffLookup() {
+		Map<Key<Staff>, Staff> staffLookup = new HashMap<Key<Staff>, Staff>();
 		for(Staff s:getStaffManager().listStaff()) {
-			staffLookup.put(s.getId(), s);
+			staffLookup.put(new Key<Staff>(Staff.class, s.getId()), s);
 		}
 		return staffLookup;
 	}

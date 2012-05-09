@@ -4,6 +4,7 @@ package com.campscribe.dao;
 import java.util.List;
 
 import com.campscribe.model2.Clazz;
+import com.campscribe.model2.Scout;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -41,7 +42,7 @@ public enum ClazzDao {
 		ofy.delete(e);
 	}
 
-	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Long> scoutList) {
+	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Key<Scout>> scoutList) {
 		Objectify ofy = ObjectifyService.begin();
 		Clazz c = get(clazzKey);
 
@@ -49,7 +50,7 @@ public enum ClazzDao {
 			throw new RuntimeException("Clazz " + clazzKey.getId() + " not found!");
 		}
 		
-		for (Long scoutId:scoutList) {
+		for (Key<Scout> scoutId:scoutList) {
 			if (!c.getScoutIds().contains(scoutId)) {
 				c.getScoutIds().add(scoutId);
 			}

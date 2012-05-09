@@ -1,7 +1,11 @@
 package com.campscribe.controller.web;
 
-import java.io.IOException;
+ import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -35,27 +39,42 @@ public class ClazzController {
 
 	@RequestMapping("/viewClazz.cs")
 	public ModelAndView viewClazz(@RequestParam("eventId") long eventId, @RequestParam("clazzId") long clazzId)
-	            throws ServletException, IOException {
+			throws ServletException, IOException {
 
-	        logger.info("Returning clazz view");
+		logger.info("Returning clazz view");
 
-	        ModelAndView mav = new ModelAndView("viewClazz.jsp");
-	        Key<Event> eKey = new Key<Event>(Event.class, eventId);
-	        Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
-	        mav.addObject("clazz", getClazzManager().getClazz(cKey));
-	        mav.addObject("scoutLookup", getScoutLookup());
-	        mav.addObject("staffLookup", getStaffLookup());
-	        mav.addObject("mbLookup", getMbLookup());
-	        
-	        return mav;
-	    }
+		ModelAndView mav = new ModelAndView("viewClazz.jsp");
+		Key<Event> eKey = new Key<Event>(Event.class, eventId);
+		Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
+		Clazz c = getClazzManager().getClazz(cKey);
+		Map<Key<Scout>, Scout> scoutLookup = getScoutManager().getScouts(c.getScoutIds());
 
-	private Map<Long, Scout> getScoutLookup() {
-		Map<Long, Scout> scoutLookup = new HashMap<Long, Scout>();
-		for(Scout s:getScoutManager().listScouts()) {
-			scoutLookup.put(s.getId(), s);
-		}
-		return scoutLookup;
+		List<Scout> scoutList = new ArrayList<Scout>(scoutLookup.values());
+		Collections.sort(scoutList, new Comparator<Scout>() {
+
+			@Override
+			public int compare(Scout o1, Scout o2) {
+				if (o1.getLastName().equalsIgnoreCase(o2.getLastName())) {
+					if (o1.getFirstName().equalsIgnoreCase(o2.getFirstName())) {
+						if (o1.getUnitType().equalsIgnoreCase(o2.getUnitType())) {
+							return o1.getUnitNumber().compareToIgnoreCase(o2.getUnitNumber());
+						}
+						return o1.getUnitType().compareToIgnoreCase(o2.getUnitType());
+					}
+					return o1.getFirstName().compareToIgnoreCase(o2.getFirstName());
+				}
+				return o1.getLastName().compareToIgnoreCase(o2.getLastName());
+			}
+
+		});
+
+
+		mav.addObject("clazz", getClazzManager().getClazz(cKey));
+		mav.addObject("scouts", scoutList);
+		mav.addObject("staffLookup", getStaffLookup());
+		mav.addObject("mbLookup", getMbLookup());
+
+		return mav;
 	}
 
 	private Map<Long, Staff> getStaffLookup() {

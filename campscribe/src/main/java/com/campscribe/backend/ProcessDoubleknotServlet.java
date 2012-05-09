@@ -25,11 +25,12 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
+import com.campscribe.business.MeritBadgeMetadataManager;
 import com.campscribe.business.ScoutManager;
-import com.campscribe.controller.web.UploadController;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
 import com.campscribe.model2.MeritBadge;
+import com.campscribe.model2.MeritBadgeMetadata;
 import com.campscribe.model2.Scout;
 import com.googlecode.objectify.Key;
 
@@ -37,12 +38,14 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 3262454164072964415L;
 
-	private static final Logger log = Logger.getLogger(UploadController.class.getName());
+	private static final Logger log = Logger.getLogger(ProcessDoubleknotServlet.class.getName());
 
 	private ScoutManager scoutManager = new ScoutManager();
 	private EventManager eventManager = new EventManager();
 	private ClazzManager clazzManager = new ClazzManager();
 	private MeritBadgeManager mbManager = new MeritBadgeManager();
+	private MeritBadgeMetadataManager meritBadgeMetadataManager = new MeritBadgeMetadataManager();
+	private Map<Key<MeritBadge>, MeritBadgeMetadata> mbMdMap;
 	private String[] datePattern = {"MM/dd/yyyy"};
 
 	@Override
@@ -119,6 +122,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 		reader = new CSVReader(new StringReader(csvString));
 		Map<String, Key<Clazz>> clazzIdMap = new HashMap<String, Key<Clazz>>();
 		Key<Event> lastEventSeen = null;
+		mbMdMap = meritBadgeMetadataManager.getAll();
 		while ((nextLine = reader.readNext()) != null) {
 			log.info("processing line looking for clazzes" + Arrays.toString(nextLine));
 			//header or blank line found, skip to the next line
@@ -178,8 +182,8 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 					Key<Clazz> c = clazzIdMap.get(clazzKeyStr);
 					Key<Scout> s = scoutIdMap.get(scoutKeyStr);
 
-					List<Long> scoutList = new ArrayList<Long>();
-					scoutList.add(s.getId());
+					List<Key<Scout>> scoutList = new ArrayList<Key<Scout>>();
+					scoutList.add(new Key<Scout>(Scout.class, s.getId()));
 					clazzManager.addScoutsToClazz(c, scoutList);
 					log.info("added scout " + s.getId() + " to clazz " + c.getId());
 				} else {
@@ -260,7 +264,10 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 			} else {
 				aClazz = eventManager.getClazz(e, clazzDescription, mb.getId());
 				if (aClazz == null) {
-					Clazz newClazz = new Clazz(clazzDescription, mb.getId());
+					Clazz newClazz = new Clazz(clazzDescription, new Key<MeritBadge>(MeritBadge.class, mb.getId()));
+					newClazz.setMbName(mbName);
+					newClazz.setProgramArea(mbMdMap.get(new Key<MeritBadge>(MeritBadge.class, mb.getId())).getProgramArea());
+					newClazz.setStaffId(mbMdMap.get(new Key<MeritBadge>(MeritBadge.class, mb.getId())).getStaffKey());
 					returnKey = eventManager.addClazz(e.getId(), newClazz);
 					log.info("clazz created with id " + returnKey.getId());
 				} else {

@@ -1,6 +1,7 @@
 package com.campscribe.business;
 
 import java.util.List;
+import java.util.Map;
 
 import com.campscribe.dao.ScoutDao;
 import com.campscribe.model2.Scout;
@@ -72,6 +73,15 @@ public class ScoutManager {
 		}
 
 		ScoutDao.INSTANCE.add(e);
+	}
+
+	public Map<Key<Scout>, Scout> getScouts(List<Key<Scout>> scoutIds) {
+		if (!registered) {
+			ObjectifyService.register(Scout.class);
+			registered = true;
+		}
+
+		return ScoutDao.INSTANCE.getScouts(scoutIds);
 	}
 
 }

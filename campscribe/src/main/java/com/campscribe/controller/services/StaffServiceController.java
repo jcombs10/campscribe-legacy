@@ -20,18 +20,18 @@ public class StaffServiceController {
 //	@Autowired
 	StaffManager staffMgr = new StaffManager();
 
-	@RequestMapping(method=RequestMethod.GET, value = "/staff/",headers="Accept=application/json")
-	public @ResponseBody List<Staff> getAllStaff() {
-		List<Staff> staff = staffMgr.listStaff();
-		return staff;
-	}
-
 	@RequestMapping(method=RequestMethod.POST, value = "/staff/",headers="Accept=application/json")
 	public @ResponseBody Staff addStaff(@RequestBody StaffDTO staffDTO) {
 		System.err.println("addStaff called");
 		Staff e = new Staff(staffDTO.getName(), staffDTO.getUserId(), staffDTO.getPassword(), staffDTO.getRoles(), staffDTO.getProgramArea());
 		staffMgr.addStaff(e);
 		return e;
+	}
+
+	@RequestMapping(method=RequestMethod.GET, value = "/staff/",headers="Accept=application/json")
+	public @ResponseBody List<Staff> getAllStaff() {
+		List<Staff> staff = staffMgr.listStaff();
+		return staff;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/staff/{id}",headers="Accept=application/json")
