@@ -2,6 +2,7 @@ package com.campscribe.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,6 +58,11 @@ public enum ScoutDao {
 		Objectify ofy = ObjectifyService.begin();
 		Key<Scout> s = new Key<Scout>(Scout.class, id);
 		ofy.delete(s);
+	}
+
+	public Map<Key<Scout>, Scout> getScouts(List<Key<Scout>> scoutIds) {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.get(scoutIds);
 	}
 
 }

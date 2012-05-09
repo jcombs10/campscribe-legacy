@@ -30,6 +30,11 @@
     </servlet>
 
     <servlet>
+        <servlet-name>SetupMeritBadgeMetadataServlet</servlet-name>
+        <servlet-class>com.campscribe.backend.SetupMeritBadgeMetadataServlet</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>services</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -44,6 +49,11 @@
     <servlet-mapping>
         <servlet-name>ProcessDoubleknotServlet</servlet-name>
         <url-pattern>/processDoubleknot</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SetupMeritBadgeMetadataServlet</servlet-name>
+        <url-pattern>/setupMeritBadgeMetadata</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

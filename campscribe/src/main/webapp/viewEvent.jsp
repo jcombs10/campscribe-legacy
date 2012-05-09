@@ -16,8 +16,8 @@
 		<th>Description</th>
         <th>Merit Badge</th>
         <th>Taught By</th>
-        <th></th>
-        <th></th>
+        <th>Report Progress</th>
+        <th>Delete</th>
 	</tr>
 	<c:forEach var="clazz" items="${clazzes}">
 		<tr>

@@ -16,18 +16,19 @@ public class Clazz {
     @Id
     private Long id;
 	private String description;
-
-    private Long staffId;
-	private Long mbId;
+	private String programArea;
+    private Key<Staff> staffId;
+	private Key<MeritBadge> mbId;
+	private String mbName;
     @Parent
     private Key<Event> event;
     
-    private List<Long> scoutIds = new ArrayList<Long>();
+    private List<Key<Scout>> scoutIds = new ArrayList<Key<Scout>>();
 
 	public Clazz() {
 	}
 	
-	public Clazz(String description, Long mbId) {
+	public Clazz(String description, Key<MeritBadge> mbId) {
 		this.description = description;
 		this.mbId = mbId;
 	}
@@ -48,27 +49,27 @@ public class Clazz {
 		this.description = description;
 	}
 
-	public Long getMbId() {
+	public Key<MeritBadge> getMbId() {
 		return mbId;
 	}
 
-	public void setMbId(Long mbId) {
+	public void setMbId(Key<MeritBadge> mbId) {
 		this.mbId = mbId;
 	}
 
-    public Long getStaffId() {
+    public Key<Staff> getStaffId() {
 		return staffId;
 	}
 
-	public void setStaffId(Long staffId) {
+	public void setStaffId(Key<Staff> staffId) {
 		this.staffId = staffId;
 	}
 
-	public List<Long> getScoutIds() {
+	public List<Key<Scout>> getScoutIds() {
 		return scoutIds;
 	}
 
-	public void setScoutIds(List<Long> scoutIds) {
+	public void setScoutIds(List<Key<Scout>> scoutIds) {
 		this.scoutIds = scoutIds;
 	}
 
@@ -80,9 +81,20 @@ public class Clazz {
 		this.event = event;
 	}
 
-//	@Transient
-//	public String getEncodedKey() {
-//		return KeyFactory.keyToString(id);
-//	}
-//
+	public String getMbName() {
+		return mbName;
+	}
+
+	public void setMbName(String mbName) {
+		this.mbName = mbName;
+	}
+
+	public String getProgramArea() {
+		return programArea;
+	}
+
+	public void setProgramArea(String programArea) {
+		this.programArea = programArea;
+	}
+
 }

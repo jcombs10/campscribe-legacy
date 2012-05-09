@@ -18,15 +18,15 @@
         <th>Name</th>
         <th>Rank</th>
         <th>Unit</th>
-        <th></th>
+        <th>Remove From Class</th>
     </tr>
-    <c:forEach var="scout" items="${clazz.scoutIds}">
+    <c:forEach var="scout" items="${scouts}">
       <tr>
-        <td><c:out value="${scoutLookup[scout].displayName}" /></td>
-        <td><c:out value="${scoutLookup[scout].rank}" /></td>
-        <td><c:out value="${scoutLookup[scout].unitType}" /> <c:out
-                        value="${scoutLookup[scout].unitNumber}" /></td>
-        <td><a href="deleteScoutClazz.cs?clazzId=${clazz.id}&scoutId=${scout}"><img
+        <td><c:out value="${scout.displayName}" /></td>
+        <td><c:out value="${scout.rank}" /></td>
+        <td><c:out value="${scout.unitType}" /> <c:out
+                        value="${scout.unitNumber}" /></td>
+        <td style="text-align:center;"><a href="deleteScoutClazz.cs?clazzId=${clazz.id}&scoutId=${scout}"><img
                         src="images/16x16/delete.png" alt="Delete"></a></td>
       </tr>
     </c:forEach>

@@ -9,7 +9,7 @@
         <th>Name</th>
         <th>Rank</th>
         <th>Unit</th>
-        <th></th>
+        <th>Delete</th>
     </tr>
     <c:forEach var="scout" items="${scouts}">
       <tr>

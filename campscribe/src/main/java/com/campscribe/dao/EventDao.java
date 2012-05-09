@@ -3,6 +3,7 @@ package com.campscribe.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -111,10 +112,23 @@ public enum EventDao {
 			@Override
 			public int compare(Clazz o1, Clazz o2) {
 				if (o1.getDescription().equals(o2.getDescription())) {
-					//TODO - need to actually use badgeName as a tie breaker
-					return o1.getMbId().compareTo(o2.getMbId());
+					return o1.getMbName().compareTo(o2.getMbName());
 				}
-				return o1.getDescription().compareToIgnoreCase(o2.getDescription());
+				Date d1 = new Date();
+				Date d2 = new Date(d1.getTime());
+				String hours1 = o1.getDescription().split(":")[0];
+				String hours2 = o2.getDescription().split(":")[0];
+				int hoursInt1 = Integer.parseInt(hours1);
+				if (hoursInt1 < 9) {
+					hoursInt1 += 12;
+				}
+				int hoursInt2 = Integer.parseInt(hours2);
+				if (hoursInt2 < 9) {
+					hoursInt2 += 12;
+				}
+				d1.setHours(hoursInt1);
+				d2.setHours(hoursInt2);
+				return d1.compareTo(d2);
 			}
 			
 		});
