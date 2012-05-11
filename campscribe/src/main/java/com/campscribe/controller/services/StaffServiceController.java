@@ -21,11 +21,13 @@ public class StaffServiceController {
 	StaffManager staffMgr = new StaffManager();
 
 	@RequestMapping(method=RequestMethod.POST, value = "/staff/",headers="Accept=application/json")
-	public @ResponseBody Staff addStaff(@RequestBody StaffDTO staffDTO) {
+	public @ResponseBody StaffDTO addStaff(@RequestBody StaffDTO staffDTO) {
 		System.err.println("addStaff called");
-		Staff e = new Staff(staffDTO.getName(), staffDTO.getUserId(), staffDTO.getPassword(), staffDTO.getRoles(), staffDTO.getProgramArea());
-		staffMgr.addStaff(e);
-		return e;
+		Staff s = new Staff(staffDTO.getName(), staffDTO.getUserId(), staffDTO.getPassword(), staffDTO.getRoles(), staffDTO.getProgramArea());
+		s.setEmailAddress(staffDTO.getEmailAddress());
+		//TODO - get key
+		staffMgr.addStaff(s);
+		return staffDTO;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value = "/staff/",headers="Accept=application/json")

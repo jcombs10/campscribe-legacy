@@ -1,8 +1,11 @@
 package com.campscribe.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -11,6 +14,10 @@ import com.googlecode.objectify.Query;
 
 public enum StaffDao {
 	INSTANCE;
+	
+	static {
+		ObjectifyService.register(Staff.class);
+	}
 	
 	public void add(Staff s) {
 		synchronized(this) {
@@ -23,6 +30,15 @@ public enum StaffDao {
 		Objectify ofy = ObjectifyService.begin();
 		Staff s = ofy.get(Staff.class, id);
 		return s;
+	}
+
+	public Map<Key<Staff>, Staff> getLookup() {
+		Objectify ofy = ObjectifyService.begin();
+		Map<Key<Staff>, Staff> lookup = new HashMap<Key<Staff>, Staff>();
+		for (Staff s:ofy.query(Staff.class).list()) {
+			lookup.put(new Key<Staff>(Staff.class, s.getId()), s);
+		}
+		return lookup;
 	}
 
 	public Staff getByUserName(String userName) {

@@ -17,7 +17,7 @@
         <td><c:out value="${scout.rank}" /></td>
         <td><c:out value="${scout.unitType}" /> <c:out
 						value="${scout.unitNumber}" /></td>
-        <td><a href="deleteScout.cs?id=${scout.id}"><img
+        <td style="text-align: center;"><a href="deleteScout.cs?id=${scout.id}"><img
 						src="images/16x16/delete.png" alt="Delete"></a></td>
       </tr>
     </c:forEach>

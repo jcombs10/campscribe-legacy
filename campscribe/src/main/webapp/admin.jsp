@@ -3,6 +3,8 @@
 	<a href="meritBadges.cs">Merit Badges</a>
 	<br />
 </sec:authorize>
+<a href="meritBadgeMetadata.cs">Class Defaults</a>
+<br />
 <a href="events.cs">Events</a>
 <br />
 <a href="scouts.cs">Scouts</a>

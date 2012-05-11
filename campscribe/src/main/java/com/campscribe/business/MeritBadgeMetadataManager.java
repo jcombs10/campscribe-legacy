@@ -1,5 +1,6 @@
 package com.campscribe.business;
 
+import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.MeritBadgeMetadataDao;
@@ -19,6 +20,10 @@ public class MeritBadgeMetadataManager {
 
 	public Map<Key<MeritBadge>, MeritBadgeMetadata> getAll() {
 		return MeritBadgeMetadataDao.INSTANCE.getAll();
+	}
+
+	public List<MeritBadgeMetadata> list() {
+		return MeritBadgeMetadataDao.INSTANCE.list();
 	}
 
 }

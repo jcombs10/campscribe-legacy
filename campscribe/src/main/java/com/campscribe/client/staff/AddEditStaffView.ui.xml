@@ -27,6 +27,12 @@
                 </td>
             </tr>
             <tr>
+                <td>Email Address:</td>
+                <td>
+                    <g:TextBox ui:field="emailAddress" />
+                </td>
+            </tr>
+            <tr>
                 <td>Roles:</td>
                 <td>
                     <g:CheckBox ui:field="counselor" text="Counselor"/><br />

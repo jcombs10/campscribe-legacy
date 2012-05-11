@@ -122,6 +122,8 @@ public class StaffServiceJSONImpl implements StaffService {
 		sb.append(s.getUserId());
 		sb.append("\",\"password\":\"");
 		sb.append(s.getPassword());
+		sb.append("\",\"emailAddress\":\"");
+		sb.append(s.getEmailAddress());
 		sb.append("\",\"roles\":[");
 		int i = 0;
 		for (String str:s.getRoles()) {

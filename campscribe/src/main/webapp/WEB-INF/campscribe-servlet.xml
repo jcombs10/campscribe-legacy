@@ -8,7 +8,8 @@
 	<!-- the application context definition for the springapp DispatcherServlet -->
 
 	<bean name="index.cs" class="com.campscribe.controller.web.IndexController" />
-	<bean name="meritBadges.cs" class="com.campscribe.controller.web.MeritBadgeController" />
+    <bean name="meritBadges.cs" class="com.campscribe.controller.web.MeritBadgeController" />
+    <bean name="meritBadgeMetadata.cs" class="com.campscribe.controller.web.MeritBadgeMetadataController" />
 	<bean name="events.cs" class="com.campscribe.controller.web.EventController" />
 	<bean name="scouts.cs" class="com.campscribe.controller.web.ScoutController" />
 	<bean name="clazzes.cs" class="com.campscribe.controller.web.ClazzController" />

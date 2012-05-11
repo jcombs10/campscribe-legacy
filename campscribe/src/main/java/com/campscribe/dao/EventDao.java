@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -107,31 +108,7 @@ public enum EventDao {
 		for (Clazz c: clazzMap.values()) {
 			allClazzes.add(c);
 		}
-		Collections.sort(allClazzes, new Comparator<Clazz>() {
-
-			@Override
-			public int compare(Clazz o1, Clazz o2) {
-				if (o1.getDescription().equals(o2.getDescription())) {
-					return o1.getMbName().compareTo(o2.getMbName());
-				}
-				Date d1 = new Date();
-				Date d2 = new Date(d1.getTime());
-				String hours1 = o1.getDescription().split(":")[0];
-				String hours2 = o2.getDescription().split(":")[0];
-				int hoursInt1 = Integer.parseInt(hours1);
-				if (hoursInt1 < 9) {
-					hoursInt1 += 12;
-				}
-				int hoursInt2 = Integer.parseInt(hours2);
-				if (hoursInt2 < 9) {
-					hoursInt2 += 12;
-				}
-				d1.setHours(hoursInt1);
-				d2.setHours(hoursInt2);
-				return d1.compareTo(d2);
-			}
-			
-		});
+		Collections.sort(allClazzes, new ClazzComparator());
 		return allClazzes;
 	}
 
@@ -146,6 +123,45 @@ public enum EventDao {
 		Key<Event> eKey = c.getEvent();
 		Event e = ofy.get(eKey);
 		return e;
+	}
+
+	public List<Clazz> getClazzesByCounselor(Key<Staff> staffKey) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("staffId", staffKey).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+
+	public List<Clazz> getClazzesByProgramArea(String programArea) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("programArea", programArea).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+	
+	class ClazzComparator implements Comparator<Clazz> {
+
+		@Override
+		public int compare(Clazz o1, Clazz o2) {
+			if (o1.getDescription().equals(o2.getDescription())) {
+				return o1.getMbName().compareTo(o2.getMbName());
+			}
+			Date d1 = new Date();
+			Date d2 = new Date(d1.getTime());
+			String hours1 = o1.getDescription().split(":")[0];
+			String hours2 = o2.getDescription().split(":")[0];
+			int hoursInt1 = Integer.parseInt(hours1);
+			if (hoursInt1 < 9) {
+				hoursInt1 += 12;
+			}
+			int hoursInt2 = Integer.parseInt(hours2);
+			if (hoursInt2 < 9) {
+				hoursInt2 += 12;
+			}
+			d1.setHours(hoursInt1);
+			d2.setHours(hoursInt2);
+			return d1.compareTo(d2);
+		}
 	}
 
 }

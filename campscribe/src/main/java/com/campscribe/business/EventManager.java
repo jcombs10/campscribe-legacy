@@ -5,6 +5,7 @@ package com.campscribe.business;
 import com.campscribe.dao.EventDao;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -128,6 +129,26 @@ public class EventManager {
 		}
 
 		return EventDao.INSTANCE.getEventForClazz(id);
+	}
+
+	public List<Clazz> getClazzesByCounselor(Key<Staff> key) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.getClazzesByCounselor(key);
+	}
+
+	public List<Clazz> getClazzesByProgramArea(String programArea) {
+		if (!registered) {
+			ObjectifyService.register(Event.class);
+			ObjectifyService.register(Clazz.class);
+			registered = true;
+		}
+
+		return EventDao.INSTANCE.getClazzesByProgramArea(programArea);
 	}
 
 }

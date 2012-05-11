@@ -16,7 +16,6 @@
 		<th>Description</th>
         <th>Merit Badge</th>
         <th>Taught By</th>
-        <th>Report Progress</th>
         <th>Delete</th>
 	</tr>
 	<c:forEach var="clazz" items="${clazzes}">
@@ -24,8 +23,7 @@
 			<td><a href="viewClazz.cs?eventId=${event.id}&clazzId=${clazz.id}"><c:out value="${clazz.description}" /></a></td>
             <td><c:out value="${mbLookup[clazz.mbId].badgeName}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
-            <td><a href="#" onclick="ClazzGWT.trackProgress('<c:out value="${clazz.id}"/>');" >Report Progress</a></td>
-			<td><a href="deleteClazz.cs?id=${clazz.id}"><img
+			<td style="text-align: center;"><a href="deleteClazz.cs?id=${clazz.id}"><img
 					src="images/16x16/delete.png" alt="Delete"></a></td>
 		</tr>
 	</c:forEach>

@@ -22,6 +22,12 @@
 				</td>
 			</tr>
             <tr>
+                <td>Program Area:</td>
+                <td>
+                    <g:ListBox ui:field="programArea" />
+                </td>
+            </tr>
+            <tr>
                 <td>Taught By:</td>
                 <td>
                     <g:ListBox ui:field="staff" />

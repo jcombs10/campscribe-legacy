@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.campscribe.client.CampScribeBodyWidget;
+import com.campscribe.shared.ProgramArea;
 import com.campscribe.shared.StaffDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -30,6 +31,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 
 	@UiField TextBox name;
 	@UiField TextBox userId;
+	@UiField TextBox emailAddress;
 	@UiField PasswordTextBox password;
 	@UiField CheckBox counselor;
 	@UiField CheckBox areaDirector;
@@ -51,16 +53,16 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 		initWidget(uiBinder.createAndBindUi(this));
 
 		programArea.addItem("");
-		programArea.addItem(StaffDTO.AQUATICS);
-		programArea.addItem(StaffDTO.COPE_AND_CLIMBING);
-		programArea.addItem(StaffDTO.EAGLE_RIDGE);
-		programArea.addItem(StaffDTO.HANDICRAFT);
-		programArea.addItem(StaffDTO.HANDYMAN);
-		programArea.addItem(StaffDTO.HEALTH_LODGE);
-		programArea.addItem(StaffDTO.NATIVE_AMERICAN_VILLAGE);
-		programArea.addItem(StaffDTO.NEST);
-		programArea.addItem(StaffDTO.OUTDOOR_SKILLS);
-		programArea.addItem(StaffDTO.SHOOTING_SPORTS);
+		programArea.addItem(ProgramArea.AQUATICS);
+		programArea.addItem(ProgramArea.COPE_AND_CLIMBING);
+		programArea.addItem(ProgramArea.EAGLE_RIDGE);
+		programArea.addItem(ProgramArea.HANDICRAFT);
+		programArea.addItem(ProgramArea.HANDYMAN);
+		programArea.addItem(ProgramArea.HEALTH_LODGE);
+		programArea.addItem(ProgramArea.NATIVE_AMERICAN_VILLAGE);
+		programArea.addItem(ProgramArea.NEST);
+		programArea.addItem(ProgramArea.OUTDOOR_SKILLS);
+		programArea.addItem(ProgramArea.SHOOTING_SPORTS);
 	}
 
 	public AddEditStaffView(String id) {
@@ -78,6 +80,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 				name.setText(c.getName());
 				userId.setText(c.getUserId());
 				password.setText(c.getPassword());
+				emailAddress.setText(c.getEmailAddress());
 
 				if (c.getRoles().contains("counselor")) {
 					counselor.setValue(true);
@@ -125,6 +128,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 			roles.add("camp_admin");
 		}
 		StaffDTO s = new StaffDTO(name.getText(), userId.getText(), password.getText(), roles, programArea.getValue(programArea.getSelectedIndex()));
+		s.setEmailAddress(emailAddress.getText());
 		if (id != null) {
 			s.setId(id);
 		}
@@ -139,12 +143,13 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 
 		JSONValue value = JSONParser.parseLenient(json);
 
-		//		Window.alert("Got response: " + json);
+//		Window.alert("Got response: " + json);
 		JSONObject mbObj = value.isObject();
 
 		double id = mbObj.get("id").isNumber().doubleValue();
 		String name = mbObj.get("name").isString().stringValue();
 		String userId = mbObj.get("userId").isString().stringValue();
+		String emailAddressText = mbObj.get("emailAddress").isString().stringValue();
 		String password = mbObj.get("password").isString().stringValue();
 		String programArea = mbObj.get("programArea").isString().stringValue();
 		JSONArray roleArray = mbObj.get("roles").isArray();
@@ -162,6 +167,7 @@ public class AddEditStaffView extends Composite implements CampScribeBodyWidget 
 		staff.setId(d.longValue());
 		staff.setName(name);
 		staff.setUserId(userId);
+		staff.setEmailAddress(emailAddressText);
 		staff.setPassword(password);
 		staff.setProgramArea(programArea);
 		staff.setRoles(roles);
