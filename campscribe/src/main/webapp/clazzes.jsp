@@ -15,7 +15,7 @@
       <tr>
         <td><c:out value="${clazz.description}"/></td>
         <td><c:out value="${clazz.mb.badgeName}"/></td>
-        <td><a href="deleteClazz.cs?id=${clazz.id}"><img src="images/16x16/delete.png" alt="Delete"></a></td>
+        <td style="text-align: center;"><a href="deleteClazz.cs?id=${clazz.id}"><img src="images/16x16/delete.png" alt="Delete"></a></td>
       </tr>
     </c:forEach>
   </table>

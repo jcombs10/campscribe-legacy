@@ -20,7 +20,8 @@ public class Clazz {
     private Key<Staff> staffId;
 	private Key<MeritBadge> mbId;
 	private String mbName;
-    @Parent
+	private String notes;
+	@Parent
     private Key<Event> event;
     
     private List<Key<Scout>> scoutIds = new ArrayList<Key<Scout>>();
@@ -95,6 +96,14 @@ public class Clazz {
 
 	public void setProgramArea(String programArea) {
 		this.programArea = programArea;
+	}
+
+    public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 }

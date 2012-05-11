@@ -257,7 +257,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 			}
 			String mbName = StringUtils.join(mbNameParts, " ");
 			log.info("searching for merit badge " + mbName);
-			MeritBadge mb = mbManager.getMeritBadge(mbName);
+			MeritBadge mb = mbManager.getByBadgeName(mbName);
 
 			if (mb == null) {
 				log.warning("couldn't find merit badge " + mbName);

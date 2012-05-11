@@ -8,6 +8,8 @@ public class ClazzDTO {
     private Long staffId;
 	private Long mbId;
     private Long eventId;
+	private String programArea;
+	private String notes;
 
 	public ClazzDTO() {
 	}
@@ -59,6 +61,22 @@ public class ClazzDTO {
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getProgramArea() {
+		return programArea;
+	}
+
+	public void setProgramArea(String programArea) {
+		this.programArea = programArea;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 }

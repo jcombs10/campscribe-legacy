@@ -17,10 +17,10 @@
 				</c:if></td>
 			<td><c:out value="${meritBadge.badgeName}" /></td>
 			<td><c:out value="${meritBadge.bsaAdvancementId}" /></td>
-			<td><a href="#"
+			<td style="text-align: center;"><a href="#"
 				onclick="MeritBadgeGWT.editMeritBadge('<c:out value="${meritBadge.id}"/>');"><img
 					src="images/16x16/edit.gif" alt="Edit"></a></td>
-			<td><a href="deleteMeritBadge.cs?id=${meritBadge.id}"><img
+			<td style="text-align: center;"><a href="deleteMeritBadge.cs?id=${meritBadge.id}"><img
 					src="images/16x16/delete.png" alt="Delete" title="Delete"></a></td>
 		</tr>
 	</c:forEach>

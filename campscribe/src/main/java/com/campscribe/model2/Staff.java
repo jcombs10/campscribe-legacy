@@ -17,6 +17,7 @@ public class Staff {
 	private String password;
 	private List<String> roles;
 	private String programArea;
+	private String emailAddress;
 	
 	public Staff() {
 	}
@@ -77,6 +78,14 @@ public class Staff {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }

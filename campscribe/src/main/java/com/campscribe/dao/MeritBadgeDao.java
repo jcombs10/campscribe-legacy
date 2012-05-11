@@ -1,16 +1,20 @@
 package com.campscribe.dao;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.campscribe.model2.MeritBadge;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.Query;
 
 public enum MeritBadgeDao {
 	INSTANCE;
+	
+	static {
+		ObjectifyService.register(MeritBadge.class);
+	}
 
 	public void add(MeritBadge mb) {
 		synchronized(this) {
@@ -19,32 +23,36 @@ public enum MeritBadgeDao {
 		}
 	}
 
+	public void delete(long id) {
+		Objectify ofy = ObjectifyService.begin();
+		Key<MeritBadge> mbKey = new Key<MeritBadge>(MeritBadge.class, id);
+		ofy.delete(mbKey);
+	}
+
 	public MeritBadge get(long id) {
 		Objectify ofy = ObjectifyService.begin();
 		MeritBadge mb = ofy.get(MeritBadge.class, id);
 		return mb;
 	}
 
-	public MeritBadge get(String badgeName) {
+	public MeritBadge getByBadgeName(String badgeName) {
 		Objectify ofy = ObjectifyService.begin();
 		MeritBadge mb = ofy.query(MeritBadge.class).filter("badgeName", badgeName).get();
 		return mb;
 	}
 
-	public List<MeritBadge> listMeritBadges() {
+	public Map<Key<MeritBadge>, MeritBadge> getLookup() {
 		Objectify ofy = ObjectifyService.begin();
-		Query<MeritBadge> q = ofy.query(MeritBadge.class).order("badgeName");
-		List<MeritBadge> allBadges = new ArrayList<MeritBadge>();
-		for (MeritBadge mb: q) {
-			allBadges.add(mb);
+		Map<Key<MeritBadge>, MeritBadge> lookup = new HashMap<Key<MeritBadge>, MeritBadge>();
+		for (MeritBadge mb:ofy.query(MeritBadge.class).list()) {
+			lookup.put(new Key<MeritBadge>(MeritBadge.class, mb.getId()), mb);
 		}
-		return allBadges;
+		return lookup;
 	}
 
-	public void remove(long id) {
+	public List<MeritBadge> listMeritBadges() {
 		Objectify ofy = ObjectifyService.begin();
-		Key<MeritBadge> mbKey = new Key<MeritBadge>(MeritBadge.class, id);
-		ofy.delete(mbKey);
+		return ofy.query(MeritBadge.class).order("badgeName").list();
 	}
 
 	public void update(MeritBadge mb) {

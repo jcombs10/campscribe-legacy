@@ -10,6 +10,7 @@ import com.campscribe.client.staff.StaffService;
 import com.campscribe.client.staff.StaffServiceJSONImpl;
 import com.campscribe.shared.ClazzDTO;
 import com.campscribe.shared.MeritBadgeDTO;
+import com.campscribe.shared.ProgramArea;
 import com.campscribe.shared.StaffDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
@@ -32,6 +33,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 	@UiField TextBox description;
 	@UiField ListBox meritBadge;
 	@UiField ListBox staff;
+	@UiField ListBox programArea;
 	
 	private Long eventId = Long.valueOf(-1);
 
@@ -48,6 +50,18 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 
 	public AddEditClazzView() {
 		initWidget(uiBinder.createAndBindUi(this));
+
+		programArea.addItem("");
+		programArea.addItem(ProgramArea.AQUATICS);
+		programArea.addItem(ProgramArea.COPE_AND_CLIMBING);
+		programArea.addItem(ProgramArea.EAGLE_RIDGE);
+		programArea.addItem(ProgramArea.HANDICRAFT);
+		programArea.addItem(ProgramArea.HANDYMAN);
+		programArea.addItem(ProgramArea.HEALTH_LODGE);
+		programArea.addItem(ProgramArea.NATIVE_AMERICAN_VILLAGE);
+		programArea.addItem(ProgramArea.NEST);
+		programArea.addItem(ProgramArea.OUTDOOR_SKILLS);
+		programArea.addItem(ProgramArea.SHOOTING_SPORTS);
 
 		mbService.getMeritBadges(new RequestCallback() {
 
@@ -154,6 +168,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 		ClazzDTO c = new ClazzDTO(description.getText(), Long.valueOf(meritBadge.getValue(meritBadge.getSelectedIndex())));
 		c.setStaffId(Long.valueOf(staff.getValue(staff.getSelectedIndex())));
 		c.setEventId(getEventIdFromPage());
+		c.setProgramArea(programArea.getItemText(programArea.getSelectedIndex()));
 		return c;
 	}
 

@@ -1,6 +1,7 @@
 package com.campscribe.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.campscribe.model2.MeritBadge;
@@ -38,6 +39,11 @@ public enum MeritBadgeMetadataDao {
 			resultMap.put(mbMd.getMbKey(), mbMd);
 		}
 		return resultMap;
+	}
+
+	public List<MeritBadgeMetadata> list() {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.query(MeritBadgeMetadata.class).list();
 	}
 
 }

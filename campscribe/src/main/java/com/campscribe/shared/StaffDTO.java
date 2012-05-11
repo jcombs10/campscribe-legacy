@@ -3,16 +3,6 @@ package com.campscribe.shared;
 import java.util.List;
 
 public class StaffDTO {
-	public final static String AQUATICS = "Aquatics";
-	public final static String HANDICRAFT = "Handicraft";
-	public final static String OUTDOOR_SKILLS = "Outdoor Skills";
-	public static final String EAGLE_RIDGE = "Eagle Ridge";
-	public static final String COPE_AND_CLIMBING = "COPE and Climbing";
-	public static final String HANDYMAN = "Handyman";
-	public static final String HEALTH_LODGE = "Health Lodge";
-	public static final String NATIVE_AMERICAN_VILLAGE = "Native American Village";
-	public static final String NEST = "NEST";
-	public static final String SHOOTING_SPORTS = "Shooting Sports";
 	
 	private Long id = Long.valueOf(-1);
 	private String name;
@@ -20,6 +10,7 @@ public class StaffDTO {
 	private String password;
 	private List<String> roles;
 	private String programArea;
+	private String emailAddress;
 	
 	public StaffDTO() {
 	}
@@ -80,6 +71,14 @@ public class StaffDTO {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }
