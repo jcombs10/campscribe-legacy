@@ -1,7 +1,6 @@
 package com.campscribe.controller.web;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
-import com.campscribe.model2.Clazz;
 import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;

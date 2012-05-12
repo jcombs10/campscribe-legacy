@@ -7,7 +7,6 @@
         <th>Program Area</th>
         <th>Taught By</th>
         <th>Report Progress</th>
-        <th>Delete</th>
     </tr>
     <c:forEach var="clazz" items="${clazzes}">
         <tr>
@@ -16,8 +15,6 @@
             <td><c:out value="${clazz.programArea}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
             <td style="text-align: center;"><a href="#" onclick="ClazzGWT.trackProgress('<c:out value="${clazz.id}"/>');" >Report Progress</a></td>
-            <td style="text-align: center;"><a href="deleteClazz.cs?id=${clazz.id}"><img
-                    src="images/16x16/delete.png" alt="Delete"></a></td>
         </tr>
     </c:forEach>
 </table>

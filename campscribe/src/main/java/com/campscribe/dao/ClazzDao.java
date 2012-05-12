@@ -1,14 +1,14 @@
 package com.campscribe.dao;
 
- import java.util.ArrayList;
+ import java.util.Collections;
 import java.util.List;
 
 import com.campscribe.model2.Clazz;
+import com.campscribe.model2.ClazzComparator;
 import com.campscribe.model2.Scout;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.Query;
 
 public enum ClazzDao {
 	INSTANCE;
@@ -28,11 +28,8 @@ public enum ClazzDao {
 
 	public List<Clazz> listClazzes() {
 		Objectify ofy = ObjectifyService.begin();
-		Query<Clazz> q = ofy.query(Clazz.class).order("description");
-		List<Clazz> allClazzes = new ArrayList<Clazz>();
-		for (Clazz c: q) {
-			allClazzes.add(c);
-		}
+		List<Clazz> allClazzes = ofy.query(Clazz.class).list();
+		Collections.sort(allClazzes, new ClazzComparator());
 		return allClazzes;
 	}
 
