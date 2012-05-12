@@ -8,6 +8,7 @@ import java.util.Map;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.ClazzComparator;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -92,7 +93,7 @@ public enum EventDao {
 
 	}
 
-	public Clazz getClazz(Key<Event> e, String clazzDescription, Long mbId) {
+	public Clazz getClazz(Key<Event> e, String clazzDescription, Key<MeritBadge> mbId) {
 		Objectify ofy = ObjectifyService.begin();
 
 		Clazz c = ofy.query(Clazz.class).filter("description", clazzDescription).filter("mbId", mbId).ancestor(e).get();

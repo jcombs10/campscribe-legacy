@@ -262,7 +262,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 			if (mb == null) {
 				log.warning("couldn't find merit badge " + mbName);
 			} else {
-				aClazz = eventManager.getClazz(e, clazzDescription, mb.getId());
+				aClazz = eventManager.getClazz(e, clazzDescription, new Key<MeritBadge>(MeritBadge.class, mb.getId()));
 				if (aClazz == null) {
 					Clazz newClazz = new Clazz(clazzDescription, new Key<MeritBadge>(MeritBadge.class, mb.getId()));
 					newClazz.setMbName(mbName);
