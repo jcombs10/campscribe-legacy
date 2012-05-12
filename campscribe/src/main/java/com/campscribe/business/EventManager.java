@@ -5,6 +5,7 @@ package com.campscribe.business;
 import com.campscribe.dao.EventDao;
 import com.campscribe.model2.Clazz;
 import com.campscribe.model2.Event;
+import com.campscribe.model2.MeritBadge;
 import com.campscribe.model2.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
@@ -91,7 +92,7 @@ public class EventManager {
 		return EventDao.INSTANCE.addClazz(id, c);
 	}
 
-	public Clazz getClazz(Key<Event> e, String clazzDescription, Long mbId) {
+	public Clazz getClazz(Key<Event> e, String clazzDescription, Key<MeritBadge> mbId) {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
