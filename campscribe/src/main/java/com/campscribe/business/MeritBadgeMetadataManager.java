@@ -26,4 +26,12 @@ public class MeritBadgeMetadataManager {
 		return MeritBadgeMetadataDao.INSTANCE.list();
 	}
 
+	public MeritBadgeMetadata getMeritBadgeMetadata(Key<MeritBadgeMetadata> key) {
+		return MeritBadgeMetadataDao.INSTANCE.get(key);
+	}
+
+	public void updateMeritBadgeMetadata(MeritBadgeMetadata mb) {
+		MeritBadgeMetadataDao.INSTANCE.update(mb);
+	}
+
 }

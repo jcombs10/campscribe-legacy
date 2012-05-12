@@ -61,4 +61,20 @@ public class CampScribeDialogBox extends DialogBox {
 		saveButton.getElement().setId("saveButton");
 	}
 
+	public CampScribeBodyWidget getBody() {
+		return body;
+	}
+
+	public void setBody(CampScribeBodyWidget body) {
+		this.body = body;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 }

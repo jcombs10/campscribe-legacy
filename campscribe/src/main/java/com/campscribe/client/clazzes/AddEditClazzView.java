@@ -6,6 +6,7 @@ import java.util.List;
 import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.client.meritbadges.MeritBadgeService;
 import com.campscribe.client.meritbadges.MeritBadgeServiceJSONImpl;
+import com.campscribe.client.staff.StaffDTOHelper;
 import com.campscribe.client.staff.StaffService;
 import com.campscribe.client.staff.StaffServiceJSONImpl;
 import com.campscribe.shared.ClazzDTO;
@@ -86,7 +87,7 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String s = response.getText();
-				List<StaffDTO> staffList = parseStaffListJsonData(s);
+				List<StaffDTO> staffList = StaffDTOHelper.parseStaffListJsonData(s);
 				for (StaffDTO sDTO:staffList) {
 					staff.addItem(sDTO.getName(), sDTO.getId().toString());
 				}
@@ -130,33 +131,6 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 		return badges;
 	}
 
-	private List<StaffDTO> parseStaffListJsonData(String json) {
-		
-		List<StaffDTO> badges = new ArrayList<StaffDTO>();
-
-		JSONValue value = JSONParser.parseLenient(json);
-		JSONArray mbArray = value.isArray();
-
-//		Window.alert("Got response: " + json);
-		if (mbArray != null) {
-			for (int i=0; i<=mbArray.size()-1; i++) {
-				JSONObject mbObj = mbArray.get(i).isObject();
-
-				String name = mbObj.get("name").isString().stringValue();
-				double id = mbObj.get("id").isNumber().doubleValue();
-
-				StaffDTO b = new StaffDTO();
-				b.setName(name);
-				Double d = Double.valueOf(id);
-				b.setId(d.longValue());
-				
-				badges.add(b);
-			}
-
-		}
-		
-		return badges;
-	}
 
 
 	@Override
