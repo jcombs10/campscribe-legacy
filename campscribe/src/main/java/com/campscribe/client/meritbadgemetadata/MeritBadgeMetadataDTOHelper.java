@@ -11,7 +11,7 @@ public class MeritBadgeMetadataDTOHelper {
 
 		JSONValue value = JSONParser.parseLenient(json);
 
-		Window.alert("Got response: " + json);
+//		Window.alert("Got response: " + json);
 		JSONObject mbObj = value.isObject();
 
 		double id = mbObj.get("id").isNumber().doubleValue();
