@@ -1,0 +1,36 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		
+		.reqsBlock {
+	        max-height: 250px;
+            width: 100%;
+	    }
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>Badge Name:</td>
+				<td>
+					<g:Label ui:field="badgeName" />
+				</td>
+			</tr>
+            <tr>
+                <td>Program Area:</td>
+                <td>
+                    <g:ListBox ui:field="programArea" />
+                </td>
+            </tr>
+            <tr>
+                <td>Taught By:</td>
+                <td>
+                    <g:ListBox ui:field="staff" />
+                </td>
+            </tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

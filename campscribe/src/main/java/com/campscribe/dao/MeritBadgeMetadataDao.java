@@ -46,4 +46,16 @@ public enum MeritBadgeMetadataDao {
 		return ofy.query(MeritBadgeMetadata.class).list();
 	}
 
+	public MeritBadgeMetadata get(Key<MeritBadgeMetadata> key) {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.get(key);
+	}
+
+	public void update(MeritBadgeMetadata mbMd) {
+		synchronized(this) {
+			Objectify ofy = ObjectifyService.begin();
+			ofy.put(mbMd);
+		}
+	}
+
 }
