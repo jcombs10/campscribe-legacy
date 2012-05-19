@@ -1,20 +1,21 @@
 package com.campscribe.business;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.campscribe.dao.ClazzDao;
-import com.campscribe.model.Clazz;
+import com.campscribe.client.Clazz;
+import com.campscribe.dao.TrackProgressDao;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
+import com.campscribe.model.TrackProgress.DateAttendance;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
-
-
-public class ClazzManager {
-
-	public void addClazz(Clazz c) {
+public class TrackProgressManager {
+	
+	public void add(Key<Scout> scoutKey, Date startDate, Date endDate) {
 		if (!EventManager.isRegistered()) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
@@ -22,10 +23,22 @@ public class ClazzManager {
 			EventManager.setRegistered(true);
 		}
 
-		ClazzDao.INSTANCE.add(c);
+		TrackProgress tp = new TrackProgress();
+		tp.setScoutKey(scoutKey);
+		Date curDate = (Date) startDate.clone();
+		List<DateAttendance> attendanceList = new ArrayList<DateAttendance>();
+		while (!curDate.after(endDate)) {
+			DateAttendance da = new DateAttendance();
+			da.setDate((Date) curDate.clone());
+			da.setPresent(false);
+			curDate.setDate(curDate.getDate()+1);
+			attendanceList.add(da);
+		}
+		tp.setAttendanceList(attendanceList);
+		TrackProgressDao.INSTANCE.add(tp);
 	}
 
-	public void deleteClazz(long id) {
+	public List<TrackProgress> getTrackingForClazz(Key<Clazz> key) {
 		if (!EventManager.isRegistered()) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
@@ -33,10 +46,10 @@ public class ClazzManager {
 			EventManager.setRegistered(true);
 		}
 
-		ClazzDao.INSTANCE.remove(id);
+		return TrackProgressDao.INSTANCE.getTrackingForClazz(key);
 	}
 
-	public Clazz getClazz(Key<Clazz> clazzKey) {
+	public TrackProgress get(Key<TrackProgress> key) {
 		if (!EventManager.isRegistered()) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
@@ -44,10 +57,10 @@ public class ClazzManager {
 			EventManager.setRegistered(true);
 		}
 
-		return ClazzDao.INSTANCE.get(clazzKey);
+		return TrackProgressDao.INSTANCE.get(key);
 	}
 
-	public List<Clazz> listClazzes() {
+	public void update(TrackProgress tracker) {
 		if (!EventManager.isRegistered()) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
@@ -55,18 +68,7 @@ public class ClazzManager {
 			EventManager.setRegistered(true);
 		}
 
-		return ClazzDao.INSTANCE.listClazzes();
-	}
-
-	public void addScoutsToClazz(Key<Clazz> clazzKey, List<Key<Scout>> scoutList) {
-		if (!EventManager.isRegistered()) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			EventManager.setRegistered(true);
-		}
-
-		ClazzDao.INSTANCE.addScoutsToClazz(clazzKey, scoutList);
+		TrackProgressDao.INSTANCE.update(tracker);
 	}
 
 }

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.MeritBadgeMetadataManager;
-import com.campscribe.model2.MeritBadgeMetadata;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.MeritBadgeMetadata;
+import com.campscribe.model.Staff;
 import com.campscribe.shared.MeritBadgeMetadataDTO;
 import com.googlecode.objectify.Key;
 

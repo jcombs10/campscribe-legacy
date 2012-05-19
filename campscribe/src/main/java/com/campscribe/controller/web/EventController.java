@@ -16,9 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
-import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 
 @Controller

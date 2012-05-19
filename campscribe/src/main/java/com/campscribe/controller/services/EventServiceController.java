@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.EventManager;
-import com.campscribe.model2.Event;
+import com.campscribe.model.Event;
 import com.campscribe.shared.EventDTO;
 
 @Controller

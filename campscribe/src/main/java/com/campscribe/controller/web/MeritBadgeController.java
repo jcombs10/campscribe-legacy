@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.business.MeritBadgeManager;
-import com.campscribe.model2.MeritBadge;
+import com.campscribe.model.MeritBadge;
 
 @Controller
 public class MeritBadgeController {

@@ -22,10 +22,10 @@ import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
 import com.campscribe.client.Event;
-import com.campscribe.model2.Clazz;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.Scout;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Clazz;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Scout;
+import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 
 @Controller

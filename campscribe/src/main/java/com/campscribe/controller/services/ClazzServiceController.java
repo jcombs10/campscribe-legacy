@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
-import com.campscribe.model2.Clazz;
-import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.Scout;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Clazz;
+import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Scout;
+import com.campscribe.model.Staff;
 import com.campscribe.shared.ClazzDTO;
 import com.googlecode.objectify.Key;
 

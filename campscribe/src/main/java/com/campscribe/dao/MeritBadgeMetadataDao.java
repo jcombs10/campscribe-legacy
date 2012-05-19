@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.MeritBadgeMetadata;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.MeritBadgeMetadata;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
