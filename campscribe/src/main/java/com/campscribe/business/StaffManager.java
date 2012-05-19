@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.StaffDao;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 
 public class StaffManager {

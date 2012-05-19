@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import com.campscribe.shared.ClazzDTO;
 import com.campscribe.shared.ScoutDTO;
+import com.campscribe.shared.TrackProgressDTO;
+import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -117,9 +119,23 @@ public class ClazzServiceJSONImpl implements ClazzService {
 		} catch (RequestException ex) {
 			Window.alert("Error Occurred: " + ex.getMessage());
 		}
-
     }
     
+    public void getClazzTracking(Long eventId, Long clazzId, RequestCallback callback) {
+		log.info("Getting /service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(callback);
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+    }
+
 	private String buildJSON(List<ScoutDTO> sList) {
 		StringBuilder sb = new StringBuilder("[ ");
 		boolean firstOne = true;
@@ -133,6 +149,72 @@ public class ClazzServiceJSONImpl implements ClazzService {
 		}
 		sb.append(" ]");
 		log.info("built json string "+sb.toString());
+		return sb.toString();
+	}
+
+	public void updateClazzTracking(Long eventId, Long clazzId, List<TrackProgressDTO> data) {
+		log.info("Getting /service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.PUT, "/service/events/"+eventId+"/classes/"+clazzId+"/progress");
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+//				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+//		Window.alert("sending  tracking " + buildTrackingJSON(data));
+		rb.setRequestData(buildTrackingJSON(data));
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+	}
+
+	private String buildTrackingJSON(List<TrackProgressDTO> data) {
+		int i = 0;
+		StringBuilder sb = new StringBuilder("[");
+		for (TrackProgressDTO t:data) {
+			if (i > 0) {
+				sb.append(", ");
+			} else {
+				i++;
+			}
+			sb.append("{");
+			sb.append("\"id\":"+t.getId()+",");
+			sb.append("\"scout\":{");
+			sb.append("\"id\":"+t.getScout().getId()+",");
+			sb.append("\"firstName\":\""+t.getScout().getFirstName()+"\",");
+			sb.append("\"lastName\":\""+t.getScout().getLastName()+"\"");
+			sb.append("}, \"attendanceList\":[");
+			int j = 0;
+			for (DateAttendanceDTO da:t.getAttendanceList()) {
+				if (j > 0) {
+					sb.append(", ");
+				} else {
+					j++;
+				}
+				sb.append("{");
+				sb.append("\"date\":"+da.getDate().getTime()+",");
+				sb.append("\"present\":"+(da.isPresent()?"true":"false"));
+				sb.append("}");
+			}
+			sb.append("]");
+			sb.append("}");
+		}
+		sb.append("]");
 		return sb.toString();
 	}
 

@@ -5,15 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import com.campscribe.client.CampScribeBodyWidget;
-import com.campscribe.client.meritbadges.MeritBadgeService;
-import com.campscribe.client.meritbadges.MeritBadgeServiceJSONImpl;
-import com.campscribe.client.staff.StaffService;
-import com.campscribe.client.staff.StaffServiceJSONImpl;
-import com.campscribe.shared.MeritBadgeDTO;
 import com.campscribe.shared.ScoutDTO;
-import com.campscribe.shared.StaffDTO;
 import com.campscribe.shared.TrackProgressDTO;
+import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -25,6 +22,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -32,18 +30,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class TrackClazzProgressView extends Composite implements CampScribeBodyWidget {
 
+	private static DateTimeFormat dateFormatterNoTime = DateTimeFormat.getFormat("EEE");
+
 	@UiField FlexTable attendanceTable;
-	@UiField FlexTable progressTable;
 
 	ClazzService clazzService = new ClazzServiceJSONImpl();
-	StaffService staffService = new StaffServiceJSONImpl();
-	MeritBadgeService mbService = new MeritBadgeServiceJSONImpl();
-
-	private String clazzKey;
 
 	private Long clazzId = Long.valueOf(-1);
-
 	private Long eventId = Long.valueOf(-1);
+	private List<TrackProgressDTO> progressList = new ArrayList<TrackProgressDTO>();
+	
+	ArrayList<ArrayList<CheckBox>> checkboxes = new ArrayList<ArrayList<CheckBox>>();
+	ArrayList<CheckBox> selectAllCheckboxes = new ArrayList<CheckBox>();
 
 	private static TrackClazzProgressViewUiBinder uiBinder = GWT
 			.create(TrackClazzProgressViewUiBinder.class);
@@ -52,27 +50,53 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	UiBinder<Widget, TrackClazzProgressView> {
 	}
 
-	public TrackClazzProgressView(String clazzKey) {
-		this.clazzKey = clazzKey;
-
+	public TrackClazzProgressView(Long eventId, Long clazzId) {
+		this.eventId = eventId;
+		this.clazzId = clazzId;
+		
 		initWidget(uiBinder.createAndBindUi(this));
-
-		clazzService.getClazz(getEventIdFromPage(), getClazzIdFromPage(), new RequestCallback() {
+		
+		clazzService.getClazzTracking(eventId, clazzId, new RequestCallback() {
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String str = response.getText();
-				TrackProgressDTO c = parseTrackProgressJsonData(str);
-				int row = 1;
-				for (ScoutDTO s:c.getScouts()) {
-					attendanceTable.setWidget(row++, 0, new Label(s.getDisplayName()));
+				progressList = parseTrackProgressJsonData(str);
+				int row = 2;
+				boolean foundAllSelected[] = null;
+				for (TrackProgressDTO t:progressList) {
+					ArrayList<CheckBox> l = new ArrayList<CheckBox>(); 
+					checkboxes.add(l);
+					attendanceTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
+					int column = 1;
+					for (DateAttendanceDTO da:t.getAttendanceList()) {
+						if (row == 2) {
+							//hacking my way around time zone adjustments by setting the date to end of day
+							Date hackDate = new Date(da.getDate().getTime()+(12*60*60*1000));
+							attendanceTable.setWidget(0, column, new Label(dateFormatterNoTime.format(hackDate)));
+							CheckBox cb = new CheckBox();
+							cb.addClickHandler(new SelectAllClickHandler(column));
+							selectAllCheckboxes.add(cb);
+							attendanceTable.setWidget(1, column, cb);
+							foundAllSelected = new boolean[t.getAttendanceList().size()];
+							for (int i=0; i<t.getAttendanceList().size(); i++) {
+								foundAllSelected[i] = true;
+							}
+						}
+						
+						CheckBox cb = new CheckBox();
+						cb.setValue(t.getAttendanceList().get(column-1).isPresent());
+						if (!t.getAttendanceList().get(column-1).isPresent()) {
+							foundAllSelected[column-1] = false;
+						}
+						cb.addClickHandler(new AttendanceClickHandler(column));
+						checkboxes.get(row-2).add(cb);
+						attendanceTable.setWidget(row, column++, cb);
+					}
+					row++;
 				}
-				int column = 1;
-				Date sd = (Date) c.getStartDate().clone();
-				Date ed = c.getEndDate();
-				while (!sd.after(ed)) {
-					sd.setDate(sd.getDate()+1);
-					attendanceTable.setWidget(0, column++, new Label(DateTimeFormat.getShortDateFormat().format(sd)));
+				for (int i=0; i<selectAllCheckboxes.size(); i++) {
+					selectAllCheckboxes.get(i).setValue(foundAllSelected[i]);
 				}
 			}
 
@@ -82,140 +106,115 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 			}
 
 		});
-
-		//		mbService.getMeritBadges(new RequestCallback() {
-		//
-		//			@Override
-		//			public void onResponseReceived(Request request, Response response) {
-		//				String s = response.getText();
-		//				List<MeritBadgeDTO> badges = parseMBJsonData(s);
-		//				for (MeritBadgeDTO b:badges) {
-		//					meritBadge.addItem(b.getBadgeName(), b.getId().toString());
-		//				}
-		//			}
-		//
-		//			@Override
-		//			public void onError(Request request, Throwable exception) {
-		//				Window.alert("Error Occurred: " + exception.getMessage());
-		//			}
-		//
-		//		});
-		//
-		//		staffService.getStaffList(new RequestCallback() {
-		//
-		//			@Override
-		//			public void onResponseReceived(Request request, Response response) {
-		//				String s = response.getText();
-		//				List<StaffDTO> staffList = parseStaffListJsonData(s);
-		//				for (StaffDTO sDTO:staffList) {
-		//					staff.addItem(sDTO.getName(), sDTO.getId().toString());
-		//				}
-		//			}
-		//
-		//			@Override
-		//			public void onError(Request request, Throwable exception) {
-		//				Window.alert("Error Occurred: " + exception.getMessage());
-		//			}
-		//
-		//		});
 	}
 
-	private TrackProgressDTO parseTrackProgressJsonData(String str) {
-		TrackProgressDTO dto = new TrackProgressDTO();
-		dto.setStartDate(DateTimeFormat.getShortDateFormat().parse("06/18/2012"));
-		dto.setEndDate(DateTimeFormat.getShortDateFormat().parse("06/22/2012"));
-		List<ScoutDTO> scouts = new ArrayList<ScoutDTO>();
-		scouts.add(new ScoutDTO("Jacob", "Combs", "Tenderfoot", "Troop", "408"));
-		scouts.add(new ScoutDTO("Nick", "Berger", "Eagle", "Troop", "24"));
-		dto.setScouts(scouts);
-		return dto;
-	}
+	private List<TrackProgressDTO> parseTrackProgressJsonData(String str) {
+//		Window.alert("Got response: " + str);
+		List<TrackProgressDTO> dtoList = new ArrayList<TrackProgressDTO>();
+		
+		JSONValue value = JSONParser.parseLenient(str);
+		JSONArray tpArray = value.isArray();
 
-	private List<MeritBadgeDTO> parseMBJsonData(String json) {
+		if (tpArray != null) {
+			for (int i=0; i<=tpArray.size()-1; i++) {
+				TrackProgressDTO tpDTO = new TrackProgressDTO();
+				JSONObject tpObj = tpArray.get(i).isObject();
 
-		List<MeritBadgeDTO> badges = new ArrayList<MeritBadgeDTO>();
-
-		JSONValue value = JSONParser.parseLenient(json);
-		JSONArray mbArray = value.isArray();
-
-		//		Window.alert("Got response: " + json);
-		if (mbArray != null) {
-			for (int i=0; i<=mbArray.size()-1; i++) {
-				JSONObject mbObj = mbArray.get(i).isObject();
-
-				String badgeName = mbObj.get("badgeName").isString().stringValue();
-				double id = mbObj.get("id").isNumber().doubleValue();
-				String bsaAdvancementId = mbObj.get("bsaAdvancementId").isString().stringValue();
-
-				MeritBadgeDTO b = new MeritBadgeDTO();
-				b.setBadgeName(badgeName);
-				b.setBsaAdvancementId(bsaAdvancementId);
+				double id = tpObj.get("id").isNumber().doubleValue();
 				Double d = Double.valueOf(id);
-				b.setId(d.longValue());
+				tpDTO.setId(d.longValue());
+				JSONObject scout = tpObj.get("scout").isObject();
+				ScoutDTO scoutDTO = new ScoutDTO();
+				id = scout.get("id").isNumber().doubleValue();
+				d = Double.valueOf(id);
+				String firstName = scout.get("firstName").isString().stringValue();
+				String lastName = scout.get("lastName").isString().stringValue();
+//				Window.alert("found scout " + firstName + " " + lastName);
+				scoutDTO.setId(d.longValue());
+				scoutDTO.setFirstName(firstName);
+				scoutDTO.setLastName(lastName);
+				tpDTO.setScout(scoutDTO);
 
-				badges.add(b);
+				JSONArray attendanceList = tpObj.get("attendanceList").isArray();
+				List<DateAttendanceDTO> attList = new ArrayList<DateAttendanceDTO>();
+				if (attendanceList != null) {
+					for (int j=0; j<=attendanceList.size()-1; j++) {
+						DateAttendanceDTO attDTO = new DateAttendanceDTO();
+						JSONObject attObj = attendanceList.get(j).isObject();
+
+						long time = (long) attObj.get("date").isNumber().doubleValue();
+						Long l = Long.valueOf(time);
+						Boolean present = attObj.get("present").isBoolean().booleanValue();
+						attDTO.setDate(new Date(l));
+						attDTO.setPresent(present);
+
+						attList.add(attDTO);
+					}
+				}
+				tpDTO.setAttendanceList(attList);
+				dtoList.add(tpDTO);
 			}
-
 		}
 
-		return badges;
-	}
-
-	private List<StaffDTO> parseStaffListJsonData(String json) {
-
-		List<StaffDTO> staffs = new ArrayList<StaffDTO>();
-
-		JSONValue value = JSONParser.parseLenient(json);
-		JSONArray mbArray = value.isArray();
-
-		//		Window.alert("Got response: " + json);
-		if (mbArray != null) {
-			for (int i=0; i<=mbArray.size()-1; i++) {
-				JSONObject mbObj = mbArray.get(i).isObject();
-
-				double id = mbObj.get("id").isNumber().doubleValue();
-				String name = mbObj.get("name").isString().stringValue();
-				String userId = mbObj.get("userId").isString().stringValue();
-				String password = mbObj.get("password").isString().stringValue();
-
-				StaffDTO b = new StaffDTO();
-				b.setName(name);
-				Double d = Double.valueOf(id);
-				b.setId(d.longValue());
-
-				staffs.add(b);
-			}
-
-		}
-
-		return staffs;
+		return dtoList;
 	}
 
 
 	@Override
 	public void onSave() {
-		//		clazzService.addClazz(getData());
+		clazzService.updateClazzTracking(eventId, clazzId, getData());
 	}
 
-	//	private ClazzDTO getData() {
-	//		ClazzDTO c = new ClazzDTO(description.getText(), Long.valueOf(meritBadge.getValue(meritBadge.getSelectedIndex())));
-	//		c.setStaffId(Long.valueOf(staff.getValue(staff.getSelectedIndex())));
-	//		c.setEventId(getEventIdFromPage());
-	//		return c;
-	//	}
-	//
+	private List<TrackProgressDTO> getData() {
+		int i = 0;
+		for (ArrayList<CheckBox> aScoutsCheckboxes:checkboxes) {
+			int j = 0;
+			for (CheckBox cb:aScoutsCheckboxes) {
+//				Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
+				progressList.get(i).getAttendanceList().get(j).setPresent(cb.getValue());
+				j++;
+			}
+			i++;
+		}
+		return progressList;
+	}
+
 	@Override
 	public void onCancel() {
 	}
 
-	private native Long getClazzIdFromPage() /*-{
-        return this.@com.campscribe.client.clazzes.AddEditScoutClazzView::clazzId = $wnd.clazzId;
-        return $wnd.clazzId;
-    }-*/;
+	public class SelectAllClickHandler implements ClickHandler {
+		
+		private int whichOne;
 
-	private native Long getEventIdFromPage() /*-{
-        return this.@com.campscribe.client.clazzes.AddEditScoutClazzView::eventId = $wnd.eventId;
-        return $wnd.eventId;
-    }-*/;
+		public SelectAllClickHandler(int whichOne) {
+			this.whichOne = whichOne-1;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			for (List<CheckBox> cb:TrackClazzProgressView.this.checkboxes) {
+				cb.get(whichOne).setValue(selectAllCheckboxes.get(whichOne).getValue());
+			}
+		}
+
+	}
+
+	public class AttendanceClickHandler implements ClickHandler {
+		
+		private int whichOne;
+
+		public AttendanceClickHandler(int whichOne) {
+			this.whichOne = whichOne-1;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			if (!((CheckBox)event.getSource()).getValue()) {
+				selectAllCheckboxes.get(whichOne).setValue(Boolean.FALSE);
+			}
+		}
+
+	}
 
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.business.ScoutManager;
-import com.campscribe.model2.Scout;
+import com.campscribe.model.Scout;
 
 @Controller
 public class ScoutController {

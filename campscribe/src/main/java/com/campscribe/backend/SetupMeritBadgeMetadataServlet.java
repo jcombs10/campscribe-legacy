@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.MeritBadgeMetadataManager;
 import com.campscribe.business.StaffManager;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.MeritBadgeMetadata;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.MeritBadgeMetadata;
+import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 
 public class SetupMeritBadgeMetadataServlet extends HttpServlet {

@@ -7,19 +7,6 @@
 		}
 	</ui:style>
 	<g:HTMLPanel>
-		<g:TabLayoutPanel barUnit='EM' barHeight='3'>
-			<g:tab>
-				<g:header size='7'>
-					Attendance
-				</g:header>
-				<g:FlexTable ui:field="attendanceTable" />
-			</g:tab>
-			<g:tab>
-                <g:header size='7'>
-                    Progress
-                </g:header>
-                <g:FlexTable ui:field="progressTable" />
-			</g:tab>
-		</g:TabLayoutPanel>
+		<g:FlexTable ui:field="attendanceTable" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

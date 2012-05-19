@@ -59,14 +59,14 @@ public class Clazz implements EntryPoint {
 	
 	private native void addGWTActionTriggers(Clazz module)/*-{
 	    $wnd.ClazzGWT = {
-	        trackProgress: function(clazzKey) {
-	            module.@com.campscribe.client.Clazz::editClazzProgress(Ljava/lang/String;)(clazzKey);
+	        trackProgress: function(eventId, clazzId) {
+	            module.@com.campscribe.client.Clazz::editClazzProgress(Ljava/lang/Long;Ljava/lang/Long;)(eventId, clazzId);
 	        }
 	    };
 	}-*/;
 	
-	public void editClazzProgress(String clazzKey) {
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Track Progress", new TrackClazzProgressView(clazzKey));
+	public void editClazzProgress(Long eventId, Long clazzId) {
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Track Progress", new TrackClazzProgressView(eventId, clazzId));
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.center();
 	}

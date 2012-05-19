@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.campscribe.dao.StaffDao;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Staff;
 
 public class CampScribeAuthenticator implements org.springframework.security.core.userdetails.UserDetailsService {
 

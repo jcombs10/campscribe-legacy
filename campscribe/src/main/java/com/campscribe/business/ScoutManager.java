@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.ScoutDao;
-import com.campscribe.model2.Scout;
+import com.campscribe.model.Scout;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 

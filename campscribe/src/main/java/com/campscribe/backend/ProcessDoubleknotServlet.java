@@ -27,11 +27,11 @@ import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.MeritBadgeMetadataManager;
 import com.campscribe.business.ScoutManager;
-import com.campscribe.model2.Clazz;
-import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.MeritBadgeMetadata;
-import com.campscribe.model2.Scout;
+import com.campscribe.model.Clazz;
+import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.MeritBadgeMetadata;
+import com.campscribe.model.Scout;
 import com.googlecode.objectify.Key;
 
 public class ProcessDoubleknotServlet extends HttpServlet {

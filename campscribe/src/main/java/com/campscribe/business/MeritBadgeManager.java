@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.MeritBadgeDao;
-import com.campscribe.model2.MeritBadge;
+import com.campscribe.model.MeritBadge;
 import com.googlecode.objectify.Key;
 
 public class MeritBadgeManager {

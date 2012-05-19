@@ -5,11 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.campscribe.model2.Clazz;
-import com.campscribe.model2.ClazzComparator;
-import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Clazz;
+import com.campscribe.model.ClazzComparator;
+import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Staff;
+import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -39,7 +40,7 @@ public enum EventDao {
 
 	public Clazz getClazz(long id) {
 		Objectify ofy = ObjectifyService.begin();
-		Clazz c = ofy.get(Clazz.class, id);
+		Clazz c = ofy.get(new Key<Clazz>(Clazz.class, id));
 		return c;
 	}
 
@@ -55,8 +56,24 @@ public enum EventDao {
 
 	public void remove(long id) {
 		Objectify ofy = ObjectifyService.begin();
-		Key<Event> e = new Key<Event>(Event.class, id);
-		ofy.delete(e);
+		Event e = get(id);
+		deleteClazzes(e.getClazzes());
+		Key<Event> eKey = new Key<Event>(Event.class, id);
+		ofy.delete(eKey);
+	}
+
+	private void deleteClazzes(List<Key<Clazz>> clazzes) {
+		Objectify ofy = ObjectifyService.begin();
+		for (Key<Clazz> clazzKey:clazzes) {
+			deleteTracking(clazzKey);
+		}
+		ofy.delete(clazzes);
+	}
+
+	private void deleteTracking(Key<Clazz> clazzKey) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Key<TrackProgress>> tpKeys = ofy.query(TrackProgress.class).filter("clazzKey", clazzKey).listKeys();
+		ofy.delete(tpKeys);
 	}
 
 	public Key<Clazz> addClazz(Long id, Clazz c) {

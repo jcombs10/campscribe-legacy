@@ -3,10 +3,11 @@ package com.campscribe.business;
  import java.util.List;
 
 import com.campscribe.dao.EventDao;
-import com.campscribe.model2.Clazz;
-import com.campscribe.model2.Event;
-import com.campscribe.model2.MeritBadge;
-import com.campscribe.model2.Staff;
+import com.campscribe.model.Clazz;
+import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Staff;
+import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -26,6 +27,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -36,6 +38,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -46,6 +49,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -56,6 +60,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -66,6 +71,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -76,6 +82,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -86,6 +93,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -96,6 +104,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -106,6 +115,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -116,6 +126,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -126,6 +137,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -136,6 +148,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
@@ -146,6 +159,7 @@ public class EventManager {
 		if (!registered) {
 			ObjectifyService.register(Event.class);
 			ObjectifyService.register(Clazz.class);
+			ObjectifyService.register(TrackProgress.class);
 			registered = true;
 		}
 
