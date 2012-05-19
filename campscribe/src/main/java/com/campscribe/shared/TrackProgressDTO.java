@@ -1,54 +1,61 @@
 package com.campscribe.shared;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
+
 public class TrackProgressDTO {
-	private Date startDate;
-	private Date endDate;
-	private String mbName;
-	Long mbId;
-	List<ScoutDTO> scouts; 
+	Long id;
+	ScoutDTO scout;
+	List<DateAttendanceDTO> attendanceList = new ArrayList<DateAttendanceDTO>();
 
-	public Date getStartDate() {
-		return startDate;
+	public ScoutDTO getScout() {
+		return scout;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setScout(ScoutDTO scout) {
+		this.scout = scout;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public List<DateAttendanceDTO> getAttendanceList() {
+		return attendanceList;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setAttendanceList(List<DateAttendanceDTO> attendanceList) {
+		this.attendanceList = attendanceList;
 	}
 
-	public String getMbName() {
-		return mbName;
+	public Long getId() {
+		return id;
 	}
 
-	public void setMbName(String mbName) {
-		this.mbName = mbName;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public Long getMbId() {
-		return mbId;
+	public static class DateAttendanceDTO {
+		private Date date;
+		private boolean present = false;
+		
+		public Date getDate() {
+			return date;
+		}
+		
+		public void setDate(Date date) {
+			this.date = date;
+		}
+		
+		public boolean isPresent() {
+			return present;
+		}
+		
+		public void setPresent(boolean present) {
+			this.present = present;
+		}
+		
 	}
-
-	public void setMbId(Long mbId) {
-		this.mbId = mbId;
-	}
-
-	public List<ScoutDTO> getScouts() {
-		return scouts;
-	}
-
-	public void setScouts(List<ScoutDTO> scouts) {
-		this.scouts = scouts;
-	}
-
+	
 }
+
