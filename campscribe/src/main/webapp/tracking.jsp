@@ -14,7 +14,7 @@
             <td><c:out value="${mbLookup[clazz.mbId].badgeName}" /></td>
             <td><c:out value="${clazz.programArea}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
-            <td style="text-align: center;"><a href="#" onclick="ClazzGWT.trackProgress('<c:out value="${clazz.id}"/>');" >Report Progress</a></td>
+            <td style="text-align: center;"><a href="#" onclick="ClazzGWT.trackProgress(<c:out value="${clazz.event.id}"/>, <c:out value="${clazz.id}"/>);" >Report Progress</a></td>
         </tr>
     </c:forEach>
 </table>
