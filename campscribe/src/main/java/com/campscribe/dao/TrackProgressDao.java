@@ -2,7 +2,7 @@ package com.campscribe.dao;
 
 import java.util.List;
 
-import com.campscribe.client.Clazz;
+import com.campscribe.model.Clazz;
 import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;

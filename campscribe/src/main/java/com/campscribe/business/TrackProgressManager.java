@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.campscribe.client.Clazz;
 import com.campscribe.dao.TrackProgressDao;
+import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;

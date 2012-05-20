@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.campscribe.business.ClazzManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.TrackProgressManager;
-import com.campscribe.client.Clazz;
+import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
@@ -22,17 +23,25 @@ import com.campscribe.model.TrackProgress.DateAttendance;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.googlecode.objectify.Key;
 
 @Controller
 public class TrackingServiceController {
 
 //	@Autowired
+	ClazzManager clazzMgr = new ClazzManager();
 	TrackProgressManager tpMgr = new TrackProgressManager();
 	ScoutManager scoutMgr = new ScoutManager();
 
 	@RequestMapping(method=RequestMethod.GET, value = "/events/{eventId}/classes/{clazzId}/progress",headers="Accept=application/json")
-	public @ResponseBody List<TrackProgressDTO> getClazzTracking(@PathVariable Long eventId, @PathVariable Long clazzId) {
+	public @ResponseBody TrackProgressWrapperDTO getClazzTracking(@PathVariable Long eventId, @PathVariable Long clazzId) {
+		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
+		
+		Key<Event> eKey = new Key<Event>(Event.class, eventId);
+		Clazz c = clazzMgr.getClazz(new Key<Clazz>(eKey, Clazz.class, clazzId));
+		wrapper.setComments(c.getNotes()==null?"":c.getNotes());
+		
 		Key<Event> eventKey = new Key<Event>(Event.class, eventId);
 		List<TrackProgress> trackingList = tpMgr.getTrackingForClazz(new Key<Clazz>(eventKey, Clazz.class, clazzId));
 		List<TrackProgressDTO> retList = new ArrayList<TrackProgressDTO>();
@@ -70,13 +79,15 @@ public class TrackingServiceController {
 			}
 			
 		});
-		return retList;
+		
+		wrapper.setTrackingList(retList);
+		return wrapper;
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/events/{eventId}/classes/{clazzId}/progress",headers="Accept=application/json")
-	public @ResponseBody TrackProgressDTO[] updateClazzTracking(@PathVariable Long eventId, @PathVariable Long clazzId, @RequestBody TrackProgressDTO[] trackers) {
+	public @ResponseBody TrackProgressWrapperDTO updateClazzTracking(@PathVariable Long eventId, @PathVariable Long clazzId, @RequestBody TrackProgressWrapperDTO trackers) {
 		
-		for (TrackProgressDTO trackerDTO:trackers) {
+		for (TrackProgressDTO trackerDTO:trackers.getTrackingList()) {
 			TrackProgress tracker = tpMgr.get(new Key<TrackProgress>(TrackProgress.class, trackerDTO.getId()));
 			List<DateAttendanceDTO> attDTOList = trackerDTO.getAttendanceList();
 			List<DateAttendance> attList = tracker.getAttendanceList();
@@ -86,6 +97,8 @@ public class TrackingServiceController {
 			tpMgr.update(tracker);
 
 		}
+		
+		clazzMgr.updateComments(eventId, clazzId, trackers.getComments());
 		
 		return trackers;
 	}

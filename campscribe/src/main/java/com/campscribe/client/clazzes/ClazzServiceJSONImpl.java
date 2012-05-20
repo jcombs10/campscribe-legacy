@@ -7,6 +7,7 @@ import com.campscribe.shared.ClazzDTO;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -152,7 +153,7 @@ public class ClazzServiceJSONImpl implements ClazzService {
 		return sb.toString();
 	}
 
-	public void updateClazzTracking(Long eventId, Long clazzId, List<TrackProgressDTO> data) {
+	public void updateClazzTracking(Long eventId, Long clazzId, TrackProgressWrapperDTO data) {
 		log.info("Getting /service/events/"+eventId+"/classes/"+clazzId+"/progress");
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.PUT, "/service/events/"+eventId+"/classes/"+clazzId+"/progress");
 		rb.setHeader("Content-Type","application/json");
@@ -183,10 +184,12 @@ public class ClazzServiceJSONImpl implements ClazzService {
 		}
 	}
 
-	private String buildTrackingJSON(List<TrackProgressDTO> data) {
+	private String buildTrackingJSON(TrackProgressWrapperDTO data) {
 		int i = 0;
-		StringBuilder sb = new StringBuilder("[");
-		for (TrackProgressDTO t:data) {
+		StringBuilder sb = new StringBuilder("{");
+		sb.append("\"comments\":\""+data.getComments()+"\",");
+		sb.append("\"trackingList\":[");
+		for (TrackProgressDTO t:data.getTrackingList()) {
 			if (i > 0) {
 				sb.append(", ");
 			} else {
@@ -214,7 +217,7 @@ public class ClazzServiceJSONImpl implements ClazzService {
 			sb.append("]");
 			sb.append("}");
 		}
-		sb.append("]");
+		sb.append("]}");
 		return sb.toString();
 	}
 

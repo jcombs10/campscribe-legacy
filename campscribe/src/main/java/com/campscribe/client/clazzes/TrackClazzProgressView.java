@@ -8,6 +8,7 @@ import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -18,28 +19,48 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TrackClazzProgressView extends Composite implements CampScribeBodyWidget {
 
+	interface MyStyle extends CssResource {
+		String tabBar();
+		String tab();
+		String tabSelected();
+	}
+
 	private static DateTimeFormat dateFormatterNoTime = DateTimeFormat.getFormat("EEE");
 
+	@UiField MyStyle style;
+	@UiField Label attendanceTab;
+	@UiField Label requirementsTab;
+	@UiField Label commentsTab;
+	@UiField FlowPanel attendanceContent;
 	@UiField FlexTable attendanceTable;
+	@UiField FlowPanel requirementsContent;
+	@UiField FlexTable requirementsTable;
+	@UiField FlowPanel commentsContent;
+	@UiField TextArea commentsBox;
 
 	ClazzService clazzService = new ClazzServiceJSONImpl();
 
 	private Long clazzId = Long.valueOf(-1);
 	private Long eventId = Long.valueOf(-1);
 	private List<TrackProgressDTO> progressList = new ArrayList<TrackProgressDTO>();
-	
+
 	ArrayList<ArrayList<CheckBox>> checkboxes = new ArrayList<ArrayList<CheckBox>>();
 	ArrayList<CheckBox> selectAllCheckboxes = new ArrayList<CheckBox>();
 
@@ -53,15 +74,17 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	public TrackClazzProgressView(Long eventId, Long clazzId) {
 		this.eventId = eventId;
 		this.clazzId = clazzId;
-		
+
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		clazzService.getClazzTracking(eventId, clazzId, new RequestCallback() {
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 				String str = response.getText();
-				progressList = parseTrackProgressJsonData(str);
+				TrackProgressWrapperDTO wrapper = parseTrackProgressJsonData(str);
+				commentsBox.setText(wrapper.getComments());
+				progressList = wrapper.getTrackingList();
 				int row = 2;
 				boolean foundAllSelected[] = null;
 				for (TrackProgressDTO t:progressList) {
@@ -83,7 +106,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 								foundAllSelected[i] = true;
 							}
 						}
-						
+
 						CheckBox cb = new CheckBox();
 						cb.setValue(t.getAttendanceList().get(column-1).isPresent());
 						if (!t.getAttendanceList().get(column-1).isPresent()) {
@@ -108,12 +131,18 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		});
 	}
 
-	private List<TrackProgressDTO> parseTrackProgressJsonData(String str) {
-//		Window.alert("Got response: " + str);
-		List<TrackProgressDTO> dtoList = new ArrayList<TrackProgressDTO>();
+	private TrackProgressWrapperDTO parseTrackProgressJsonData(String str) {
+//				Window.alert("Got response: " + str);
+		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
 		
+		List<TrackProgressDTO> dtoList = new ArrayList<TrackProgressDTO>();
+
 		JSONValue value = JSONParser.parseLenient(str);
-		JSONArray tpArray = value.isArray();
+		JSONObject wrapperObj = value.isObject();
+		String commentsStr = wrapperObj.get("comments").isString().stringValue();
+		wrapper.setComments(commentsStr.replaceAll("_newline_","\n").replaceAll("_doublequote_","\""));
+		
+		JSONArray tpArray = wrapperObj.get("trackingList").isArray();
 
 		if (tpArray != null) {
 			for (int i=0; i<=tpArray.size()-1; i++) {
@@ -129,7 +158,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 				d = Double.valueOf(id);
 				String firstName = scout.get("firstName").isString().stringValue();
 				String lastName = scout.get("lastName").isString().stringValue();
-//				Window.alert("found scout " + firstName + " " + lastName);
+				//				Window.alert("found scout " + firstName + " " + lastName);
 				scoutDTO.setId(d.longValue());
 				scoutDTO.setFirstName(firstName);
 				scoutDTO.setLastName(lastName);
@@ -156,7 +185,8 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 			}
 		}
 
-		return dtoList;
+		wrapper.setTrackingList(dtoList);
+		return wrapper;
 	}
 
 
@@ -165,26 +195,60 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		clazzService.updateClazzTracking(eventId, clazzId, getData());
 	}
 
-	private List<TrackProgressDTO> getData() {
+	private TrackProgressWrapperDTO getData() {
+		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
+		wrapper.setComments(commentsBox.getText().replaceAll("\n","_newline_").replaceAll("\"","_doublequote_"));
+		
 		int i = 0;
 		for (ArrayList<CheckBox> aScoutsCheckboxes:checkboxes) {
 			int j = 0;
 			for (CheckBox cb:aScoutsCheckboxes) {
-//				Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
+				//				Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
 				progressList.get(i).getAttendanceList().get(j).setPresent(cb.getValue());
 				j++;
 			}
 			i++;
 		}
-		return progressList;
+		wrapper.setTrackingList(progressList);
+		return wrapper;
 	}
 
 	@Override
 	public void onCancel() {
 	}
 
+	@UiHandler("attendanceTab")
+	public void showAttendanceTab(ClickEvent ce) {
+		attendanceContent.setVisible(true);
+		requirementsContent.setVisible(false);
+		commentsContent.setVisible(false);
+		attendanceTab.addStyleName(style.tabSelected());
+		requirementsTab.removeStyleName(style.tabSelected());
+		commentsTab.removeStyleName(style.tabSelected());
+	}
+
+	@UiHandler("requirementsTab")
+	public void showRequirementsTab(ClickEvent ce) {
+		attendanceContent.setVisible(false);
+		requirementsContent.setVisible(true);
+		commentsContent.setVisible(false);
+		attendanceTab.removeStyleName(style.tabSelected());
+		requirementsTab.addStyleName(style.tabSelected());
+		commentsTab.removeStyleName(style.tabSelected());
+	}
+
+	@UiHandler("commentsTab")
+	public void showCommentsTab(ClickEvent ce) {
+		attendanceContent.setVisible(false);
+		requirementsContent.setVisible(false);
+		commentsContent.setVisible(true);
+		attendanceTab.removeStyleName(style.tabSelected());
+		requirementsTab.removeStyleName(style.tabSelected());
+		commentsTab.addStyleName(style.tabSelected());
+	}
+
 	public class SelectAllClickHandler implements ClickHandler {
-		
+
 		private int whichOne;
 
 		public SelectAllClickHandler(int whichOne) {
@@ -201,7 +265,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	}
 
 	public class AttendanceClickHandler implements ClickHandler {
-		
+
 		private int whichOne;
 
 		public AttendanceClickHandler(int whichOne) {
