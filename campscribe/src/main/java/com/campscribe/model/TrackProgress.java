@@ -19,6 +19,8 @@ public class TrackProgress {
 	Key<Scout> scoutKey;
 	@Embedded
 	List<DateAttendance> attendanceList = new ArrayList<DateAttendance>();
+	@Embedded
+	List<RequirementCompletion> requirementList = new ArrayList<RequirementCompletion>();
 
 	public Long getId() {
 		return id;
@@ -52,6 +54,14 @@ public class TrackProgress {
 		this.clazzKey = clazzKey;
 	}
 
+	public List<RequirementCompletion> getRequirementList() {
+		return requirementList;
+	}
+
+	public void setRequirementList(List<RequirementCompletion> requirementList) {
+		this.requirementList = requirementList;
+	}
+
 	public static class DateAttendance {
 		private Date date;
 		private boolean present = false;
@@ -74,6 +84,32 @@ public class TrackProgress {
 		
 		public void setPresent(boolean present) {
 			this.present = present;
+		}
+		
+	}
+	
+	public static class RequirementCompletion {
+		private String reqNumber;
+		private boolean completed = false;
+		
+		public RequirementCompletion() {
+			
+		}
+
+		public String getReqNumber() {
+			return reqNumber;
+		}
+
+		public void setReqNumber(String reqNumber) {
+			this.reqNumber = reqNumber;
+		}
+
+		public boolean isCompleted() {
+			return completed;
+		}
+
+		public void setCompleted(boolean completed) {
+			this.completed = completed;
 		}
 		
 	}

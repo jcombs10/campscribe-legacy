@@ -124,7 +124,16 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 		sb.append(mb.getBsaAdvancementId());
 		sb.append("\",\"eagleRequired\":\"");
 		sb.append(mb.isEagleRequired());
-		sb.append("\",\"requirementsStr\":\"[");
+		sb.append("\",\"requirements\":[");
+		int j = 0;
+		for (RequirementDTO reqDto:requirements) {
+			if (j > 0) {
+				sb.append(",");
+			}
+			sb.append(dtoToJSON(reqDto).replaceAll("@@", "\""));
+			j++;
+		}
+		sb.append("],\"requirementsStr\":\"[");
 		int i = 0;
 		for (RequirementDTO reqDto:requirements) {
 			if (i > 0) {
@@ -137,7 +146,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 		return sb.toString();
 	}
 
-	private Object dtoToJSON(RequirementDTO reqDto) {
+	private String dtoToJSON(RequirementDTO reqDto) {
 		StringBuilder sb = new StringBuilder("{ @@reqType@@:@@");
 		sb.append(reqDto.getReqType());
 		sb.append("@@,@@howManyToChoose@@:@@");

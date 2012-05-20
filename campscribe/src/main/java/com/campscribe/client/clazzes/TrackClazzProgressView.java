@@ -19,7 +19,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -91,6 +90,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 					ArrayList<CheckBox> l = new ArrayList<CheckBox>(); 
 					checkboxes.add(l);
 					attendanceTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
+					requirementsTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
 					int column = 1;
 					for (DateAttendanceDTO da:t.getAttendanceList()) {
 						if (row == 2) {

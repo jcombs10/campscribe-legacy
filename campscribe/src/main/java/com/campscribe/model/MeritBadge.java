@@ -1,9 +1,13 @@
 package com.campscribe.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import com.googlecode.objectify.annotation.Cached;
+import com.googlecode.objectify.annotation.Serialized;
 
 @Cached
 @Entity
@@ -14,8 +18,9 @@ public class MeritBadge {
 	private String bsaAdvancementId;
 	private String badgeName;
 	private Boolean eagleRequired = Boolean.FALSE;
-	
 	private String requirementsStr;
+	@Serialized
+	private List<Requirement> requirements = new ArrayList<Requirement>();
 	
 	public MeritBadge() {
 	}
@@ -66,6 +71,14 @@ public class MeritBadge {
 
 	public void setRequirementsStr(String requirementsStr) {
 		this.requirementsStr = requirementsStr;
+	}
+
+	public List<Requirement> getRequirements() {
+		return requirements;
+	}
+
+	public void setRequirements(List<Requirement> requirements) {
+		this.requirements = requirements;
 	}
 
 }
