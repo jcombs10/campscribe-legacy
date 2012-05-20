@@ -78,4 +78,11 @@ public enum ClazzDao {
 		ofy.put(c);
 	}
 
+	public void update(Clazz c) {
+		synchronized(this) {
+			Objectify ofy = ObjectifyService.begin();
+			ofy.put(c);
+		}
+	}
+
 }

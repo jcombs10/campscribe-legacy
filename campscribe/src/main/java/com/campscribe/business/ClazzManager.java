@@ -69,4 +69,11 @@ public class ClazzManager {
 		ClazzDao.INSTANCE.addScoutsToClazz(clazzKey, scoutList);
 	}
 
+	public void updateComments(Long eventId, Long clazzId, String comments) {
+		Key<Event> eKey = new Key<Event>(Event.class, eventId);
+		Clazz c = ClazzDao.INSTANCE.get(new Key<Clazz>(eKey, Clazz.class, clazzId));
+		c.setNotes(comments);
+		ClazzDao.INSTANCE.update(c);
+	}
+
 }
