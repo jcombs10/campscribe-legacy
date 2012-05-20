@@ -8,15 +8,20 @@ import java.util.List;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.ClazzComparator;
 import com.campscribe.model.Event;
+import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Requirement;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
 import com.campscribe.model.TrackProgress.DateAttendance;
+import com.campscribe.model.TrackProgress.RequirementCompletion;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 
 public enum ClazzDao {
 	INSTANCE;
+
+	private final char[] chars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
 	public void add(Clazz c) {
 		synchronized(this) {
@@ -72,10 +77,38 @@ public enum ClazzDao {
 				attendanceList.add(da);
 			}
 			tp.setAttendanceList(attendanceList);
+			MeritBadge mb = ofy.get(c.getMbId());
+			tp.setRequirementList(buildRequirementList(mb.getRequirements(), "", 0));
 			ofy.put(tp);
 		}
 		
 		ofy.put(c);
+	}
+
+	private List<RequirementCompletion> buildRequirementList(
+			List<Requirement> requirements, String parentReqStr, int level) {
+		List<RequirementCompletion> requirementList = new ArrayList<RequirementCompletion>();
+		int i = 1;
+		for (Requirement req:requirements) {
+			RequirementCompletion rc = new RequirementCompletion();
+			String reqStr = "";
+			if (level == 0) {
+				reqStr = i+"";
+			} else if (level == 1) {
+				reqStr = parentReqStr+"."+chars[i-1];
+			} else if (level == 2) {
+				reqStr = parentReqStr+"."+i;
+			}
+			rc.setReqNumber(reqStr);
+			rc.setCompleted(false);
+			if (req.getSubRequirements().size() == 0) {
+				requirementList.add(rc);
+			} else {
+				requirementList.addAll(buildRequirementList(req.getSubRequirements(), reqStr, level+1));
+			}
+			i++;
+		}
+		return requirementList;
 	}
 
 	public void update(Clazz c) {

@@ -136,7 +136,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 				lastEventSeen = eventIdMap.get(nextLine[3]);
 			} else if (nextLine.length>=5 && !nextLine[4].startsWith("581 Ibold Rd")) {
 				//handle some weirdness in the data coming from doubleknot
-				String eventDesc = nextLine[3].replace(" (Pool)", "").replace("0 - ", "0-").replace("0- ", "0-");
+				String eventDesc = nextLine[3].replace("Swmming","Swimming").replace(" (Pool)", "").replace("0 - ", "0-").replace("0- ", "0-");
 				String clazzKeyStr = lastEventSeen.toString() + "," + eventDesc;
 				
 				if (!clazzIdMap.containsKey(clazzKeyStr)) {

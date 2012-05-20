@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Requirement;
 import com.campscribe.shared.MeritBadgeDTO;
+import com.campscribe.shared.RequirementDTO;
 
 @Controller
 public class MeritBadgeServiceController {
@@ -66,8 +68,24 @@ public class MeritBadgeServiceController {
 		mb.setId(mbDTO.getId());
 		mb.setBsaAdvancementId(mbDTO.getBsaAdvancementId());
 		mb.setRequirementsStr(mbDTO.getRequirementsStr());
+		List<Requirement> requirements = buildRequirementsList(mbDTO.getRequirements());
+		mb.setRequirements(requirements);
 		mbMgr.updateMeritBadge(mb);
 		return mbDTO;
+	}
+
+	private List<Requirement> buildRequirementsList(
+			List<RequirementDTO> requirementDTOs) {
+		List<Requirement> requirements = new ArrayList<Requirement>();
+		for (RequirementDTO reqDTO:requirementDTOs) {
+			Requirement req = new Requirement();
+			req.setHowManyToChoose(reqDTO.getHowManyToChoose());
+			req.setOptionCount(reqDTO.getOptionCount());
+			req.setReqType(reqDTO.getReqType());
+			req.setSubRequirements(buildRequirementsList(reqDTO.getSubRequirements()));
+			requirements.add(req);
+		}
+		return requirements;
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value = "/meritbadges/{id}",headers="Accept=application/json")
