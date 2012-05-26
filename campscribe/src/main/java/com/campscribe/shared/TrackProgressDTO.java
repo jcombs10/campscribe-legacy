@@ -10,6 +10,7 @@ public class TrackProgressDTO {
 	Long id;
 	ScoutDTO scout;
 	List<DateAttendanceDTO> attendanceList = new ArrayList<DateAttendanceDTO>();
+	List<RequirementCompletionDTO> requirementList = new ArrayList<RequirementCompletionDTO>();
 
 	public ScoutDTO getScout() {
 		return scout;
@@ -35,6 +36,14 @@ public class TrackProgressDTO {
 		this.id = id;
 	}
 
+	public List<RequirementCompletionDTO> getRequirementList() {
+		return requirementList;
+	}
+
+	public void setRequirementList(List<RequirementCompletionDTO> requirementList) {
+		this.requirementList = requirementList;
+	}
+
 	public static class DateAttendanceDTO {
 		private Date date;
 		private boolean present = false;
@@ -53,6 +62,32 @@ public class TrackProgressDTO {
 		
 		public void setPresent(boolean present) {
 			this.present = present;
+		}
+		
+	}
+	
+	public static class RequirementCompletionDTO {
+		private String reqNumber;
+		private boolean completed = false;
+		
+		public RequirementCompletionDTO() {
+			
+		}
+
+		public String getReqNumber() {
+			return reqNumber;
+		}
+
+		public void setReqNumber(String reqNumber) {
+			this.reqNumber = reqNumber;
+		}
+
+		public boolean isCompleted() {
+			return completed;
+		}
+
+		public void setCompleted(boolean completed) {
+			this.completed = completed;
 		}
 		
 	}
