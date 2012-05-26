@@ -8,6 +8,7 @@ import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressDTO.RequirementCompletionDTO;
 import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,6 +63,8 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 
 	ArrayList<ArrayList<CheckBox>> checkboxes = new ArrayList<ArrayList<CheckBox>>();
 	ArrayList<CheckBox> selectAllCheckboxes = new ArrayList<CheckBox>();
+	ArrayList<ArrayList<CheckBox>> reqCheckboxes = new ArrayList<ArrayList<CheckBox>>();
+	ArrayList<CheckBox> selectAllReqCheckboxes = new ArrayList<CheckBox>();
 
 	private static TrackClazzProgressViewUiBinder uiBinder = GWT
 			.create(TrackClazzProgressViewUiBinder.class);
@@ -86,6 +89,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 				progressList = wrapper.getTrackingList();
 				int row = 2;
 				boolean foundAllSelected[] = null;
+				boolean foundAllReqSelected[] = null;
 				for (TrackProgressDTO t:progressList) {
 					ArrayList<CheckBox> l = new ArrayList<CheckBox>(); 
 					checkboxes.add(l);
@@ -116,10 +120,38 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 						checkboxes.get(row-2).add(cb);
 						attendanceTable.setWidget(row, column++, cb);
 					}
+
+					column = 1;
+					for (RequirementCompletionDTO rc:t.getRequirementList()) {
+						if (row == 2) {
+							requirementsTable.setWidget(0, column, new Label(rc.getReqNumber()));
+							CheckBox cb = new CheckBox();
+							cb.addClickHandler(new SelectAllReqClickHandler(column));
+							selectAllReqCheckboxes.add(cb);
+							requirementsTable.setWidget(1, column, cb);
+							foundAllReqSelected = new boolean[t.getRequirementList().size()];
+							for (int i=0; i<t.getRequirementList().size(); i++) {
+								foundAllReqSelected[i] = true;
+							}
+						}
+
+						CheckBox cb = new CheckBox();
+						cb.setValue(t.getRequirementList().get(column-1).isCompleted());
+						if (!t.getRequirementList().get(column-1).isCompleted()) {
+							foundAllReqSelected[column-1] = false;
+						}
+						cb.addClickHandler(new RequirementClickHandler(column));
+						checkboxes.get(row-2).add(cb);
+						requirementsTable.setWidget(row, column++, cb);
+					}
+
 					row++;
 				}
 				for (int i=0; i<selectAllCheckboxes.size(); i++) {
 					selectAllCheckboxes.get(i).setValue(foundAllSelected[i]);
+				}
+				for (int i=0; i<selectAllReqCheckboxes.size(); i++) {
+					selectAllReqCheckboxes.get(i).setValue(foundAllReqSelected[i]);
 				}
 			}
 
@@ -181,6 +213,24 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 					}
 				}
 				tpDTO.setAttendanceList(attList);
+
+				JSONArray requirementList = tpObj.get("requirementList").isArray();
+				List<RequirementCompletionDTO> reqList = new ArrayList<RequirementCompletionDTO>();
+				if (requirementList != null) {
+					for (int j=0; j<=requirementList.size()-1; j++) {
+						RequirementCompletionDTO reqDTO = new RequirementCompletionDTO();
+						JSONObject reqObj = requirementList.get(j).isObject();
+
+						Boolean completed = reqObj.get("completed").isBoolean().booleanValue();
+						String reqNumber = reqObj.get("reqNumber").isString().stringValue();
+						reqDTO.setCompleted(completed);
+						reqDTO.setReqNumber(reqNumber);
+
+						reqList.add(reqDTO);
+					}
+				}
+				tpDTO.setRequirementList(reqList);
+
 				dtoList.add(tpDTO);
 			}
 		}
@@ -276,6 +326,40 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		public void onClick(ClickEvent event) {
 			if (!((CheckBox)event.getSource()).getValue()) {
 				selectAllCheckboxes.get(whichOne).setValue(Boolean.FALSE);
+			}
+		}
+
+	}
+
+	public class SelectAllReqClickHandler implements ClickHandler {
+
+		private int whichOne;
+
+		public SelectAllReqClickHandler(int whichOne) {
+			this.whichOne = whichOne-1;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			for (List<CheckBox> cb:TrackClazzProgressView.this.reqCheckboxes) {
+				cb.get(whichOne).setValue(selectAllReqCheckboxes.get(whichOne).getValue());
+			}
+		}
+
+	}
+
+	public class RequirementClickHandler implements ClickHandler {
+
+		private int whichOne;
+
+		public RequirementClickHandler(int whichOne) {
+			this.whichOne = whichOne-1;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			if (!((CheckBox)event.getSource()).getValue()) {
+				selectAllReqCheckboxes.get(whichOne).setValue(Boolean.FALSE);
 			}
 		}
 

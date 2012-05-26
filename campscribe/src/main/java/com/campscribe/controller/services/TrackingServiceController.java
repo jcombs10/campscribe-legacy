@@ -20,9 +20,11 @@ import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
 import com.campscribe.model.TrackProgress.DateAttendance;
+import com.campscribe.model.TrackProgress.RequirementCompletion;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressDTO.RequirementCompletionDTO;
 import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.googlecode.objectify.Key;
 
@@ -64,6 +66,15 @@ public class TrackingServiceController {
 				attendanceList.add(daDTO);
 			}
 			tpDTO.setAttendanceList(attendanceList);
+			
+			List<RequirementCompletionDTO> reqList = new ArrayList<RequirementCompletionDTO>();
+			for (RequirementCompletion rc:tp.getRequirementList()) {
+				RequirementCompletionDTO rcDTO = new RequirementCompletionDTO();
+				rcDTO.setCompleted(rc.isCompleted());
+				rcDTO.setReqNumber(rc.getReqNumber());
+				reqList.add(rcDTO);
+			}
+			tpDTO.setRequirementList(reqList);
 			
 			retList.add(tpDTO);
 		}

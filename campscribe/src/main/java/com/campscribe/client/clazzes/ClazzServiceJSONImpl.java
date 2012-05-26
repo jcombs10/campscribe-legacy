@@ -7,6 +7,7 @@ import com.campscribe.shared.ClazzDTO;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
+import com.campscribe.shared.TrackProgressDTO.RequirementCompletionDTO;
 import com.campscribe.shared.TrackProgressWrapperDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -212,6 +213,19 @@ public class ClazzServiceJSONImpl implements ClazzService {
 				sb.append("{");
 				sb.append("\"date\":"+da.getDate().getTime()+",");
 				sb.append("\"present\":"+(da.isPresent()?"true":"false"));
+				sb.append("}");
+			}
+			sb.append("], \"requirementList\":[");
+			j = 0;
+			for (RequirementCompletionDTO da:t.getRequirementList()) {
+				if (j > 0) {
+					sb.append(", ");
+				} else {
+					j++;
+				}
+				sb.append("{");
+				sb.append("\"reqNumber\":\""+da.getReqNumber()+"\",");
+				sb.append("\"completed\":"+(da.isCompleted()?"true":"false"));
 				sb.append("}");
 			}
 			sb.append("]");
