@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.campscribe.client.CampScribeBodyWidget;
+import com.campscribe.shared.NoteDTO;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,6 +39,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class TrackClazzProgressView extends Composite implements CampScribeBodyWidget {
 
 	interface MyStyle extends CssResource {
+		String noteAuthor();
+		String noteTimestamp();
 		String tabBar();
 		String tab();
 		String tabSelected();
@@ -53,7 +57,8 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	@UiField FlowPanel requirementsContent;
 	@UiField FlexTable requirementsTable;
 	@UiField FlowPanel commentsContent;
-	@UiField TextArea commentsBox;
+	@UiField FlowPanel notesList;
+	@UiField TextArea noteTextArea;
 
 	ClazzService clazzService = new ClazzServiceJSONImpl();
 
@@ -85,7 +90,21 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 			public void onResponseReceived(Request request, Response response) {
 				String str = response.getText();
 				TrackProgressWrapperDTO wrapper = parseTrackProgressJsonData(str);
-				commentsBox.setText(wrapper.getComments());
+				for (NoteDTO n:wrapper.getNotesList()) {
+					HorizontalPanel hp = new HorizontalPanel();
+
+					Label authorLabel = new Label(n.getStaffName());
+					authorLabel.setStyleName("noteAuthor");
+					hp.add(authorLabel);
+					
+					Label timestampLabel = new Label(n.getDate().toString());
+					timestampLabel.setStyleName("noteTimestamp");
+					hp.add(timestampLabel);
+					
+					hp.add(new Label(n.getNoteText()));
+
+					notesList.add(hp);
+				}
 				progressList = wrapper.getTrackingList();
 				int row = 2;
 				boolean foundAllSelected[] = null;
@@ -247,7 +266,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 
 	private TrackProgressWrapperDTO getData() {
 		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
-		wrapper.setComments(commentsBox.getText().replaceAll("\n","_newline_").replaceAll("\"","_doublequote_"));
+		wrapper.setComments(noteTextArea.getText().replaceAll("\n","_newline_").replaceAll("\"","_doublequote_"));
 		
 		int i = 0;
 		for (ArrayList<CheckBox> aScoutsCheckboxes:checkboxes) {

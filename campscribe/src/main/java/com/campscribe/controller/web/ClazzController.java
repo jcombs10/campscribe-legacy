@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.business.ClazzManager;
+import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
-import com.campscribe.client.Event;
+import com.campscribe.model.Event;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Scout;
@@ -32,6 +33,7 @@ import com.googlecode.objectify.Key;
 public class ClazzController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
+	private EventManager eventMgr;
 	private ClazzManager clazzMgr;
 	private MeritBadgeManager mbMgr;
 	private StaffManager staffMgr;
@@ -44,6 +46,7 @@ public class ClazzController {
 		logger.info("Returning clazz view");
 
 		ModelAndView mav = new ModelAndView("viewClazz.jsp");
+		
 		Key<Event> eKey = new Key<Event>(Event.class, eventId);
 		Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
 		Clazz c = getClazzManager().getClazz(cKey);
@@ -69,6 +72,7 @@ public class ClazzController {
 		});
 
 
+		mav.addObject("event", getEventManager().getEvent(eventId));
 		mav.addObject("clazz", getClazzManager().getClazz(cKey));
 		mav.addObject("scouts", scoutList);
 		mav.addObject("staffLookup", getStaffLookup());
@@ -91,6 +95,13 @@ public class ClazzController {
 			mbLookup.put(s.getId(), s);
 		}
 		return mbLookup;
+	}
+
+	private EventManager getEventManager() {
+		if (eventMgr == null) {
+			eventMgr = new EventManager();
+		}
+		return eventMgr;
 	}
 
 	private ClazzManager getClazzManager() {

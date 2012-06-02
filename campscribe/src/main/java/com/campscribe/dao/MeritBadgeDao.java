@@ -12,10 +12,6 @@ import com.googlecode.objectify.ObjectifyService;
 public enum MeritBadgeDao {
 	INSTANCE;
 	
-	static {
-		ObjectifyService.register(MeritBadge.class);
-	}
-
 	public void add(MeritBadge mb) {
 		synchronized(this) {
 			Objectify ofy = ObjectifyService.begin();

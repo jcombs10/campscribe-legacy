@@ -16,11 +16,13 @@ import com.campscribe.business.ClazzManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.TrackProgressManager;
 import com.campscribe.model.Clazz;
+import com.campscribe.model.Clazz.Note;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
 import com.campscribe.model.TrackProgress.DateAttendance;
 import com.campscribe.model.TrackProgress.RequirementCompletion;
+import com.campscribe.shared.NoteDTO;
 import com.campscribe.shared.ScoutDTO;
 import com.campscribe.shared.TrackProgressDTO;
 import com.campscribe.shared.TrackProgressDTO.DateAttendanceDTO;
@@ -42,7 +44,17 @@ public class TrackingServiceController {
 		
 		Key<Event> eKey = new Key<Event>(Event.class, eventId);
 		Clazz c = clazzMgr.getClazz(new Key<Clazz>(eKey, Clazz.class, clazzId));
-		wrapper.setComments(c.getNotes()==null?"":c.getNotes());
+		
+		List<NoteDTO> notesList = new ArrayList<NoteDTO>();
+		for (Note n:c.getNotesList()) {
+			NoteDTO nDTO = new NoteDTO();
+			nDTO.setDate(n.getDate());
+			nDTO.setStaffName(n.getStaffName());
+			nDTO.setNoteText(n.getNoteText());
+			notesList.add(nDTO);
+		}
+		wrapper.setNotesList(notesList);
+		wrapper.setComments("");
 		
 		Key<Event> eventKey = new Key<Event>(Event.class, eventId);
 		List<TrackProgress> trackingList = tpMgr.getTrackingForClazz(new Key<Clazz>(eventKey, Clazz.class, clazzId));

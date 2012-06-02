@@ -8,7 +8,7 @@ import com.campscribe.model.MeritBadge;
 import com.campscribe.model.MeritBadgeMetadata;
 import com.googlecode.objectify.Key;
 
-public class MeritBadgeMetadataManager {
+public class MeritBadgeMetadataManager extends BaseManager {
 	
 	public void addUpdate(MeritBadgeMetadata mb) {
 		MeritBadgeMetadataDao.INSTANCE.add(mb);

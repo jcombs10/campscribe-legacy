@@ -53,6 +53,22 @@ public class EventServiceJSONImpl implements EventService {
 	}
 
 	@Override
+	public void getAllEvents(RequestCallback cb) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/");
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(cb);
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
 	public void getEvent(String id, RequestCallback cb) {
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/"+id);
 		rb.setHeader("Content-Type","application/json");

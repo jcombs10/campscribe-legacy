@@ -7,163 +7,68 @@ import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Staff;
-import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.ObjectifyService;
 
-public class EventManager {
+public class EventManager extends BaseManager {
 	
-	private static boolean registered = false;
-
-	public static boolean isRegistered() {
-		return registered;
-	}
-
-	public static void setRegistered(boolean registered) {
-		EventManager.registered = registered;
-	}
-
 	public Key<Event> addEvent(Event e) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.add(e);
 	}
 
 	public void deleteEvent(long id) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
-		EventDao.INSTANCE.remove(id);
+		EventDao.INSTANCE.remove(new Key<Event>(Event.class, id));
 	}
 
 	public Event getEvent(long id) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
-		return EventDao.INSTANCE.get(id);
+		return EventDao.INSTANCE.get(new Key<Event>(Event.class, id));
 	}
 
 	public Event getEvent(String eventName) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.get(eventName);
 	}
 
 	public List<Event> listEvents() {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.listEvents();
 	}
 
 	public void updateEvent(Event e) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		EventDao.INSTANCE.add(e);
 	}
 
 	public Key<Clazz> addClazz(Long id, Clazz c) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
-		return EventDao.INSTANCE.addClazz(id, c);
+		return EventDao.INSTANCE.addClazz(new Key<Event>(Event.class, id), c);
 	}
 
 	public Clazz getClazz(Key<Event> e, String clazzDescription, Key<MeritBadge> mbId) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.getClazz(e, clazzDescription, mbId);
 	}
 
 	public void deleteClazz(Long id) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		EventDao.INSTANCE.deleteClazz(id);
 	}
 
 	public List<Clazz> getClazzes(List<Key<Clazz>> clazzKeys) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.getClazzes(clazzKeys);
 	}
 
 	public Event getEventForClazz(long id) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.getEventForClazz(id);
 	}
 
 	public List<Clazz> getClazzesByCounselor(Key<Staff> key) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
-
 		return EventDao.INSTANCE.getClazzesByCounselor(key);
 	}
 
-	public List<Clazz> getClazzesByProgramArea(String programArea) {
-		if (!registered) {
-			ObjectifyService.register(Event.class);
-			ObjectifyService.register(Clazz.class);
-			ObjectifyService.register(TrackProgress.class);
-			registered = true;
-		}
+	public List<Clazz> getClazzesByCounselor(Key<Event> eventKey, Key<Staff> key) {
+		return EventDao.INSTANCE.getClazzesByCounselor(eventKey, key);
+	}
 
+	public List<Clazz> getClazzesByProgramArea(String programArea) {
 		return EventDao.INSTANCE.getClazzesByProgramArea(programArea);
+	}
+
+	public List<Clazz> getClazzesByProgramArea(Key<Event> eventKey, String programArea) {
+		return EventDao.INSTANCE.getClazzesByProgramArea(eventKey, programArea);
 	}
 
 }

@@ -18,7 +18,7 @@ public class CampScribeAuthenticator implements org.springframework.security.cor
 			throw new UsernameNotFoundException("");
 		}
 		
-		UserDetails ud = new CampScribeUser(s.getUserId(), s.getPassword(), s.getRoles());
+		UserDetails ud = new CampScribeUser(s.getUserId(), s.getPassword(), s.getRoles(), s.getProgramArea());
 		
 		return ud;
 	}

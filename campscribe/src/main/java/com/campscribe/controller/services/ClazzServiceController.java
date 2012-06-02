@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
+import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.MeritBadge;
@@ -26,6 +27,8 @@ public class ClazzServiceController {
 //	@Autowired
 	EventManager eventMgr = new EventManager();
 //	@Autowired
+	MeritBadgeManager mbMgr = new MeritBadgeManager();
+//	@Autowired
 	ClazzManager clazzMgr = new ClazzManager();
 
 	@RequestMapping(method=RequestMethod.POST, value = "/events/{id}/classes/",headers="Accept=application/json")
@@ -33,6 +36,8 @@ public class ClazzServiceController {
 		System.err.println("addClazz called");
 		Clazz c = new Clazz(clazzDTO.getDescription(), new Key<MeritBadge>(MeritBadge.class, clazzDTO.getMbId()));
 		c.setStaffId(new Key<Staff>(Staff.class, clazzDTO.getStaffId()));
+		c.setProgramArea(clazzDTO.getProgramArea());
+		c.setMbName(mbMgr.getMeritBadge(clazzDTO.getMbId()).getBadgeName());
 		
 		eventMgr.addClazz(id, c);
 		return clazzDTO;

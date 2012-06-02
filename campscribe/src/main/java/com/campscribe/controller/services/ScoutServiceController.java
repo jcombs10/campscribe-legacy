@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ScoutManager;
+import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.shared.ScoutDTO;
+import com.googlecode.objectify.Key;
 
 @Controller
 public class ScoutServiceController {
@@ -35,22 +37,26 @@ public class ScoutServiceController {
 		System.err.println("addScout called");
 		Scout e = new Scout(scoutDTO.getFirstName(), scoutDTO.getLastName(),
 				scoutDTO.getRank(), scoutDTO.getUnitType(),
-				scoutDTO.getUnitNumber());
+				scoutDTO.getUnitNumber(), new Key<Event>(Event.class, scoutDTO.getEventId()));
 		scoutMgr.addScout(e);
 		return e;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/scouts/{id}", headers = "Accept=application/json")
 	public @ResponseBody
-	Scout getScout(@RequestParam long id) {
-		return scoutMgr.getScout(id);
+	ScoutDTO getScout(@RequestParam long id) {
+		Scout s = scoutMgr.getScout(id);
+		return new ScoutDTO(s.getFirstName(), s.getLastName(), s.getRank(), s.getUnitType(), s.getUnitNumber(), s.getEventKey().getId());
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/scouts/{id}", headers = "Accept=application/json")
 	public @ResponseBody
-	Scout updateScout(@RequestParam long id, @RequestBody Scout e) {
-		scoutMgr.updateScout(e);
-		return e;
+	ScoutDTO updateScout(@RequestParam long id, @RequestBody ScoutDTO scoutDTO) {
+		Scout s = new Scout(scoutDTO.getFirstName(), scoutDTO.getLastName(),
+				scoutDTO.getRank(), scoutDTO.getUnitType(),
+				scoutDTO.getUnitNumber(), new Key<Event>(Event.class, scoutDTO.getEventId()));
+		scoutMgr.updateScout(s);
+		return scoutDTO;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/scouts/{id}", headers = "Accept=application/json")

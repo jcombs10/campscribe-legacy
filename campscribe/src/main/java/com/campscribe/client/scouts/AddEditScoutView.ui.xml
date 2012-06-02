@@ -38,6 +38,12 @@
                     <g:TextBox ui:field="unitNumber" />
                 </td>
             </tr>
+            <tr>
+                <td>Event:</td>
+                <td>
+                    <g:ListBox ui:field="event" />
+                </td>
+            </tr>
 		</table>
 	</g:HTMLPanel>
 </ui:UiBinder> 

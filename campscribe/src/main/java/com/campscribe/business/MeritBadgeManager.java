@@ -7,7 +7,7 @@ import com.campscribe.dao.MeritBadgeDao;
 import com.campscribe.model.MeritBadge;
 import com.googlecode.objectify.Key;
 
-public class MeritBadgeManager {
+public class MeritBadgeManager extends BaseManager {
 	
 	public void addMeritBadge(MeritBadge mb) {
 		MeritBadgeDao.INSTANCE.add(mb);

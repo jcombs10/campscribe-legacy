@@ -9,6 +9,7 @@ import com.campscribe.model.Clazz;
 import com.campscribe.model.ClazzComparator;
 import com.campscribe.model.Event;
 import com.campscribe.model.MeritBadge;
+import com.campscribe.model.Scout;
 import com.campscribe.model.Staff;
 import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
@@ -26,9 +27,9 @@ public enum EventDao {
 		}
 	}
 
-	public Event get(long id) {
+	public Event get(Key<Event> eKey) {
 		Objectify ofy = ObjectifyService.begin();
-		Event e = ofy.get(Event.class, id);
+		Event e = ofy.get(eKey);
 		return e;
 	}
 
@@ -54,11 +55,11 @@ public enum EventDao {
 		return allEvents;
 	}
 
-	public void remove(long id) {
+	public void remove(Key<Event> eKey) {
 		Objectify ofy = ObjectifyService.begin();
-		Event e = get(id);
+		Event e = get(eKey);
 		deleteClazzes(e.getClazzes());
-		Key<Event> eKey = new Key<Event>(Event.class, id);
+		findAndDeleteScouts(eKey);
 		ofy.delete(eKey);
 	}
 
@@ -76,15 +77,20 @@ public enum EventDao {
 		ofy.delete(tpKeys);
 	}
 
-	public Key<Clazz> addClazz(Long id, Clazz c) {
+	private void findAndDeleteScouts(Key<Event> eKey) {
 		Objectify ofy = ObjectifyService.begin();
-		Event e = get(id);
+		List<Key<Scout>> scoutKeys = ofy.query(Scout.class).filter("eventKey", eKey).listKeys();
+		ofy.delete(scoutKeys);
+	}
+
+	public Key<Clazz> addClazz(Key<Event> eKey, Clazz c) {
+		Objectify ofy = ObjectifyService.begin();
+		Event e = get(eKey);
 
 		if (e == null) {
-			throw new RuntimeException("Event " + id + " not found!");
+			throw new RuntimeException("Event " + eKey.getId() + " not found!");
 		}
 
-		Key<Event> eKey = new Key<Event>(Event.class, id);
 		c.setEvent(eKey);
 		Key<Clazz> cKey = ofy.put(c);
 
@@ -149,9 +155,23 @@ public enum EventDao {
 		return allClazzes;
 	}
 
+	public List<Clazz> getClazzesByCounselor(Key<Event> eventKey, Key<Staff> staffKey) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("staffId", staffKey).ancestor(eventKey).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+
 	public List<Clazz> getClazzesByProgramArea(String programArea) {
 		Objectify ofy = ObjectifyService.begin();
 		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("programArea", programArea).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+
+	public List<Clazz> getClazzesByProgramArea(Key<Event> eventKey, String programArea) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("programArea", programArea).ancestor(eventKey).list();
 		Collections.sort(allClazzes, new ClazzComparator());
 		return allClazzes;
 	}

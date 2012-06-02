@@ -7,7 +7,7 @@ import com.campscribe.dao.StaffDao;
 import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 
-public class StaffManager {
+public class StaffManager extends BaseManager {
 	
 	public void addStaff(Staff s) {
 		StaffDao.INSTANCE.add(s);
