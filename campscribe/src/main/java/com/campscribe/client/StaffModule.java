@@ -1,24 +1,23 @@
 package com.campscribe.client;
 
 import com.campscribe.client.staff.AddEditStaffView;
+import com.campscribe.client.staff.StaffService;
+import com.campscribe.client.staff.StaffServiceJSONImpl;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Staff implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
+public class StaffModule implements EntryPoint {
 
+	StaffService staffService = new StaffServiceJSONImpl();
+
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -50,13 +49,22 @@ public class Staff implements EntryPoint {
 		});
 	}
 
-	private native void addGWTActionTriggers(Staff module)/*-{
+	private native void addGWTActionTriggers(StaffModule module)/*-{
         $wnd.StaffGWT = {
+            deleteStaff: function(id) {
+                module.@com.campscribe.client.StaffModule::deleteStaff(Ljava/lang/String;)(id);
+            },
             editStaff: function(id) {
-                module.@com.campscribe.client.Staff::editStaff(Ljava/lang/String;)(id);
+                module.@com.campscribe.client.StaffModule::editStaff(Ljava/lang/String;)(id);
             }
         };
     }-*/;
+
+	public void deleteStaff(String id) {
+		if (Window.confirm("Are you sure you want to delete this Staff?")) {
+			staffService.deleteStaff(id);
+		}
+	}
 
 	public void editStaff(String id) {
 		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Staff", new AddEditStaffView(id));

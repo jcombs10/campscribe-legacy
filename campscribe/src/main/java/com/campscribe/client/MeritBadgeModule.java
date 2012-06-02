@@ -50,11 +50,11 @@ public class MeritBadgeModule implements EntryPoint {
 
 	private native void addGWTActionTriggers(MeritBadgeModule module)/*-{
         $wnd.MeritBadgeGWT = {
-            editMeritBadge: function(id) {
-                module.@com.campscribe.client.MeritBadgeModule::editMeritBadge(Ljava/lang/String;)(id);
-            },
             deleteMeritBadge: function(id) {
                 module.@com.campscribe.client.MeritBadgeModule::deleteMeritBadge(Ljava/lang/String;)(id);
+            },
+            editMeritBadge: function(id) {
+                module.@com.campscribe.client.MeritBadgeModule::editMeritBadge(Ljava/lang/String;)(id);
             }
         };
     }-*/;

@@ -62,7 +62,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
-				Window.alert("received response "+response.getStatusCode());
+//				Window.alert("received response "+response.getStatusCode());
 				logger.fine("deleteMeritBadge received response "+response.getStatusCode());
 				Window.Location.reload();
 			}
