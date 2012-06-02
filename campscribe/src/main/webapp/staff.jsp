@@ -27,9 +27,9 @@
         <td><c:out value="${staffMember.programArea}" /> </td>
         <td><c:out value="${staffMember.emailAddress}" /> </td>
         <td style="text-align: center;"><a href="#" onclick="StaffGWT.editStaff('<c:out value="${staffMember.id}"/>');" ><img
-                        src="images/16x16/edit.gif" alt="Edit"></a></td>
-        <td style="text-align: center;"><a href="deleteStaff.cs?id=${staffMember.id}"><img
-                        src="images/16x16/delete.png" alt="Delete"></a></td>
+                        src="images/16x16/edit.gif" alt="Edit" title="Edit"></a></td>
+        <td style="text-align: center;"><a href="#" onclick="StaffGWT.deleteStaff('<c:out value="${staffMember.id}"/>');" ><img
+                        src="images/16x16/delete.png" alt="Delete" title="Delete"></a></td>
       </tr>
     </c:forEach>
   </table>

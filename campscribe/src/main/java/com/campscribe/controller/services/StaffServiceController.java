@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.StaffManager;
@@ -30,6 +29,11 @@ public class StaffServiceController {
 		return staffDTO;
 	}
 
+	@RequestMapping(method=RequestMethod.DELETE, value = "/staff/{id}",headers="Accept=application/json")
+	public void deleteStaff(@PathVariable long id) {
+		staffMgr.deleteStaff(id);
+	}
+
 	@RequestMapping(method=RequestMethod.GET, value = "/staff/",headers="Accept=application/json")
 	public @ResponseBody List<Staff> getAllStaff() {
 		List<Staff> staff = staffMgr.listStaff();
@@ -45,11 +49,6 @@ public class StaffServiceController {
 	public @ResponseBody Staff updateStaff(@PathVariable long id, @RequestBody Staff e) {
 		staffMgr.updateStaff(e);
 		return e;
-	}
-
-	@RequestMapping(method=RequestMethod.DELETE, value = "/staff/{id}",headers="Accept=application/json")
-	public @ResponseBody void deleteStaff(@RequestParam long id) {
-		staffMgr.deleteStaff(id);
 	}
 
 }

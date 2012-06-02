@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.business.StaffManager;
@@ -26,21 +25,6 @@ public class StaffController {
 	            throws ServletException, IOException {
 
 	        logger.info("Returning staff view");
-
-	        ModelAndView mav = new ModelAndView("staff.jsp");
-	        mav.addObject("staff", getStaffManager().listStaff());
-	        mav.addObject("roleLookup", getRoleLookup());
-	        
-	        return mav;
-	    }
-
-	@RequestMapping("/deleteStaff.cs")
-	public ModelAndView deleteStaff(@RequestParam("id") long id)
-	            throws ServletException, IOException {
-
-	        logger.info("Returning staff view");
-
-	        getStaffManager().deleteStaff(id);
 
 	        ModelAndView mav = new ModelAndView("staff.jsp");
 	        mav.addObject("staff", getStaffManager().listStaff());
