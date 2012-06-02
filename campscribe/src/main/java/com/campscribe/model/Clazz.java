@@ -1,8 +1,10 @@
 package com.campscribe.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -13,14 +15,15 @@ import com.googlecode.objectify.annotation.Parent;
 @Cached
 @Entity
 public class Clazz {
-    @Id
+	@Id
     private Long id;
 	private String description;
 	private String programArea;
     private Key<Staff> staffId;
 	private Key<MeritBadge> mbId;
 	private String mbName;
-	private String notes;
+	@Embedded
+	List<Note> notesList = new ArrayList<Note>();
 	@Parent
     private Key<Event> event;
     
@@ -98,12 +101,59 @@ public class Clazz {
 		this.programArea = programArea;
 	}
 
-    public String getNotes() {
-		return notes;
+    public List<Note> getNotesList() {
+		return notesList;
 	}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public void setNotesList(List<Note> notesList) {
+		this.notesList = notesList;
+	}
+	
+	public void addNote(Note note) {
+		notesList.add(note);
 	}
 
+	public static class Note {
+		private Key<Staff> staffKey;
+		private String staffName;
+		private Date date;
+		private String noteText;
+		
+		public Note() {
+		}
+
+		public Key<Staff> getStaffKey() {
+			return staffKey;
+		}
+
+		public void setStaffKey(Key<Staff> staffKey) {
+			this.staffKey = staffKey;
+		}
+
+		public String getStaffName() {
+			return staffName;
+		}
+
+		public void setStaffName(String staffName) {
+			this.staffName = staffName;
+		}
+
+		public Date getDate() {
+			return date;
+		}
+
+		public void setDate(Date date) {
+			this.date = date;
+		}
+
+		public String getNoteText() {
+			return noteText;
+		}
+
+		public void setNoteText(String noteText) {
+			this.noteText = noteText;
+		}
+		
+	}
+	
 }

@@ -1,7 +1,9 @@
 package com.campscribe.controller.web;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -11,7 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.auth.CampScribeUser;
@@ -19,6 +24,7 @@ import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
+import com.campscribe.model.Event;
 import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
@@ -33,30 +39,83 @@ public class TrackingController {
 	private MeritBadgeManager mbMgr;
 	private StaffManager staffMgr;
 
-	@RequestMapping("/tracking")
+	@RequestMapping(value="/tracking", method=RequestMethod.POST)
+	public ModelAndView getTracking(@ModelAttribute("event")
+	TrackingFBO event, BindingResult result, HttpServletRequest request) throws ServletException, IOException {
+		
+		return index2(event, request);
+	}
+	
+	@RequestMapping(value="/tracking", method=RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request)
+			throws ServletException, IOException {
+	
+		List<Event> events = getEventManager().listEvents();
+
+		TrackingFBO fbo = new TrackingFBO();
+		Date today = new Date();
+		for (Event e:events) {
+			Date startDate = (Date) e.getStartDate().clone();
+			startDate.setDate(startDate.getDate()-2);
+			Date endDate = (Date) e.getEndDate().clone();
+			endDate.setDate(endDate.getDate()+2);
+			if (today.after(startDate) && today.before(endDate)) {
+				fbo.setEventId(e.getId());
+			}
+		}
+		
+		return index2(fbo, request);
+	}
+
+	private ModelAndView index2(TrackingFBO fbo, HttpServletRequest request)
 			throws ServletException, IOException {
 		logger.info("Returning tracking view");
 
 		ModelAndView mav = new ModelAndView("tracking.jsp");
+
+		List<Event> events = getEventManager().listEvents();
+		mav.addObject("eventList", events);
+
+		mav.addObject("event", fbo);
+
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CampScribeUser) {
 			CampScribeUser user = (CampScribeUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			String name = user.getUsername(); //get logged in username
 			Staff s = getStaffManager().getStaffByName(name);
+
+			mav.addObject("fullName", s.getName());
+			mav.addObject("programArea", s.getProgramArea());
+
 			if (request.isUserInRole("area_director")) {
-				mav.addObject("clazzes", getEventManager().getClazzesByProgramArea(s.getProgramArea()));
+				if (fbo!=null && fbo.getEventId()!=null) {
+					mav.addObject("clazzes", getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), s.getProgramArea()));
+				} else {
+					mav.addObject("clazzes", getEventManager().getClazzesByProgramArea(s.getProgramArea()));
+				}
 			} else if (request.isUserInRole("counselor")) {
-				mav.addObject("clazzes", getEventManager().getClazzesByCounselor(new Key<Staff>(Staff.class, s.getId())));
+				if (fbo!=null && fbo.getEventId()!=null) {
+					mav.addObject("clazzes", getEventManager().getClazzesByCounselor(new Key<Event>(Event.class, fbo.getEventId()), new Key<Staff>(Staff.class, s.getId())));
+				} else {
+					mav.addObject("clazzes", getEventManager().getClazzesByCounselor(new Key<Staff>(Staff.class, s.getId())));
+				}
+			} else {
+				if (fbo!=null && fbo.getEventId()!=null) {
+					mav.addObject("clazzes", getClazzManager().listClazzes(new Key<Event>(Event.class, fbo.getEventId())));
+				} else {
+					mav.addObject("clazzes", getClazzManager().listClazzes());
+				}
+			}
+		} else {
+			if (fbo!=null && fbo.getEventId()!=null) {
+				mav.addObject("clazzes", getClazzManager().listClazzes(new Key<Event>(Event.class, fbo.getEventId())));
 			} else {
 				mav.addObject("clazzes", getClazzManager().listClazzes());
 			}
-		} else {
-			mav.addObject("clazzes", getClazzManager().listClazzes());
 		}
 
 		mav.addObject("mbLookup", getMbNameLookup());
 		mav.addObject("staffLookup", getStaffLookup());
-
+		
 		return mav;
 	}
 

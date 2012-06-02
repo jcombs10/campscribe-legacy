@@ -1,5 +1,8 @@
 package com.campscribe.shared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ClazzDTO {
     private String key;
@@ -9,7 +12,7 @@ public class ClazzDTO {
 	private Long mbId;
     private Long eventId;
 	private String programArea;
-	private String notes;
+	List<NoteDTO> notesList = new ArrayList<NoteDTO>();
 
 	public ClazzDTO() {
 	}
@@ -71,12 +74,12 @@ public class ClazzDTO {
 		this.programArea = programArea;
 	}
 
-	public String getNotes() {
-		return notes;
+    public List<NoteDTO> getNotesList() {
+		return notesList;
 	}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public void setNotesList(List<NoteDTO> notesList) {
+		this.notesList = notesList;
 	}
-
+	
 }

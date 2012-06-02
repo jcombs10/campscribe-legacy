@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cached;
 
 @Cached
@@ -16,16 +17,18 @@ public class Scout {
 	private String rank;
 	private String unitType;
 	private String unitNumber;
+	private Key<Event> eventKey;
 	
 	public Scout() {
 	}
 	
-	public Scout(String firstName, String lastName, String rank, String unitType, String unitNumber) {
+	public Scout(String firstName, String lastName, String rank, String unitType, String unitNumber, Key<Event> eventKey) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.rank = rank;
 		this.unitType = unitType;
 		this.unitNumber = unitNumber;
+		this.eventKey = eventKey;
 	}
 	
 	public Long getId() {
@@ -74,6 +77,14 @@ public class Scout {
 
 	public void setUnitNumber(String unitNumber) {
 		this.unitNumber = unitNumber;
+	}
+
+	public Key<Event> getEventKey() {
+		return eventKey;
+	}
+
+	public void setUnitNumber(Key<Event> eventKey) {
+		this.eventKey = eventKey;
 	}
 
 	@Transient

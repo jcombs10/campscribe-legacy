@@ -15,7 +15,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='com.campscribe.client.MeritBadge'/>
+  <entry-point class='com.campscribe.client.MeritBadgeModule'/>
   <entry-point class='com.campscribe.client.MeritBadgeMetadata'/>
   <entry-point class='com.campscribe.client.Event'/>
   <entry-point class='com.campscribe.client.Clazz'/>

@@ -14,7 +14,7 @@ import com.google.gwt.user.client.Window;
 
 public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 
-	private Logger log = Logger.getLogger("MeritBadgeServiceJSONImpl");
+	private Logger logger = Logger.getLogger("MeritBadgeServiceJSONImpl");
 
 	public MeritBadgeServiceJSONImpl() {
 	}
@@ -30,6 +30,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 //				Window.alert("received response "+response.getStatusCode());
+				logger.fine("addMeritBadge received response "+response.getStatusCode());
 				Window.Location.reload();
 			}
 
@@ -42,6 +43,38 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 
 //		Window.alert("sending  MB" + buildJSON(mb, mb.getRequirements()));
 		rb.setRequestData(buildJSON(mb, mb.getRequirements()));
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void deleteMeritBadge(String id) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, "/service/meritbadges/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+				Window.alert("received response "+response.getStatusCode());
+				logger.fine("deleteMeritBadge received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+		rb.setRequestData("{}");
 
 		try {
 			rb.send();
@@ -94,6 +127,7 @@ public class MeritBadgeServiceJSONImpl implements MeritBadgeService {
 			@Override
 			public void onResponseReceived(Request request, Response response) {
 //				Window.alert("received response "+response.getStatusCode());
+				logger.fine("updateMeritBadge received response "+response.getStatusCode());
 				Window.Location.reload();
 			}
 

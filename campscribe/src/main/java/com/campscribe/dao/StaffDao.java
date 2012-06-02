@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -14,10 +13,6 @@ import com.googlecode.objectify.Query;
 
 public enum StaffDao {
 	INSTANCE;
-	
-	static {
-		ObjectifyService.register(Staff.class);
-	}
 	
 	public void add(Staff s) {
 		synchronized(this) {

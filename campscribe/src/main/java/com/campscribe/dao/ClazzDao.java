@@ -43,6 +43,13 @@ public enum ClazzDao {
 		return allClazzes;
 	}
 
+	public List<Clazz> listClazzes(Key<Event> eventKey) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).ancestor(eventKey).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+
 	public void remove(long id) {
 		Objectify ofy = ObjectifyService.begin();
 		Key<Clazz> e = new Key<Clazz>(Clazz.class, id);

@@ -8,6 +8,8 @@ public interface MeritBadgeService {
 
     public void addMeritBadge(MeritBadgeDTO mb);
 
+	void deleteMeritBadge(String id);
+
     public void getMeritBadge(String id, RequestCallback cb);
     
 	public void getMeritBadges(RequestCallback cb);

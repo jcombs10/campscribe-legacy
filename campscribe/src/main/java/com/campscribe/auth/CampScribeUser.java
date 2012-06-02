@@ -15,12 +15,14 @@ public class CampScribeUser implements UserDetails {
 	private String password;
 	private String userName;
 	private List<String> roles;
+	private String programArea;
 
-	public CampScribeUser(String userName, String password, List<String> roles) {
+	public CampScribeUser(String userName, String password, List<String> roles, String programArea) {
 		super();
 		this.password = password==null?"":password;
 		this.userName = userName==null?"":userName;
 		this.roles = roles==null?new ArrayList<String>():roles;
+		this.setProgramArea(programArea==null?"":programArea);
 	}
 
 	@Override
@@ -60,6 +62,14 @@ public class CampScribeUser implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public String getProgramArea() {
+		return programArea;
+	}
+
+	public void setProgramArea(String programArea) {
+		this.programArea = programArea;
 	}
 
 }

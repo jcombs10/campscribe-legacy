@@ -54,45 +54,9 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 
 		String csvString = req.getParameter("csv");
 
-		//first pass - look for scouts to add
+		//first pass - look for events to add
 		CSVReader reader = new CSVReader(new StringReader(csvString));
 		String [] nextLine = {};
-		Map<String, Key<Scout>> scoutIdMap = new HashMap<String, Key<Scout>>(); 
-		while ((nextLine = reader.readNext()) != null) {
-			log.info("processing line looking for scouts" + Arrays.toString(nextLine));
-			//header or blank line found, skip to the next line
-			if (nextLine.length==0) {
-				log.warning("skipping blank line");
-				continue;
-			} else if ("Group (Registration)".equals(nextLine[0])) {
-				log.fine("skipping header line");
-				continue;
-			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
-				//every scout has a line with the camp address so we don't really need to look at other lines...
-				String[] unitFields = nextLine[0].split("[ (]");
-				String unitType = unitFields[0];
-				String unitNumber = unitFields[1];
-				String lastName = nextLine[1];
-				String firstName = nextLine[2];
-				
-				String keyStr = firstName+","+lastName+","+unitType+","+unitNumber;
-				
-				if (!scoutIdMap.containsKey(keyStr)) {
-					Key<Scout> s = processScout(firstName, lastName, unitType, unitNumber);
-					if (s == null) {
-						log.warning("could not find or create scout " + nextLine[1] + " " + nextLine[2]);
-					} else {
-						scoutIdMap.put(keyStr, s);
-					}
-				} else {
-					log.fine("same scout as previous line " + nextLine[1] + " " + nextLine[2]);
-				}
-			}
-
-		}
-		
-		//second pass - look for events to add
-		reader = new CSVReader(new StringReader(csvString));
 		Map<String, Key<Event>> eventIdMap = new HashMap<String, Key<Event>>(); 
 		while ((nextLine = reader.readNext()) != null) {
 			log.info("processing line looking for events" + Arrays.toString(nextLine));
@@ -118,6 +82,48 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 			}
 		}
 
+		//second pass - look for scouts to add
+		reader = new CSVReader(new StringReader(csvString));
+		Map<String, Key<Scout>> scoutIdMap = new HashMap<String, Key<Scout>>(); 
+		while ((nextLine = reader.readNext()) != null) {
+			log.info("processing line looking for scouts" + Arrays.toString(nextLine));
+			//header or blank line found, skip to the next line
+			if (nextLine.length==0) {
+				log.warning("skipping blank line");
+				continue;
+			} else if ("Group (Registration)".equals(nextLine[0])) {
+				log.fine("skipping header line");
+				continue;
+			} else if (nextLine.length>=5 && nextLine[4].startsWith("581 Ibold Rd")) {
+				//every scout has a line with the camp address so we don't really need to look at other lines...
+				String[] unitFields = nextLine[0].split("[ (]");
+				String unitType = unitFields[0];
+				String unitNumber = unitFields[1];
+				String lastName = nextLine[1];
+				String firstName = nextLine[2];
+				Key<Event> e = null;
+				if (eventIdMap.containsKey(nextLine[3])) {
+					e = eventIdMap.get(nextLine[3]);
+				} else {
+					log.warning("couldn't find event " + nextLine[3] + " for scout " + nextLine[1] + " " + nextLine[2]);
+				}
+				
+				String keyStr = firstName+","+lastName+","+unitType+","+unitNumber;
+				
+				if (!scoutIdMap.containsKey(keyStr)) {
+					Key<Scout> s = processScout(firstName, lastName, unitType, unitNumber, e);
+					if (s == null) {
+						log.warning("could not find or create scout " + nextLine[1] + " " + nextLine[2]);
+					} else {
+						scoutIdMap.put(keyStr, s);
+					}
+				} else {
+					log.fine("same scout as previous line " + nextLine[1] + " " + nextLine[2]);
+				}
+			}
+
+		}
+		
 		//third pass - look for clazzes to add.  need to be aware of which event they go to
 		reader = new CSVReader(new StringReader(csvString));
 		Map<String, Key<Clazz>> clazzIdMap = new HashMap<String, Key<Clazz>>();
@@ -196,13 +202,13 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 		
 	}
 
-	private Key<Scout> processScout(String firstName, String lastName, String unitType, String unitNumber) {
+	private Key<Scout> processScout(String firstName, String lastName, String unitType, String unitNumber, Key<Event> eventKey) {
 		Scout aScout = scoutManager.getScout(firstName, lastName, unitType, unitNumber);
 		Key<Scout> sKey = null;
 
 		if (aScout == null) {
 			//create new scout
-			Scout newScout = new Scout(firstName, lastName, "", unitType, unitNumber);
+			Scout newScout = new Scout(firstName, lastName, "", unitType, unitNumber, eventKey);
 			sKey = scoutManager.addScout(newScout);
 			log.info("scout created with id " + sKey.getId());
 		} else {

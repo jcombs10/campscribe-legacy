@@ -1,7 +1,14 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+	
 	<ui:style type="com.campscribe.client.clazzes.TrackClazzProgressView.MyStyle">
+        .noteAuthor {
+            font-weight: bold;
+        }
+        .noteTimestamp {
+            font-weight: bold;
+        }
         .tabBar {
             border-bottom: 1px solid #000;
         }
@@ -15,6 +22,7 @@
             background-color: #A9A9A9 !important;
         }
 	</ui:style>
+	
 	<g:HTMLPanel>
 		<g:FlowPanel styleName="{style.tabBar}">
 			<g:Label ui:field="attendanceTab" styleName="leftfloat {style.tab} {style.tabSelected}">Attendance</g:Label>
@@ -29,7 +37,10 @@
             <g:FlexTable ui:field="requirementsTable" />
         </g:FlowPanel>
         <g:FlowPanel ui:field="commentsContent" visible="false">
-            <g:TextArea ui:field="commentsBox" visibleLines="10" characterWidth="80" />
+            <g:ScrollPanel height="100px">
+                <g:FlowPanel ui:field="notesList"/>
+            </g:ScrollPanel>
+            <g:TextArea ui:field="noteTextArea" visibleLines="4" characterWidth="80" />
         </g:FlowPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

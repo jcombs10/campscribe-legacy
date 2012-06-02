@@ -14,10 +14,6 @@ import com.googlecode.objectify.Query;
 public enum MeritBadgeMetadataDao {
 	INSTANCE;
 
-	static {
-		ObjectifyService.register(MeritBadgeMetadata.class);
-	}
-
 	public void add(MeritBadgeMetadata mbMd) {
 		synchronized(this) {
 			Objectify ofy = ObjectifyService.begin();

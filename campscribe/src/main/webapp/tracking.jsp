@@ -1,5 +1,15 @@
 <%@ include file="header.jsp" %>
-<h2>Event Details</h2>
+<h2>
+<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">Tracking for Entire Camp</sec:authorize>
+<sec:authorize access="hasRole('area_director') and !hasRole('system_admin')">Tracking for <c:out value="${programArea}" /></sec:authorize>
+<sec:authorize access="hasRole('counselor') and !hasRole('system_admin')">Tracking for <c:out value="${fullName}" /></sec:authorize>
+
+</h2>
+<form:form commandName="event" >
+    <form:select path="eventId" onchange='this.form.submit()'>
+        <form:options items="${eventList}" itemLabel="description" itemValue="id"/>
+    </form:select>
+</form:form>
 <table class="campscribeList">
     <tr>
         <th>Description</th>

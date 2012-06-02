@@ -23,6 +23,22 @@ public class MeritBadgeServiceController {
 	//	@Autowired
 	MeritBadgeManager mbMgr = new MeritBadgeManager();
 
+	@RequestMapping(method=RequestMethod.POST, value = "/meritbadges/",headers="Accept=application/json")
+	public @ResponseBody MeritBadgeDTO addMeritBadge(@RequestBody MeritBadgeDTO mbDTO) {
+		System.err.println("addMeritBadge called");
+		MeritBadge mb = new MeritBadge(mbDTO.getBadgeName(), mbDTO.isEagleRequired());
+		mb.setBsaAdvancementId(mbDTO.getBsaAdvancementId());
+		mb.setRequirementsStr(mbDTO.getRequirementsStr());
+		mbMgr.addMeritBadge(mb);
+		return mbDTO;
+	}
+
+	@RequestMapping(method=RequestMethod.DELETE, value = "/meritbadges/{id}",headers="Accept=application/json")
+	public void deleteMeritBadge(@PathVariable long id) {
+		System.err.println("deleteMeritBadge called");
+		mbMgr.deleteMeritBadge(id);
+	}
+
 	@RequestMapping(method=RequestMethod.GET, value = "/meritbadges/",headers="Accept=application/json")
 	public @ResponseBody List<MeritBadgeDTO> getAllMeritBadges() {
 		List<MeritBadgeDTO> badgeDTOs = new ArrayList<MeritBadgeDTO>();
@@ -38,16 +54,6 @@ public class MeritBadgeServiceController {
 		return badgeDTOs;
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value = "/meritbadges/",headers="Accept=application/json")
-	public @ResponseBody MeritBadgeDTO addMeritBadge(@RequestBody MeritBadgeDTO mbDTO) {
-		System.err.println("addMeritBadge called");
-		MeritBadge mb = new MeritBadge(mbDTO.getBadgeName(), mbDTO.isEagleRequired());
-		mb.setBsaAdvancementId(mbDTO.getBsaAdvancementId());
-		mb.setRequirementsStr(mbDTO.getRequirementsStr());
-		mbMgr.addMeritBadge(mb);
-		return mbDTO;
-	}
-
 	@RequestMapping(method=RequestMethod.GET, value = "/meritbadges/{id}",headers="Accept=application/json")
 	public @ResponseBody MeritBadgeDTO getMeritBadge(@PathVariable long id) {
 		MeritBadge mb = mbMgr.getMeritBadge(id);
@@ -59,7 +65,6 @@ public class MeritBadgeServiceController {
 		mbDTO.setBsaAdvancementId(mb.getBsaAdvancementId());
 		mbDTO.setRequirementsStr(mb.getRequirementsStr());
 		return mbDTO;
-
 	}
 
 	@RequestMapping(method=RequestMethod.PUT, value = "/meritbadges/{id}",headers="Accept=application/json")
@@ -86,11 +91,6 @@ public class MeritBadgeServiceController {
 			requirements.add(req);
 		}
 		return requirements;
-	}
-
-	@RequestMapping(method=RequestMethod.DELETE, value = "/meritbadges/{id}",headers="Accept=application/json")
-	public @ResponseBody void deleteMeritBadge(@RequestParam long id) {
-		mbMgr.deleteMeritBadge(id);
 	}
 
 }

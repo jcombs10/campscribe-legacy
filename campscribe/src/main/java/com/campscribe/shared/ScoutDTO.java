@@ -21,16 +21,18 @@ public class ScoutDTO {
 	private String rank;
 	private String unitType;
 	private String unitNumber;
+	private Long eventId;
 	
 	public ScoutDTO() {
 	}
 	
-	public ScoutDTO(String firstName, String lastName, String rank, String unitType, String unitNumber) {
+	public ScoutDTO(String firstName, String lastName, String rank, String unitType, String unitNumber, Long eventId) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.rank = rank;
 		this.unitType = unitType;
 		this.unitNumber = unitNumber;
+		this.eventId = eventId;
 	}
 	
 	public Long getId() {
@@ -79,6 +81,14 @@ public class ScoutDTO {
 
 	public void setUnitNumber(String unitNumber) {
 		this.unitNumber = unitNumber;
+	}
+
+	public Long getEventId() {
+		return eventId;
+	}
+
+	public void setgetEventId(Long eventId) {
+		this.eventId = eventId;
 	}
 
 	public String getDisplayName() {
