@@ -3,6 +3,7 @@ package com.campscribe.controller.services;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,10 +25,11 @@ public class ScoutServiceController {
 	@RequestMapping(method = RequestMethod.GET, value = "/scouts/", headers = "Accept=application/json")
 	public @ResponseBody
 	List<Scout> getScouts(
+			@RequestParam(value = "eventId", required = true) String eventId,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "unitType", required = false) String unitType,
 			@RequestParam(value = "unitNumber", required = false) String unitNumber) {
-		List<Scout> scouts = scoutMgr.listScouts(name, unitType, unitNumber);
+		List<Scout> scouts = scoutMgr.listScouts(new Key<Event>(Event.class, eventId), name, unitType, unitNumber);
 		return scouts;
 	}
 
@@ -40,6 +42,12 @@ public class ScoutServiceController {
 				scoutDTO.getUnitNumber(), new Key<Event>(Event.class, scoutDTO.getEventId()));
 		scoutMgr.addScout(e);
 		return e;
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/scouts/{id}", headers = "Accept=application/json")
+	public void deleteScout(@PathVariable long id) {
+		System.err.println("deleteScout called");
+		scoutMgr.deleteScout(id);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/scouts/{id}", headers = "Accept=application/json")
@@ -57,12 +65,6 @@ public class ScoutServiceController {
 				scoutDTO.getUnitNumber(), new Key<Event>(Event.class, scoutDTO.getEventId()));
 		scoutMgr.updateScout(s);
 		return scoutDTO;
-	}
-
-	@RequestMapping(method = RequestMethod.DELETE, value = "/scouts/{id}", headers = "Accept=application/json")
-	public @ResponseBody
-	void deleteScout(@RequestParam long id) {
-		scoutMgr.deleteScout(id);
 	}
 
 }

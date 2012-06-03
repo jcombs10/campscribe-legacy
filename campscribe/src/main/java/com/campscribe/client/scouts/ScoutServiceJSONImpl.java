@@ -8,12 +8,11 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 
 public class ScoutServiceJSONImpl implements ScoutService {
 
-	private Logger log = Logger.getLogger("ScoutServiceJSONImpl");
+	private Logger logger = Logger.getLogger("ScoutServiceJSONImpl");
 
 	public ScoutServiceJSONImpl() {
 	}
@@ -50,6 +49,38 @@ public class ScoutServiceJSONImpl implements ScoutService {
 
 	}
 
+	@Override
+	public void deleteScout(String id) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, "/service/scouts/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+				logger.fine("deleteScout received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+		rb.setRequestData("{}");
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+	}
+
 	private String buildJSON(ScoutDTO s) {
 		StringBuilder sb = new StringBuilder("{ \"id\":\"");
 		sb.append(s.getId());
@@ -63,14 +94,18 @@ public class ScoutServiceJSONImpl implements ScoutService {
 		sb.append(s.getUnitType());
 		sb.append("\",\"unitNumber\":\"");
 		sb.append(s.getUnitNumber());
+		sb.append("\",\"eventId\":\"");
+		sb.append(s.getEventId());
 		sb.append("\"}");
 		return sb.toString();
 	}
 
 	@Override
-	public void searchScouts(String name, String unitType, String unitNumber, RequestCallback callback) {
+	public void searchScouts(long eventId, String name, String unitType, String unitNumber, RequestCallback callback) {
 		StringBuilder url = new StringBuilder("/service/scouts/");
-		url.append("?name=");
+		url.append("?eventId=");
+		url.append(eventId);
+		url.append("&name=");
 		url.append(name);
 		url.append("&unitType=");
 		url.append(unitType);

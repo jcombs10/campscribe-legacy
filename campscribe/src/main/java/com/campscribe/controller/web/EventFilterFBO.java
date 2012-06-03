@@ -1,12 +1,12 @@
 package com.campscribe.controller.web;
 
-public class TrackingFBO {
+public class EventFilterFBO {
 	private Long eventId;
 
-	public TrackingFBO() {
+	public EventFilterFBO() {
 	}
 
-	public TrackingFBO(Long eventId) {
+	public EventFilterFBO(Long eventId) {
 		this.eventId = eventId;
 	}
 

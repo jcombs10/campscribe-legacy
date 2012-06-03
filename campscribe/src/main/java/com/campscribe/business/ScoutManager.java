@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.ScoutDao;
+import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.googlecode.objectify.Key;
 
@@ -25,12 +26,12 @@ public class ScoutManager extends BaseManager {
 		return ScoutDao.INSTANCE.get(firstName, lastName, unitType, unitNumber);
 	}
 
-	public List<Scout> listScouts() {
-		return ScoutDao.INSTANCE.listScouts(null, null, null);
+	public List<Scout> listScouts(Key<Event> eKey) {
+		return ScoutDao.INSTANCE.listScouts(eKey, null, null, null);
 	}
 
-	public List<Scout> listScouts(String name, String unitType, String unitNumber) {
-		return ScoutDao.INSTANCE.listScouts(name, unitType, unitNumber);
+	public List<Scout> listScouts(Key<Event> eKey, String name, String unitType, String unitNumber) {
+		return ScoutDao.INSTANCE.listScouts(eKey, name, unitType, unitNumber);
 	}
 
 	public void updateScout(Scout e) {

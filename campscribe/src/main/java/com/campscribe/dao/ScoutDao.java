@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -15,9 +16,12 @@ import com.googlecode.objectify.Query;
 public enum ScoutDao {
 	INSTANCE;
 	
-	public List<Scout> listScouts(String name, String unitType, String unitNumber) {
+	public List<Scout> listScouts(Key<Event> eKey, String name, String unitType, String unitNumber) {
 		Objectify ofy = ObjectifyService.begin();
 		Query<Scout> q = ofy.query(Scout.class).order("lastName").order("firstName");
+		if (eKey != null) {
+			q = q.filter("eventKey", eKey);
+		}
 		if (StringUtils.isNotEmpty(name)) {
 			q = q.filter("lastName >=", name).filter("lastName <", "u’"+name+"’ + u’\ufffd’");
 		}

@@ -1,7 +1,6 @@
 package com.campscribe.controller.web;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.StaffManager;
 import com.campscribe.model.Event;
+import com.campscribe.model.EventUtil;
 import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Staff;
 import com.googlecode.objectify.Key;
@@ -39,35 +39,26 @@ public class TrackingController {
 	private MeritBadgeManager mbMgr;
 	private StaffManager staffMgr;
 
-	@RequestMapping(value="/tracking", method=RequestMethod.POST)
-	public ModelAndView getTracking(@ModelAttribute("event")
-	TrackingFBO event, BindingResult result, HttpServletRequest request) throws ServletException, IOException {
+	@RequestMapping(value="/tracking.cs", method=RequestMethod.POST)
+	public ModelAndView getTracking(@ModelAttribute("eventFilter")
+	EventFilterFBO fbo, BindingResult result, HttpServletRequest request) throws ServletException, IOException {
 		
-		return index2(event, request);
+		return getTracking(fbo, request);
 	}
 	
-	@RequestMapping(value="/tracking", method=RequestMethod.GET)
-	public ModelAndView index(HttpServletRequest request)
+	@RequestMapping(value="/tracking.cs", method=RequestMethod.GET)
+	public ModelAndView getTracking(HttpServletRequest request)
 			throws ServletException, IOException {
 	
 		List<Event> events = getEventManager().listEvents();
 
-		TrackingFBO fbo = new TrackingFBO();
-		Date today = new Date();
-		for (Event e:events) {
-			Date startDate = (Date) e.getStartDate().clone();
-			startDate.setDate(startDate.getDate()-2);
-			Date endDate = (Date) e.getEndDate().clone();
-			endDate.setDate(endDate.getDate()+2);
-			if (today.after(startDate) && today.before(endDate)) {
-				fbo.setEventId(e.getId());
-			}
-		}
+		EventFilterFBO fbo = new EventFilterFBO();
+		fbo.setEventId(EventUtil.findCurrentEventId(events));
 		
-		return index2(fbo, request);
+		return getTracking(fbo, request);
 	}
 
-	private ModelAndView index2(TrackingFBO fbo, HttpServletRequest request)
+	private ModelAndView getTracking(EventFilterFBO fbo, HttpServletRequest request)
 			throws ServletException, IOException {
 		logger.info("Returning tracking view");
 
@@ -76,7 +67,7 @@ public class TrackingController {
 		List<Event> events = getEventManager().listEvents();
 		mav.addObject("eventList", events);
 
-		mav.addObject("event", fbo);
+		mav.addObject("eventFilter", fbo);
 
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CampScribeUser) {
 			CampScribeUser user = (CampScribeUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

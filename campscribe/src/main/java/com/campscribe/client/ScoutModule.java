@@ -1,35 +1,29 @@
 package com.campscribe.client;
 
 import com.campscribe.client.scouts.AddEditScoutView;
+import com.campscribe.client.scouts.ScoutService;
+import com.campscribe.client.scouts.ScoutServiceJSONImpl;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Scout implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
+public class ScoutModule implements EntryPoint {
 
-	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-//	private final GreetingServiceAsync greetingService = GWT
-//			.create(GreetingService.class);
+	ScoutService scoutService = new ScoutServiceJSONImpl();
+
 
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		
+		addGWTActionTriggers(this);
+
 		final Button addButton = new Button("Add");
 
 		// We can add style names to widgets
@@ -47,11 +41,36 @@ public class Scout implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		addButton.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.center();
 			}
 		});
 	}
+
+	private native void addGWTActionTriggers(ScoutModule module)/*-{
+        $wnd.ScoutGWT = {
+            deleteScout: function(id) {
+                module.@com.campscribe.client.ScoutModule::deleteScout(Ljava/lang/String;)(id);
+            },
+            editScout: function(id) {
+                module.@com.campscribe.client.ScoutModule::editScout(Ljava/lang/String;)(id);
+            }
+        };
+    }-*/;
+
+	public void deleteScout(String id) {
+		if (Window.confirm("Are you sure you want to delete this Scout?")) {
+			scoutService.deleteScout(id);
+		}
+	}
+
+	public void editScout(String id) {
+		Window.alert("Edit Scout not yet implemented");
+//		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Scout", new AddEditScoutView(id));
+//		dialogBox.setAnimationEnabled(true);
+//		dialogBox.center();
+	}
+
 }

@@ -110,7 +110,7 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 
 		};
 
-		scoutService.searchScouts(lastName.getText(), unitType.getValue(unitType.getSelectedIndex()), unitNumber.getText(), callback);
+		scoutService.searchScouts(getEventIdFromPage(), lastName.getText(), unitType.getValue(unitType.getSelectedIndex()), unitNumber.getText(), callback);
 	}
 
 	private List<ScoutDTO> parseScoutJsonData(String json) {
