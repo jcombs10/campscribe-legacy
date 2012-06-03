@@ -31,6 +31,7 @@ public class StaffServiceController {
 
 	@RequestMapping(method=RequestMethod.DELETE, value = "/staff/{id}",headers="Accept=application/json")
 	public void deleteStaff(@PathVariable long id) {
+		System.err.println("deleteStaff called");
 		staffMgr.deleteStaff(id);
 	}
 

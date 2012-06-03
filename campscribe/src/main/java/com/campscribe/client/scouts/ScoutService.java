@@ -8,6 +8,8 @@ public interface ScoutService {
 
     public void addScout(ScoutDTO s);
     
-    public void searchScouts(String name, String unitType, String unitNumber, RequestCallback callback);
+    public void deleteScout(String s);
+
+    public void searchScouts(long eventId, String name, String unitType, String unitNumber, RequestCallback callback);
     
 }
