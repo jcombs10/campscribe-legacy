@@ -101,7 +101,7 @@ public class ScoutServiceJSONImpl implements ScoutService {
 	}
 
 	@Override
-	public void searchScouts(long eventId, String name, String unitType, String unitNumber, RequestCallback callback) {
+	public void searchScouts(Long eventId, String name, String unitType, String unitNumber, RequestCallback callback) {
 		StringBuilder url = new StringBuilder("/service/scouts/");
 		url.append("?eventId=");
 		url.append(eventId);

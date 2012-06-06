@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -121,7 +122,9 @@ public class TrackingServiceController {
 
 		}
 		
-		clazzMgr.updateComments(eventId, clazzId, trackers.getComments());
+		if (trackers.getComments()!=null && trackers.getComments().trim().length() > 0) {
+			clazzMgr.updateComments(eventId, clazzId, trackers.getComments());
+		}
 		
 		return trackers;
 	}

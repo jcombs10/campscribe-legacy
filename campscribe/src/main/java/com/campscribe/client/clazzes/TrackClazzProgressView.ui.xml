@@ -5,9 +5,11 @@
 	<ui:style type="com.campscribe.client.clazzes.TrackClazzProgressView.MyStyle">
         .noteAuthor {
             font-weight: bold;
+            padding-right: 20px;
         }
         .noteTimestamp {
             font-weight: bold;
+            padding-right: 10px;
         }
         .tabBar {
             border-bottom: 1px solid #000;
