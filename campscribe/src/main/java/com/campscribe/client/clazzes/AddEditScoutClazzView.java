@@ -68,7 +68,7 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 
 	@Override
 	public void onSave() {
-		clazzService.addScoutToClazz(getEventIdFromPage(), getClazzIdFromPage(), getData());
+		clazzService.addScoutToClazz(Long.decode(getEventIdFromPage()), Long.decode(getClazzIdFromPage()), getData());
 	}
 
 	private List<ScoutDTO> getData() {
@@ -92,7 +92,7 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 
 			@Override
 			public void onResponseReceived(Request request, Response response) {
-				//				Window.alert("received response "+response.getText());
+								Window.alert("received response "+response.getText());
 				searchResults.clear();
 				String s = response.getText();
 				List<ScoutDTO> scouts = parseScoutJsonData(s);
@@ -110,7 +110,7 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 
 		};
 
-		scoutService.searchScouts(getEventIdFromPage(), lastName.getText(), unitType.getValue(unitType.getSelectedIndex()), unitNumber.getText(), callback);
+		scoutService.searchScouts(Long.decode(getEventIdFromPage()), lastName.getText(), unitType.getValue(unitType.getSelectedIndex()), unitNumber.getText(), callback);
 	}
 
 	private List<ScoutDTO> parseScoutJsonData(String json) {
@@ -143,12 +143,12 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 		return scouts;
 	}
 
-	private native Long getClazzIdFromPage() /*-{
+	private native String getClazzIdFromPage() /*-{
         return this.@com.campscribe.client.clazzes.AddEditScoutClazzView::clazzId = $wnd.clazzId;
         return $wnd.clazzId;
     }-*/;
 
-	private native Long getEventIdFromPage() /*-{
+	private native String getEventIdFromPage() /*-{
         return this.@com.campscribe.client.clazzes.AddEditScoutClazzView::eventId = $wnd.eventId;
         return $wnd.eventId;
     }-*/;

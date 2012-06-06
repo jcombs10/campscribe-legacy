@@ -21,7 +21,7 @@
 	<entry-point class='com.campscribe.client.Clazz' />
 	<entry-point class='com.campscribe.client.ScoutModule' />
 	<entry-point class='com.campscribe.client.StaffModule' />
-	<entry-point class='com.campscribe.client.ScoutClazz' />
+	<entry-point class='com.campscribe.client.ScoutClazzModule' />
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />

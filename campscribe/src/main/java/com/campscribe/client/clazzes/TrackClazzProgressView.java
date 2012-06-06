@@ -59,6 +59,8 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	@UiField FlowPanel commentsContent;
 	@UiField FlowPanel notesList;
 	@UiField TextArea noteTextArea;
+	
+	private static DateTimeFormat fmt = DateTimeFormat.getFormat("EEE MM/dd/yy");
 
 	ClazzService clazzService = new ClazzServiceJSONImpl();
 
@@ -66,7 +68,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	private Long eventId = Long.valueOf(-1);
 	private List<TrackProgressDTO> progressList = new ArrayList<TrackProgressDTO>();
 
-	ArrayList<ArrayList<CheckBox>> checkboxes = new ArrayList<ArrayList<CheckBox>>();
+	ArrayList<ArrayList<CheckBox>> attendanceCheckboxes = new ArrayList<ArrayList<CheckBox>>();
 	ArrayList<CheckBox> selectAllCheckboxes = new ArrayList<CheckBox>();
 	ArrayList<ArrayList<CheckBox>> reqCheckboxes = new ArrayList<ArrayList<CheckBox>>();
 	ArrayList<CheckBox> selectAllReqCheckboxes = new ArrayList<CheckBox>();
@@ -93,13 +95,13 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 				for (NoteDTO n:wrapper.getNotesList()) {
 					HorizontalPanel hp = new HorizontalPanel();
 
-					Label authorLabel = new Label(n.getStaffName());
-					authorLabel.setStyleName("noteAuthor");
-					hp.add(authorLabel);
-					
-					Label timestampLabel = new Label(n.getDate().toString());
-					timestampLabel.setStyleName("noteTimestamp");
+					Label timestampLabel = new Label(fmt.format(n.getDate()));
+					timestampLabel.setStyleName(style.noteTimestamp());
 					hp.add(timestampLabel);
+					
+					Label authorLabel = new Label(n.getStaffName());
+					authorLabel.setStyleName(style.noteAuthor());
+					hp.add(authorLabel);
 					
 					hp.add(new Label(n.getNoteText()));
 
@@ -110,10 +112,24 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 				boolean foundAllSelected[] = null;
 				boolean foundAllReqSelected[] = null;
 				for (TrackProgressDTO t:progressList) {
-					ArrayList<CheckBox> l = new ArrayList<CheckBox>(); 
-					checkboxes.add(l);
+					if (foundAllSelected == null) {
+						foundAllSelected = new boolean[t.getAttendanceList().size()];
+						for (int i=0; i<t.getAttendanceList().size(); i++) {
+							foundAllSelected[i] = true;
+						}
+//						Window.alert("foundAllSelected initialized");
+					}
+					if (foundAllReqSelected == null) {
+						foundAllReqSelected = new boolean[t.getRequirementList().size()];
+						for (int i=0; i<t.getRequirementList().size(); i++) {
+							foundAllReqSelected[i] = true;
+						}
+//						Window.alert("foundAllReqSelected initialized");
+					}
+
+					ArrayList<CheckBox> attendanceListForSingleScout = new ArrayList<CheckBox>(); 
+					attendanceCheckboxes.add(attendanceListForSingleScout);
 					attendanceTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
-					requirementsTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
 					int column = 1;
 					for (DateAttendanceDTO da:t.getAttendanceList()) {
 						if (row == 2) {
@@ -124,10 +140,6 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 							cb.addClickHandler(new SelectAllClickHandler(column));
 							selectAllCheckboxes.add(cb);
 							attendanceTable.setWidget(1, column, cb);
-							foundAllSelected = new boolean[t.getAttendanceList().size()];
-							for (int i=0; i<t.getAttendanceList().size(); i++) {
-								foundAllSelected[i] = true;
-							}
 						}
 
 						CheckBox cb = new CheckBox();
@@ -135,11 +147,15 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 						if (!t.getAttendanceList().get(column-1).isPresent()) {
 							foundAllSelected[column-1] = false;
 						}
+//						Window.alert("foundAllSelected="+foundAllSelected);
 						cb.addClickHandler(new AttendanceClickHandler(column));
-						checkboxes.get(row-2).add(cb);
+						attendanceListForSingleScout.add(cb);
 						attendanceTable.setWidget(row, column++, cb);
 					}
 
+					ArrayList<CheckBox> reqsListForSingleScout = new ArrayList<CheckBox>(); 
+					reqCheckboxes.add(reqsListForSingleScout);
+					requirementsTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
 					column = 1;
 					for (RequirementCompletionDTO rc:t.getRequirementList()) {
 						if (row == 2) {
@@ -148,10 +164,6 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 							cb.addClickHandler(new SelectAllReqClickHandler(column));
 							selectAllReqCheckboxes.add(cb);
 							requirementsTable.setWidget(1, column, cb);
-							foundAllReqSelected = new boolean[t.getRequirementList().size()];
-							for (int i=0; i<t.getRequirementList().size(); i++) {
-								foundAllReqSelected[i] = true;
-							}
 						}
 
 						CheckBox cb = new CheckBox();
@@ -160,7 +172,8 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 							foundAllReqSelected[column-1] = false;
 						}
 						cb.addClickHandler(new RequirementClickHandler(column));
-						checkboxes.get(row-2).add(cb);
+						reqsListForSingleScout.add(cb);
+						requirementsTable.getColumnFormatter().addStyleName(column, "center");
 						requirementsTable.setWidget(row, column++, cb);
 					}
 
@@ -183,15 +196,35 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 	}
 
 	private TrackProgressWrapperDTO parseTrackProgressJsonData(String str) {
-//				Window.alert("Got response: " + str);
+//		Window.alert("Got response: " + str);
 		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
 		
+		List<NoteDTO> noteDtoList = new ArrayList<NoteDTO>();
 		List<TrackProgressDTO> dtoList = new ArrayList<TrackProgressDTO>();
 
 		JSONValue value = JSONParser.parseLenient(str);
 		JSONObject wrapperObj = value.isObject();
-		String commentsStr = wrapperObj.get("comments").isString().stringValue();
-		wrapper.setComments(commentsStr.replaceAll("_newline_","\n").replaceAll("_doublequote_","\""));
+//		String commentsStr = wrapperObj.get("comments").isString().stringValue();
+//		wrapper.setComments(commentsStr.replaceAll("_newline_","\n").replaceAll("_doublequote_","\""));
+		
+		JSONArray notesArray = wrapperObj.get("notesList").isArray();
+
+		if (notesArray != null) {
+			for (int i=0; i<=notesArray.size()-1; i++) {
+				NoteDTO nd = new NoteDTO();
+				JSONObject noteObj = notesArray.get(i).isObject();
+				String staffName = noteObj.get("staffName").isString().stringValue();
+				double date = noteObj.get("date").isNumber().doubleValue();
+//				Window.alert("got noteDate "+date);
+				Date noteDate = new Date(Double.valueOf(date).longValue());
+				String noteText = noteObj.get("noteText").isString().stringValue();
+				nd.setStaffName(staffName);
+				nd.setDate(noteDate);
+				nd.setNoteText(noteText);
+				noteDtoList.add(nd);
+			}
+		}
+		wrapper.setNotesList(noteDtoList);
 		
 		JSONArray tpArray = wrapperObj.get("trackingList").isArray();
 
@@ -266,13 +299,15 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 
 	private TrackProgressWrapperDTO getData() {
 		TrackProgressWrapperDTO wrapper = new TrackProgressWrapperDTO();
-		wrapper.setComments(noteTextArea.getText().replaceAll("\n","_newline_").replaceAll("\"","_doublequote_"));
+//		wrapper.setComments(noteTextArea.getText().replaceAll("\n","_newline_").replaceAll("\"","_doublequote_"));
+		wrapper.setComments(noteTextArea.getText().replaceAll("\n"," ").replaceAll("\""," "));
 		
 		int i = 0;
-		for (ArrayList<CheckBox> aScoutsCheckboxes:checkboxes) {
+		for (ArrayList<CheckBox> aScoutsCheckboxes:attendanceCheckboxes) {
 			int j = 0;
+			Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
 			for (CheckBox cb:aScoutsCheckboxes) {
-				//				Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
+				Window.alert("attendance for date "+progressList.get(i).getAttendanceList().get(j).getDate());
 				progressList.get(i).getAttendanceList().get(j).setPresent(cb.getValue());
 				j++;
 			}
@@ -326,7 +361,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 
 		@Override
 		public void onClick(ClickEvent event) {
-			for (List<CheckBox> cb:TrackClazzProgressView.this.checkboxes) {
+			for (List<CheckBox> cb:TrackClazzProgressView.this.attendanceCheckboxes) {
 				cb.get(whichOne).setValue(selectAllCheckboxes.get(whichOne).getValue());
 			}
 		}

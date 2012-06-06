@@ -10,6 +10,6 @@ public interface ScoutService {
     
     public void deleteScout(String s);
 
-    public void searchScouts(long eventId, String name, String unitType, String unitNumber, RequestCallback callback);
+    public void searchScouts(Long eventId, String name, String unitType, String unitNumber, RequestCallback callback);
     
 }

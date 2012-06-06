@@ -23,6 +23,10 @@ h1 {
 	clear: both;
 }
 
+.center {
+    text-align: center;
+}
+
 .logoTitle {
 	font-size: 24pt;
 	font-weight: bold;
