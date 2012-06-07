@@ -44,6 +44,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		String tabBar();
 		String tab();
 		String tabSelected();
+		String trackingTable();
 	}
 
 	private static DateTimeFormat dateFormatterNoTime = DateTimeFormat.getFormat("EEE");
@@ -160,8 +161,9 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 					for (RequirementCompletionDTO rc:t.getRequirementList()) {
 						int topLevelReqNbr = 0;
 						if (rc.getReqNumber().contains(".")) {
-							String[] reqNbrParts = rc.getReqNumber().split(".");
-							topLevelReqNbr = Integer.parseInt(reqNbrParts[0]);
+							int dotIndex = rc.getReqNumber().indexOf('.');
+							String reqNbrStr = rc.getReqNumber().substring(0, dotIndex); 
+							topLevelReqNbr = Integer.parseInt(reqNbrStr);
 						} else {
 							topLevelReqNbr = Integer.parseInt(rc.getReqNumber());
 						}
