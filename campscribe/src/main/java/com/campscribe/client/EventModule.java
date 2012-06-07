@@ -10,21 +10,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Event implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
-
-	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-//	private final GreetingServiceAsync greetingService = GWT
-//			.create(GreetingService.class);
-
+public class EventModule implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
@@ -56,10 +42,10 @@ public class Event implements EntryPoint {
 		});
 	}
 
-	private native void addGWTActionTriggers(Event module)/*-{
+	private native void addGWTActionTriggers(EventModule module)/*-{
         $wnd.EventGWT = {
             editEvent: function(id) {
-                module.@com.campscribe.client.Event::editEvent(Ljava/lang/String;)(id);
+                module.@com.campscribe.client.EventModule::editEvent(Ljava/lang/String;)(id);
             }
         };
     }-*/;
