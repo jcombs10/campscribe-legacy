@@ -11,21 +11,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Clazz implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
-
-	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-//	private final GreetingServiceAsync greetingService = GWT
-//			.create(GreetingService.class);
-
+public class ClazzModule implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
@@ -57,16 +43,16 @@ public class Clazz implements EntryPoint {
 		});
 	}
 	
-	private native void addGWTActionTriggers(Clazz module)/*-{
+	private native void addGWTActionTriggers(ClazzModule module)/*-{
 	    $wnd.ClazzGWT = {
-	        trackProgress: function(eventId, clazzId) {
-	            module.@com.campscribe.client.Clazz::editClazzProgress(Ljava/lang/Long;Ljava/lang/Long;)(eventId, clazzId);
+	        trackProgress: function(eventId, clazzId, badgeName, clazzDescription) {
+	            module.@com.campscribe.client.ClazzModule::editClazzProgress(Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;)(eventId, clazzId, badgeName, clazzDescription);
 	        }
 	    };
 	}-*/;
 	
-	public void editClazzProgress(Long eventId, Long clazzId) {
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Track Progress", new TrackClazzProgressView(eventId, clazzId));
+	public void editClazzProgress(Long eventId, Long clazzId, String badgeName, String clazzDescription) {
+		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Track Progress - "+badgeName+" "+clazzDescription, new TrackClazzProgressView(eventId, clazzId));
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.center();
 	}
