@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -114,9 +113,14 @@ public class TrackingServiceController {
 		for (TrackProgressDTO trackerDTO:trackers.getTrackingList()) {
 			TrackProgress tracker = tpMgr.get(new Key<TrackProgress>(TrackProgress.class, trackerDTO.getId()));
 			List<DateAttendanceDTO> attDTOList = trackerDTO.getAttendanceList();
+			List<RequirementCompletionDTO> reqDTOList = trackerDTO.getRequirementList();
 			List<DateAttendance> attList = tracker.getAttendanceList();
 			for (int i=0; i<attDTOList.size(); i++) {
 				attList.get(i).setPresent(attDTOList.get(i).isPresent());
+			}
+			List<RequirementCompletion> reqList = tracker.getRequirementList();
+			for (int i=0; i<reqDTOList.size(); i++) {
+				reqList.get(i).setCompleted(reqDTOList.get(i).isCompleted());
 			}
 			tpMgr.update(tracker);
 

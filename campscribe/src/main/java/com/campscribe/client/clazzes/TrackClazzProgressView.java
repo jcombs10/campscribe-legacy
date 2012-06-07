@@ -158,12 +158,23 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 					requirementsTable.setWidget(row, 0, new Label(t.getScout().getDisplayName()));
 					column = 1;
 					for (RequirementCompletionDTO rc:t.getRequirementList()) {
+						int topLevelReqNbr = 0;
+						if (rc.getReqNumber().contains(".")) {
+							String[] reqNbrParts = rc.getReqNumber().split(".");
+							topLevelReqNbr = Integer.parseInt(reqNbrParts[0]);
+						} else {
+							topLevelReqNbr = Integer.parseInt(rc.getReqNumber());
+						}
+						String shadingStyle = ((topLevelReqNbr%2==0)?"even":"odd");
 						if (row == 2) {
 							requirementsTable.setWidget(0, column, new Label(rc.getReqNumber()));
+							requirementsTable.getCellFormatter().addStyleName(0, column, "center");
+							requirementsTable.getCellFormatter().addStyleName(0, column, shadingStyle);
 							CheckBox cb = new CheckBox();
 							cb.addClickHandler(new SelectAllReqClickHandler(column));
 							selectAllReqCheckboxes.add(cb);
 							requirementsTable.setWidget(1, column, cb);
+							requirementsTable.getCellFormatter().addStyleName(1, column, shadingStyle);
 						}
 
 						CheckBox cb = new CheckBox();
@@ -173,8 +184,9 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 						}
 						cb.addClickHandler(new RequirementClickHandler(column));
 						reqsListForSingleScout.add(cb);
-						requirementsTable.getColumnFormatter().addStyleName(column, "center");
-						requirementsTable.setWidget(row, column++, cb);
+						requirementsTable.setWidget(row, column, cb);
+						requirementsTable.getCellFormatter().addStyleName(row, column, shadingStyle);
+						column++;
 					}
 
 					row++;
@@ -305,15 +317,27 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 		int i = 0;
 		for (ArrayList<CheckBox> aScoutsCheckboxes:attendanceCheckboxes) {
 			int j = 0;
-			Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
+//			Window.alert("updating scout "+progressList.get(i).getScout().getDisplayName());
 			for (CheckBox cb:aScoutsCheckboxes) {
-				Window.alert("attendance for date "+progressList.get(i).getAttendanceList().get(j).getDate());
+//				Window.alert("attendance for date "+progressList.get(i).getAttendanceList().get(j).getDate());
 				progressList.get(i).getAttendanceList().get(j).setPresent(cb.getValue());
 				j++;
 			}
 			i++;
 		}
-		wrapper.setTrackingList(progressList);
+
+		int k = 0;
+		for (ArrayList<CheckBox> aScoutsCheckboxes:reqCheckboxes) {
+			int l = 0;
+//			Window.alert("updating scout "+progressList.get(k).getScout().getDisplayName());
+			for (CheckBox cb:aScoutsCheckboxes) {
+//				Window.alert("attendance for date "+progressList.get(k).getAttendanceList().get(l).getDate());
+				progressList.get(k).getRequirementList().get(l).setCompleted(cb.getValue());
+				l++;
+			}
+			k++;
+		}
+wrapper.setTrackingList(progressList);
 		return wrapper;
 	}
 

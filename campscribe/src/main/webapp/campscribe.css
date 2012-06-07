@@ -19,6 +19,14 @@ h1 {
 	float: right;
 }
 
+.even {
+	background-color: lightGrey;
+}
+
+.odd {
+	background-color: white;
+}
+
 .clear {
 	clear: both;
 }

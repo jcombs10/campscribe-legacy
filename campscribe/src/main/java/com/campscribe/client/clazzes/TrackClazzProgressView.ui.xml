@@ -23,6 +23,11 @@
         .tabSelected {
             background-color: #A9A9A9 !important;
         }
+	.trackingTable {
+		border-collapse: collapse;
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
 	</ui:style>
 	
 	<g:HTMLPanel>
@@ -33,10 +38,10 @@
 			<g:FlowPanel styleName="clear" />
 		</g:FlowPanel>
         <g:FlowPanel ui:field="attendanceContent">
-            <g:FlexTable ui:field="attendanceTable" />
+            <g:FlexTable ui:field="attendanceTable" styleName="trackingTable" />
         </g:FlowPanel>
         <g:FlowPanel ui:field="requirementsContent" visible="false">
-            <g:FlexTable ui:field="requirementsTable" />
+            <g:FlexTable ui:field="requirementsTable" styleName="trackingTable" />
         </g:FlowPanel>
         <g:FlowPanel ui:field="commentsContent" visible="false">
             <g:ScrollPanel height="100px">
