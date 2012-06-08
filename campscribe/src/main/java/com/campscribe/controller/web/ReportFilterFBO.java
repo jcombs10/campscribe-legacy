@@ -2,6 +2,7 @@ package com.campscribe.controller.web;
 
 public class ReportFilterFBO {
 	private Long eventId;
+	private String programArea;
 
 	public ReportFilterFBO() {
 	}
@@ -17,5 +18,13 @@ public class ReportFilterFBO {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	} 
+
+	public String getProgramArea() {
+		return programArea;
+	}
+
+	public void setProgramArea(String programArea) {
+		this.programArea = programArea;
+	}
 
 }

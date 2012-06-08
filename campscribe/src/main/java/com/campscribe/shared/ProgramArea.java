@@ -11,4 +11,6 @@ public class ProgramArea {
 	public static final String NATIVE_AMERICAN_VILLAGE = "Native American Village";
 	public static final String NEST = "NEST";
 	public static final String SHOOTING_SPORTS = "Shooting Sports";
+	
+	public static final String[] allProgramAreas = {AQUATICS, COPE_AND_CLIMBING, EAGLE_RIDGE, HANDICRAFT, HANDYMAN, HEALTH_LODGE, NATIVE_AMERICAN_VILLAGE, NEST, OUTDOOR_SKILLS, SHOOTING_SPORTS};
 }

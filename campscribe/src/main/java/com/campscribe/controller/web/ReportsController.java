@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
 import com.campscribe.business.TrackProgressManager;
+import com.campscribe.model.BadgeCompletionChecker;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.ClazzComparator;
 import com.campscribe.model.Event;
@@ -41,6 +41,7 @@ public class ReportsController {
 
 	private EventManager eventMgr;
 	private TrackProgressManager tpMgr;
+	private MeritBadgeManager mbMgr;
 	private ScoutManager scoutMgr;
 	private StaffManager staffMgr;
 
@@ -59,6 +60,7 @@ public class ReportsController {
 
 		ReportFilterFBO fbo = new ReportFilterFBO();
 		fbo.setEventId(EventUtil.findCurrentEventId(events));
+		fbo.setProgramArea("ALL");
 
 		return getTracking(fbo, request);
 	}
@@ -73,9 +75,16 @@ public class ReportsController {
 		mav.addObject("eventList", events);
 
 		mav.addObject("reportFilter", fbo);
-		
+
+		Map<Long, String> completionLookup = new HashMap<Long, String>();
 		TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>> clazzByProgramAreaMap = new TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>>();
-		for (Clazz c:getEventManager().getClazzesByEvent(new Key<Event>(Event.class, fbo.getEventId()))) {
+		List<Clazz> clazzList = null;
+		if (fbo.getProgramArea()==null || "ALL".equals(fbo.getProgramArea())) {
+			clazzList = getEventManager().getClazzesByEvent(new Key<Event>(Event.class, fbo.getEventId()));
+		} else {
+			clazzList = getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), fbo.getProgramArea());
+		}
+		for (Clazz c:clazzList) {
 			if (!clazzByProgramAreaMap.containsKey(c.getProgramArea())) {
 				TreeMap<Clazz,ArrayList<TrackProgress>> trackingMap = new TreeMap<Clazz,ArrayList<TrackProgress>>(new ClazzComparator());
 				clazzByProgramAreaMap.put(c.getProgramArea(), trackingMap);
@@ -86,11 +95,14 @@ public class ReportsController {
 					ArrayList<TrackProgress> scoutList = new ArrayList<TrackProgress>();
 					clazzByProgramAreaMap.get(c.getProgramArea()).put(c, scoutList);
 				}
+//				System.out.println("checking completion for clazz "+c.getMbName()+", trackerId "+tp.getId());
+				completionLookup.put(tp.getId(), (BadgeCompletionChecker.isComplete(getMeritBadgeManager().getMeritBadge(c.getMbId().getId()).getRequirements(), tp.getRequirementList())?"Complete":"Partial"));
 				clazzByProgramAreaMap.get(c.getProgramArea()).get(c).add(tp);
 			}
 		}
 
 		mav.addObject("clazzByProgramAreaMap", clazzByProgramAreaMap);
+		mav.addObject("completionLookup", completionLookup);
 		mav.addObject("scoutLookup", getScoutLookup(new Key<Event>(Event.class, fbo.getEventId())));
 		mav.addObject("staffLookup", getStaffLookup());
 		return mav;
@@ -117,6 +129,13 @@ public class ReportsController {
 			eventMgr = new EventManager();
 		}
 		return eventMgr;
+	}
+
+	private MeritBadgeManager getMeritBadgeManager() {
+		if (mbMgr == null) {
+			mbMgr = new MeritBadgeManager();
+		}
+		return mbMgr;
 	}
 
 	private TrackProgressManager getTrackProgressManager() {
