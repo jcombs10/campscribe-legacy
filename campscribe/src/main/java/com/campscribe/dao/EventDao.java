@@ -162,6 +162,13 @@ public enum EventDao {
 		return allClazzes;
 	}
 
+	public List<Clazz> getClazzesByEvent(Key<Event> eventKey) {
+		Objectify ofy = ObjectifyService.begin();
+		List<Clazz> allClazzes = ofy.query(Clazz.class).ancestor(eventKey).list();
+		Collections.sort(allClazzes, new ClazzComparator());
+		return allClazzes;
+	}
+
 	public List<Clazz> getClazzesByProgramArea(String programArea) {
 		Objectify ofy = ObjectifyService.begin();
 		List<Clazz> allClazzes = ofy.query(Clazz.class).filter("programArea", programArea).list();

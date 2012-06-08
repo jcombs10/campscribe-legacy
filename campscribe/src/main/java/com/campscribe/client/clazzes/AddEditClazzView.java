@@ -52,7 +52,6 @@ public class AddEditClazzView extends Composite implements CampScribeBodyWidget 
 	public AddEditClazzView() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		programArea.addItem("");
 		programArea.addItem(ProgramArea.AQUATICS);
 		programArea.addItem(ProgramArea.COPE_AND_CLIMBING);
 		programArea.addItem(ProgramArea.EAGLE_RIDGE);

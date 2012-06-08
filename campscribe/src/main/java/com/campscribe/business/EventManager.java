@@ -63,6 +63,10 @@ public class EventManager extends BaseManager {
 		return EventDao.INSTANCE.getClazzesByCounselor(eventKey, key);
 	}
 
+	public List<Clazz> getClazzesByEvent(Key<Event> eKey) {
+		return EventDao.INSTANCE.getClazzesByEvent(eKey);
+	}
+
 	public List<Clazz> getClazzesByProgramArea(String programArea) {
 		return EventDao.INSTANCE.getClazzesByProgramArea(programArea);
 	}
