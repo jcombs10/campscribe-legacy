@@ -10,8 +10,10 @@ import java.util.TreeMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.campscribe.auth.CampScribeUser;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
@@ -60,7 +63,16 @@ public class ReportsController {
 
 		ReportFilterFBO fbo = new ReportFilterFBO();
 		fbo.setEventId(EventUtil.findCurrentEventId(events));
+
 		fbo.setProgramArea("ALL");
+		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CampScribeUser) {
+			CampScribeUser user = (CampScribeUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			String name = user.getUsername(); //get logged in username
+			Staff s = getStaffManager().getStaffByName(name);
+			if (StringUtils.isNotEmpty(s.getProgramArea())) {
+				fbo.setProgramArea(s.getProgramArea());
+			}
+		}
 
 		return getTracking(fbo, request);
 	}

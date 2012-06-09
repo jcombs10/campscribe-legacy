@@ -16,7 +16,7 @@
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.campscribe.client.MeritBadgeModule' />
-	<entry-point class='com.campscribe.client.MeritBadgeMetadata' />
+	<entry-point class='com.campscribe.client.MeritBadgeMetadataModule' />
 	<entry-point class='com.campscribe.client.EventModule' />
 	<entry-point class='com.campscribe.client.ClazzModule' />
 	<entry-point class='com.campscribe.client.ScoutModule' />

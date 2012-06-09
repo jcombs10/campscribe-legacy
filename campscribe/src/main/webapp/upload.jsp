@@ -6,5 +6,4 @@
       <p>
       <input value="Submit" type="submit">
     </form>
-</body>
-</html>
+<%@ include file="footer.jsp"%>

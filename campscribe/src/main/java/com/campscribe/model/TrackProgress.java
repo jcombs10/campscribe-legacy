@@ -15,12 +15,13 @@ import com.googlecode.objectify.Key;
 public class TrackProgress {
     @Id
     private Long id;
-	Key<Clazz> clazzKey;
-	Key<Scout> scoutKey;
+	private Key<Clazz> clazzKey;
+	private Key<Scout> scoutKey;
+	private Boolean complete;
 	@Embedded
-	List<DateAttendance> attendanceList = new ArrayList<DateAttendance>();
+	private List<DateAttendance> attendanceList = new ArrayList<DateAttendance>();
 	@Embedded
-	List<RequirementCompletion> requirementList = new ArrayList<RequirementCompletion>();
+	private List<RequirementCompletion> requirementList = new ArrayList<RequirementCompletion>();
 
 	public Long getId() {
 		return id;
@@ -60,6 +61,14 @@ public class TrackProgress {
 
 	public void setRequirementList(List<RequirementCompletion> requirementList) {
 		this.requirementList = requirementList;
+	}
+
+	public Boolean getComplete() {
+		return complete;
+	}
+
+	public void setComplete(Boolean complete) {
+		this.complete = complete;
 	}
 
 	public static class DateAttendance {

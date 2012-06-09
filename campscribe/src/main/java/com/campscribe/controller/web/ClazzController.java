@@ -81,18 +81,18 @@ public class ClazzController {
 		return mav;
 	}
 
-	private Map<Long, Staff> getStaffLookup() {
-		Map<Long, Staff> staffLookup = new HashMap<Long, Staff>();
+	private Map<Key<Staff>, Staff> getStaffLookup() {
+		Map<Key<Staff>, Staff> staffLookup = new HashMap<Key<Staff>, Staff>();
 		for(Staff s:getStaffManager().listStaff()) {
-			staffLookup.put(s.getId(), s);
+			staffLookup.put(new Key<Staff>(Staff.class, s.getId()), s);
 		}
 		return staffLookup;
 	}
 
-	private Map<Long, MeritBadge> getMbLookup() {
-		Map<Long, MeritBadge> mbLookup = new HashMap<Long, MeritBadge>();
+	private Map<Key<MeritBadge>, MeritBadge> getMbLookup() {
+		Map<Key<MeritBadge>, MeritBadge> mbLookup = new HashMap<Key<MeritBadge>, MeritBadge>();
 		for(MeritBadge s:getMeritBadgeManager().listMeritBadges()) {
-			mbLookup.put(s.getId(), s);
+			mbLookup.put(new Key<MeritBadge>(MeritBadge.class, s.getId()), s);
 		}
 		return mbLookup;
 	}

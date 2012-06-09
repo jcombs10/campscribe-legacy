@@ -35,6 +35,14 @@ h1 {
     text-align: center;
 }
 
+.wide {
+    width: 100%;
+}
+
+#footer {
+	margin-top: 40px;
+}
+
 .logoTitle {
 	font-size: 24pt;
 	font-weight: bold;
@@ -60,7 +68,7 @@ h1 {
 	padding-right: 10px;
 }
 
-.footerBar {
+.buttonBar {
 	text-align: center;
 }
 
@@ -84,10 +92,9 @@ table.campscribeList td,table.campscribeList th {
 }
 
 .paddingLeft20 {
-    padding-left: 20px;
+	padding-left: 20px;
 }
 
 .paddingLeft40 {
-    padding-left: 40px;
+	padding-left: 40px;
 }
-
