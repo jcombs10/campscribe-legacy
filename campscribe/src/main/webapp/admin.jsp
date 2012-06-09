@@ -12,5 +12,4 @@
 <a href="staff.cs">Staff</a>
 <hr>
 <a href="upload.cs">Upload from DoubleKnot</a>
-</body>
-</html>
+<%@ include file="footer.jsp"%>

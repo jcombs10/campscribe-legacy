@@ -6,15 +6,13 @@
     var eventId = "<c:out value="${event.id}"/>";
 </script>
 <h2>
-	<c:out value="${event.description}" />
-	<c:out value="${event.startDateDisplayStr}" />
-	-
-	<c:out value="${event.endDateDisplayStr}" />
+	<c:out value="${event.description}" /> (<c:out value="${event.startDateDisplayStr}" /> - <c:out value="${event.endDateDisplayStr}" />)
 </h2>
 <table class="campscribeList">
 	<tr>
 		<th>Description</th>
         <th>Merit Badge</th>
+        <th>Program Area</th>
         <th>Taught By</th>
         <th>Delete</th>
 	</tr>
@@ -22,6 +20,7 @@
 		<tr>
 			<td><a href="viewClazz.cs?eventId=${event.id}&clazzId=${clazz.id}"><c:out value="${clazz.description}" /></a></td>
             <td><c:out value="${mbLookup[clazz.mbId].badgeName}" /></td>
+            <td><c:out value="${clazz.programArea}" /></td>
             <td><c:out value="${staffLookup[clazz.staffId].name}" /></td>
 			<td style="text-align: center;"><a href="deleteClazz.cs?id=${clazz.id}"><img
 					src="images/16x16/delete.png" alt="Delete"></a></td>
@@ -29,5 +28,4 @@
 	</c:forEach>
 </table>
 </p>
-</body>
-</html>
+<%@ include file="footer.jsp"%>

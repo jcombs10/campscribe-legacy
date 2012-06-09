@@ -8,13 +8,9 @@
 </script>
 <h2>
     <c:out value="${event.description}" /> 
-    <c:out value="${event.startDateDisplayStr}" />
-    -
-    <c:out value="${event.endDateDisplayStr}" />
+    (<c:out value="${event.startDateDisplayStr}" /> - <c:out value="${event.endDateDisplayStr}" />)
     <br>
-    <c:out value="${clazz.description}" />
-    <br>
-	<c:out value="${mbLookup[clazz.mbId.id].badgeName}" />
+    <c:out value="${mbLookup[clazz.mbId].badgeName}" /> <c:out value="${clazz.description}" />
     <br>
 	<c:out value="${staffLookup[clazz.staffId].name}" />
 </h2>
@@ -37,5 +33,4 @@
     </c:forEach>
   </table>
 </p>
-</body>
-</html>
+<%@ include file="footer.jsp"%>

@@ -35,7 +35,7 @@ public class CampScribeDialogBox extends DialogBox {
 		
 		footerBar.add(saveButton);
 		footerBar.add(cancelButton);
-		footerBar.addStyleName("footerBar");
+		footerBar.addStyleName("buttonBar");
 		
 		saveButton.addClickHandler(new ClickHandler() {
 

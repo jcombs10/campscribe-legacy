@@ -51,5 +51,4 @@
         <input type="submit" value="Create" />
     </form>
   </p>
-</body>
-</html>
+<%@ include file="footer.jsp"%>

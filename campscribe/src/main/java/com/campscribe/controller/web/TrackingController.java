@@ -97,6 +97,7 @@ public class TrackingController {
 				}
 			}
 		} else {
+			//not a campscribe user, must be the system admin
 			if (fbo!=null && fbo.getEventId()!=null) {
 				mav.addObject("clazzes", getClazzManager().listClazzes(new Key<Event>(Event.class, fbo.getEventId())));
 			} else {
