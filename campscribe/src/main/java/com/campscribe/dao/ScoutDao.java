@@ -69,4 +69,9 @@ public enum ScoutDao {
 		return ofy.get(scoutIds);
 	}
 
+	public List<Scout> getScoutsByEvent(Key<Event> eKey) {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.query(Scout.class).filter("eventKey", eKey).list();
+	}
+
 }

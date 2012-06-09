@@ -27,12 +27,12 @@ import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
 import com.campscribe.business.TrackProgressManager;
-import com.campscribe.model.BadgeCompletionChecker;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.ClazzComparator;
 import com.campscribe.model.Event;
 import com.campscribe.model.EventUtil;
 import com.campscribe.model.Scout;
+import com.campscribe.model.ScoutComparator;
 import com.campscribe.model.Staff;
 import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
@@ -64,6 +64,7 @@ public class ReportsController {
 		ReportFilterFBO fbo = new ReportFilterFBO();
 		fbo.setEventId(EventUtil.findCurrentEventId(events));
 
+		fbo.setGroupBy("Program Area");
 		fbo.setProgramArea("ALL");
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CampScribeUser) {
 			CampScribeUser user = (CampScribeUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -88,35 +89,61 @@ public class ReportsController {
 
 		mav.addObject("reportFilter", fbo);
 
-		Map<Long, String> completionLookup = new HashMap<Long, String>();
-		TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>> clazzByProgramAreaMap = new TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>>();
-		List<Clazz> clazzList = null;
-		if (fbo.getProgramArea()==null || "ALL".equals(fbo.getProgramArea())) {
-			clazzList = getEventManager().getClazzesByEvent(new Key<Event>(Event.class, fbo.getEventId()));
-		} else {
-			clazzList = getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), fbo.getProgramArea());
-		}
-		for (Clazz c:clazzList) {
-			if (!clazzByProgramAreaMap.containsKey(c.getProgramArea())) {
-				TreeMap<Clazz,ArrayList<TrackProgress>> trackingMap = new TreeMap<Clazz,ArrayList<TrackProgress>>(new ClazzComparator());
-				clazzByProgramAreaMap.put(c.getProgramArea(), trackingMap);
+		if (fbo.getGroupBy().equals("Program Area")) {
+			TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>> clazzByProgramAreaMap = new TreeMap<String, TreeMap<Clazz,ArrayList<TrackProgress>>>();
+			List<Clazz> clazzList = null;
+			if (fbo.getProgramArea()==null || "ALL".equals(fbo.getProgramArea())) {
+				clazzList = getEventManager().getClazzesByEvent(new Key<Event>(Event.class, fbo.getEventId()));
+			} else {
+				clazzList = getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), fbo.getProgramArea());
 			}
-			List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForClazz(new Key<Clazz>(new Key<Event>(Event.class, fbo.getEventId()), Clazz.class, c.getId()));
-			for (TrackProgress tp:trackingList) {
-				if (!clazzByProgramAreaMap.get(c.getProgramArea()).containsKey(c)) {
-					ArrayList<TrackProgress> scoutList = new ArrayList<TrackProgress>();
-					clazzByProgramAreaMap.get(c.getProgramArea()).put(c, scoutList);
+			for (Clazz c:clazzList) {
+				if (!clazzByProgramAreaMap.containsKey(c.getProgramArea())) {
+					TreeMap<Clazz,ArrayList<TrackProgress>> trackingMap = new TreeMap<Clazz,ArrayList<TrackProgress>>(new ClazzComparator());
+					clazzByProgramAreaMap.put(c.getProgramArea(), trackingMap);
 				}
-//				System.out.println("checking completion for clazz "+c.getMbName()+", trackerId "+tp.getId());
-				completionLookup.put(tp.getId(), (BadgeCompletionChecker.isComplete(getMeritBadgeManager().getMeritBadge(c.getMbId().getId()).getRequirements(), tp.getRequirementList())?"Complete":"Partial"));
-				clazzByProgramAreaMap.get(c.getProgramArea()).get(c).add(tp);
+				List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForClazz(new Key<Clazz>(new Key<Event>(Event.class, fbo.getEventId()), Clazz.class, c.getId()));
+				for (TrackProgress tp:trackingList) {
+					if (!clazzByProgramAreaMap.get(c.getProgramArea()).containsKey(c)) {
+						ArrayList<TrackProgress> scoutList = new ArrayList<TrackProgress>();
+						clazzByProgramAreaMap.get(c.getProgramArea()).put(c, scoutList);
+					}
+//					System.out.println("checking completion for clazz "+c.getMbName()+", trackerId "+tp.getId());
+					clazzByProgramAreaMap.get(c.getProgramArea()).get(c).add(tp);
+				}
 			}
-		}
 
-		mav.addObject("clazzByProgramAreaMap", clazzByProgramAreaMap);
-		mav.addObject("completionLookup", completionLookup);
-		mav.addObject("scoutLookup", getScoutLookup(new Key<Event>(Event.class, fbo.getEventId())));
-		mav.addObject("staffLookup", getStaffLookup());
+			mav.addObject("clazzByProgramAreaMap", clazzByProgramAreaMap);
+			mav.addObject("scoutLookup", getScoutLookup(new Key<Event>(Event.class, fbo.getEventId())));
+		} else {
+			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
+			
+			List<Scout> scoutList = null;
+//			if (fbo.getProgramArea()==null || "ALL".equals(fbo.getProgramArea())) {
+				scoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, fbo.getEventId()));
+//			} else {
+//				clazzList = getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), fbo.getProgramArea());
+//			}
+			for (Scout s:scoutList) {
+				String unit = s.getUnitType()+" "+s.getUnitNumber();
+				if (!scoutByUnitMap.containsKey(unit)) {
+					TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
+					scoutByUnitMap.put(unit, trackingMap);
+				}
+
+				List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
+				for (TrackProgress tp:trackingList) {
+					if (!scoutByUnitMap.get(unit).containsKey(s)) {
+						ArrayList<TrackProgress> badgeList = new ArrayList<TrackProgress>();
+						scoutByUnitMap.get(unit).put(s, badgeList);
+					}
+					scoutByUnitMap.get(unit).get(s).add(tp);
+				}
+			}
+
+			mav.addObject("scoutByUnitMap", scoutByUnitMap);
+			mav.addObject("clazzLookup", getClazzLookup(new Key<Event>(Event.class, fbo.getEventId())));
+		}
 		return mav;
 	}
 
@@ -128,10 +155,10 @@ public class ReportsController {
 		return scoutLookup;
 	}
 
-	private Map<Key<Staff>, Staff> getStaffLookup() {
-		Map<Key<Staff>, Staff> staffLookup = new HashMap<Key<Staff>, Staff>();
-		for(Staff s:getStaffManager().listStaff()) {
-			staffLookup.put(new Key<Staff>(Staff.class, s.getId()), s);
+	private Map<Key<Clazz>, Clazz> getClazzLookup(Key<Event> eKey) {
+		Map<Key<Clazz>, Clazz> staffLookup = new HashMap<Key<Clazz>, Clazz>();
+		for(Clazz c:getEventManager().getClazzesByEvent(eKey)) {
+			staffLookup.put(new Key<Clazz>(eKey, Clazz.class, c.getId()), c);
 		}
 		return staffLookup;
 	}
@@ -141,13 +168,6 @@ public class ReportsController {
 			eventMgr = new EventManager();
 		}
 		return eventMgr;
-	}
-
-	private MeritBadgeManager getMeritBadgeManager() {
-		if (mbMgr == null) {
-			mbMgr = new MeritBadgeManager();
-		}
-		return mbMgr;
 	}
 
 	private TrackProgressManager getTrackProgressManager() {

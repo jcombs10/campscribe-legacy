@@ -33,6 +33,10 @@ public class TrackProgressManager extends BaseManager {
 		return TrackProgressDao.INSTANCE.getTrackingForClazz(key);
 	}
 
+	public List<TrackProgress> getTrackingForScout(Key<Scout> key) {
+		return TrackProgressDao.INSTANCE.getTrackingForScout(key);
+	}
+
 	public TrackProgress get(Key<TrackProgress> key) {
 		return TrackProgressDao.INSTANCE.get(key);
 	}

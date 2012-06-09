@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.campscribe.business.ClazzManager;
+import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.TrackProgressManager;
+import com.campscribe.model.BadgeCompletionChecker;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Clazz.Note;
 import com.campscribe.model.Event;
@@ -35,8 +37,9 @@ public class TrackingServiceController {
 
 //	@Autowired
 	ClazzManager clazzMgr = new ClazzManager();
-	TrackProgressManager tpMgr = new TrackProgressManager();
+	MeritBadgeManager mbMgr = new MeritBadgeManager();
 	ScoutManager scoutMgr = new ScoutManager();
+	TrackProgressManager tpMgr = new TrackProgressManager();
 
 	@RequestMapping(method=RequestMethod.GET, value = "/events/{eventId}/classes/{clazzId}/progress",headers="Accept=application/json")
 	public @ResponseBody TrackProgressWrapperDTO getClazzTracking(@PathVariable Long eventId, @PathVariable Long clazzId) {
@@ -114,14 +117,21 @@ public class TrackingServiceController {
 			TrackProgress tracker = tpMgr.get(new Key<TrackProgress>(TrackProgress.class, trackerDTO.getId()));
 			List<DateAttendanceDTO> attDTOList = trackerDTO.getAttendanceList();
 			List<RequirementCompletionDTO> reqDTOList = trackerDTO.getRequirementList();
+			
 			List<DateAttendance> attList = tracker.getAttendanceList();
 			for (int i=0; i<attDTOList.size(); i++) {
 				attList.get(i).setPresent(attDTOList.get(i).isPresent());
 			}
+			
 			List<RequirementCompletion> reqList = tracker.getRequirementList();
 			for (int i=0; i<reqDTOList.size(); i++) {
 				reqList.get(i).setCompleted(reqDTOList.get(i).isCompleted());
 			}
+
+			Clazz c = clazzMgr.getClazz(tracker.getClazzKey());
+			boolean complete = BadgeCompletionChecker.isComplete(mbMgr.getMeritBadge(c.getMbId().getId()).getRequirements(), tracker.getRequirementList());
+			tracker.setComplete(complete);
+			
 			tpMgr.update(tracker);
 
 		}

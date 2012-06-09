@@ -3,6 +3,7 @@ package com.campscribe.controller.web;
 public class ReportFilterFBO {
 	private Long eventId;
 	private String programArea;
+	private String groupBy;
 
 	public ReportFilterFBO() {
 	}
@@ -25,6 +26,14 @@ public class ReportFilterFBO {
 
 	public void setProgramArea(String programArea) {
 		this.programArea = programArea;
+	}
+
+	public String getGroupBy() {
+		return groupBy;
+	}
+
+	public void setGroupBy(String groupBy) {
+		this.groupBy = groupBy;
 	}
 
 }
