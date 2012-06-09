@@ -17,7 +17,7 @@ public class TrackProgress {
     private Long id;
 	private Key<Clazz> clazzKey;
 	private Key<Scout> scoutKey;
-	private Boolean complete;
+	private Boolean complete = Boolean.FALSE;
 	@Embedded
 	private List<DateAttendance> attendanceList = new ArrayList<DateAttendance>();
 	@Embedded

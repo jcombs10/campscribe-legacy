@@ -3,6 +3,7 @@ package com.campscribe.dao;
 import java.util.List;
 
 import com.campscribe.model.Clazz;
+import com.campscribe.model.Scout;
 import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -24,6 +25,16 @@ public enum TrackProgressDao {
 		return s;
 	}
 
+	public List<TrackProgress> getTrackingForClazz(Key<Clazz> key) {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.query(TrackProgress.class).filter("clazzKey", key).list();
+	}
+
+	public List<TrackProgress> getTrackingForScout(Key<Scout> key) {
+		Objectify ofy = ObjectifyService.begin();
+		return ofy.query(TrackProgress.class).filter("scoutKey", key).list();
+	}
+
 	public void remove(Key<TrackProgress> k) {
 		Objectify ofy = ObjectifyService.begin();
 		ofy.delete(k);
@@ -34,11 +45,6 @@ public enum TrackProgressDao {
 			Objectify ofy = ObjectifyService.begin();
 			ofy.put(s);
 		}
-	}
-
-	public List<TrackProgress> getTrackingForClazz(Key<Clazz> key) {
-		Objectify ofy = ObjectifyService.begin();
-		return ofy.query(TrackProgress.class).filter("clazzKey", key).list();
 	}
 
 }
