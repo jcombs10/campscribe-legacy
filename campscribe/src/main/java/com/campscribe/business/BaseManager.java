@@ -1,5 +1,6 @@
 package com.campscribe.business;
 
+import com.campscribe.model.CampInfo;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.MeritBadge;
@@ -12,6 +13,7 @@ import com.googlecode.objectify.ObjectifyService;
 public class BaseManager {
 
 	static {
+		ObjectifyService.register(CampInfo.class);
 		ObjectifyService.register(Clazz.class);
 		ObjectifyService.register(Event.class);
 		ObjectifyService.register(MeritBadge.class);

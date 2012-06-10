@@ -1,9 +1,10 @@
-package com.campscribe.model;
+package com.campscribe.business;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.campscribe.model.Requirement;
 import com.campscribe.model.TrackProgress.RequirementCompletion;
 
 public class BadgeCompletionChecker {

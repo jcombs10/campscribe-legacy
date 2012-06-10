@@ -1,9 +1,12 @@
 package com.campscribe.client;
 
 import com.campscribe.client.events.AddEditEventView;
+import com.campscribe.client.events.EventService;
+import com.campscribe.client.events.EventServiceJSONImpl;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -11,6 +14,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class EventModule implements EntryPoint {
+
+	EventService eventService = new EventServiceJSONImpl();
+
 	/**
 	 * This is the entry point method.
 	 */
@@ -49,6 +55,12 @@ public class EventModule implements EntryPoint {
             }
         };
     }-*/;
+
+	public void deleteEvent(String id) {
+		if (Window.confirm("Are you sure you want to delete this Scout?")) {
+			eventService.deleteEvent(id);
+		}
+	}
 
 	public void editEvent(String id) {
 		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Event", new AddEditEventView(id));

@@ -14,7 +14,7 @@ import com.google.gwt.user.client.Window;
 
 public class EventServiceJSONImpl implements EventService {
 
-	private Logger log = Logger.getLogger("EventServiceJSONImpl");
+	private Logger logger = Logger.getLogger("EventServiceJSONImpl");
 	private DateTimeFormat dateFormatterNoTime = DateTimeFormat.getFormat("yyyy-MM-dd");
 
 	public EventServiceJSONImpl() {
@@ -48,6 +48,38 @@ public class EventServiceJSONImpl implements EventService {
 			rb.send();
 		} catch (RequestException ex) {
 			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+
+	}
+
+	@Override
+	public void deleteEvent(String id) {
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, "/service/events/"+id);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+				logger.fine("deleteScout received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+		rb.setRequestData("{}");
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
 		}
 
 	}
