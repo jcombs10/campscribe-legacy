@@ -7,26 +7,37 @@
 				itemValue="id" />
 		</form:select>
 		<br>
-		<label>Program Area: </label>
-		<form:select path="programArea" onchange='this.form.submit()'>
-			<form:option value="ALL">All Program Areas</form:option>
-			<form:option value="Aquatics">Aquatics</form:option>
-			<form:option value="COPE and Climbing">COPE and Climbing</form:option>
-			<form:option value="Eagle Ridge">Eagle Ridge</form:option>
-			<form:option value="Handicraft">Handicraft</form:option>
-			<form:option value="Handyman">Handyman</form:option>
-			<form:option value="Health Lodge">Health Lodge</form:option>
-			<form:option value="Native American Village">Native American Village</form:option>
-			<form:option value="NEST">NEST</form:option>
-			<form:option value="Outdoor Skills">Outdoor Skills</form:option>
-			<form:option value="Shooting Sports">Shooting Sports</form:option>
-		</form:select>
-		<br>
 		<label>Group By: </label>
 		<form:select path="groupBy" onchange='this.form.submit()'>
 			<form:option value="Program Area">Program Area</form:option>
 			<form:option value="Unit">Unit</form:option>
 		</form:select>
+		<br>
+		<c:choose>
+			<c:when test="${reportFilter.groupBy eq 'Program Area'}">
+				<label>Program Area: </label>
+				<form:select path="programArea" onchange='this.form.submit()'>
+					<form:option value="ALL">All Program Areas</form:option>
+					<form:option value="Aquatics">Aquatics</form:option>
+					<form:option value="COPE and Climbing">COPE and Climbing</form:option>
+					<form:option value="Eagle Ridge">Eagle Ridge</form:option>
+					<form:option value="Handicraft">Handicraft</form:option>
+					<form:option value="Handyman">Handyman</form:option>
+					<form:option value="Health Lodge">Health Lodge</form:option>
+					<form:option value="Native American Village">Native American Village</form:option>
+					<form:option value="NEST">NEST</form:option>
+					<form:option value="Outdoor Skills">Outdoor Skills</form:option>
+					<form:option value="Shooting Sports">Shooting Sports</form:option>
+				</form:select>
+			</c:when>
+			<c:when test="${reportFilter.groupBy eq 'Unit'}">
+				<label>Unit: </label>
+				<form:select path="unit" onchange='this.form.submit()'>
+					<form:option value="ALL">All Units</form:option>
+					<form:options items="${unitSet}" />
+				</form:select>
+			</c:when>
+		</c:choose>
 	</form:form>
 <p>
 
@@ -93,7 +104,8 @@
 					</h3>
 					<div class="paddingLeft40">
 						<c:forEach var="tp" items="${scout.value}">
-							<c:out value="${clazzLookup[tp.clazzKey].mbName}" /> <c:out value="${clazzLookup[tp.clazzKey].description}" /> 
+							<c:out value="${clazzLookup[tp.clazzKey].mbName}" />
+							<c:out value="${clazzLookup[tp.clazzKey].description}" /> 
                     (<c:out
 								value="${clazzLookup[tp.clazzKey].programArea}" />)
                      <br> Status:

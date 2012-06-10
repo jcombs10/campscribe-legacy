@@ -47,4 +47,9 @@ public class ScoutManager extends BaseManager {
 		return ScoutDao.INSTANCE.getScoutsByEvent(eKey);
 	}
 
+	public List<Scout> getScoutsByUnit(Key<Event> key, String unitType,
+			String unitNumber) {
+		return listScouts(key, null, unitType, unitNumber);
+	}
+
 }
