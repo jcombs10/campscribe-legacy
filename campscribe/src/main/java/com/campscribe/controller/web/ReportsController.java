@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.campscribe.auth.CampScribeUser;
 import com.campscribe.business.EventManager;
-import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.StaffManager;
 import com.campscribe.business.TrackProgressManager;
@@ -35,6 +36,8 @@ import com.campscribe.model.Scout;
 import com.campscribe.model.ScoutComparator;
 import com.campscribe.model.Staff;
 import com.campscribe.model.TrackProgress;
+import com.campscribe.model.Unit;
+import com.campscribe.model.UnitComparator;
 import com.googlecode.objectify.Key;
 
 @Controller
@@ -44,7 +47,6 @@ public class ReportsController {
 
 	private EventManager eventMgr;
 	private TrackProgressManager tpMgr;
-	private MeritBadgeManager mbMgr;
 	private ScoutManager scoutMgr;
 	private StaffManager staffMgr;
 
@@ -66,6 +68,7 @@ public class ReportsController {
 
 		fbo.setGroupBy("Program Area");
 		fbo.setProgramArea("ALL");
+		fbo.setUnit("ALL");
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CampScribeUser) {
 			CampScribeUser user = (CampScribeUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			String name = user.getUsername(); //get logged in username
@@ -87,6 +90,14 @@ public class ReportsController {
 		List<Event> events = getEventManager().listEvents();
 		mav.addObject("eventList", events);
 
+		Set<Unit> unitSet = new TreeSet<Unit>(new UnitComparator());
+		List<Scout> allScoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, fbo.getEventId()));
+		for (Scout s:allScoutList) {
+			unitSet.add(new Unit(s.getUnitType(), s.getUnitNumber()));
+		}
+		mav.addObject("unitSet", unitSet);
+
+		
 		mav.addObject("reportFilter", fbo);
 
 		if (fbo.getGroupBy().equals("Program Area")) {
@@ -119,11 +130,12 @@ public class ReportsController {
 			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
 			
 			List<Scout> scoutList = null;
-//			if (fbo.getProgramArea()==null || "ALL".equals(fbo.getProgramArea())) {
+			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
 				scoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, fbo.getEventId()));
-//			} else {
-//				clazzList = getEventManager().getClazzesByProgramArea(new Key<Event>(Event.class, fbo.getEventId()), fbo.getProgramArea());
-//			}
+			} else {
+				String[] unitParts = fbo.getUnit().split(" ");
+				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, fbo.getEventId()), unitParts[0], unitParts[1]);
+			}
 			for (Scout s:scoutList) {
 				String unit = s.getUnitType()+" "+s.getUnitNumber();
 				if (!scoutByUnitMap.containsKey(unit)) {
