@@ -41,20 +41,6 @@ public class EventController {
 	        return mav;
 	    }
 
-	@RequestMapping("/deleteEvent.cs")
-	public ModelAndView deleteEvent(@RequestParam("id") long id)
-	            throws ServletException, IOException {
-
-	        logger.info("Returning events view");
-
-	        getEventManager().deleteEvent(id);
-	        
-	        ModelAndView mav = new ModelAndView("events.jsp");
-	        mav.addObject("events", getEventManager().listEvents());
-	        
-	        return mav;
-	    }
-
 	@RequestMapping("/viewEvent.cs")
 	public ModelAndView viewEvent(@RequestParam("id") long eventId)
 	            throws ServletException, IOException {

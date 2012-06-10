@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.campscribe.business.BadgeCompletionChecker;
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.TrackProgressManager;
-import com.campscribe.model.BadgeCompletionChecker;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Clazz.Note;
 import com.campscribe.model.Event;
