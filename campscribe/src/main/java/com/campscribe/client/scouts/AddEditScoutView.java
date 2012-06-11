@@ -32,10 +32,10 @@ public class AddEditScoutView extends Composite implements CampScribeBodyWidget 
 	ScoutService scoutService = new ScoutServiceJSONImpl();
 	EventService eventService = new EventServiceJSONImpl();
 
-	private static AddEditEventViewUiBinder uiBinder = GWT
-			.create(AddEditEventViewUiBinder.class);
+	private static AddEditScoutViewUiBinder uiBinder = GWT
+			.create(AddEditScoutViewUiBinder.class);
 
-	interface AddEditEventViewUiBinder extends
+	interface AddEditScoutViewUiBinder extends
 	UiBinder<Widget, AddEditScoutView> {
 	}
 

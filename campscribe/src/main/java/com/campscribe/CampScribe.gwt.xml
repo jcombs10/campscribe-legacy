@@ -15,13 +15,14 @@
 	<!-- Other module inherits -->
 
 	<!-- Specify the app entry point class. -->
-	<entry-point class='com.campscribe.client.MeritBadgeModule' />
+    <entry-point class='com.campscribe.client.CampInfoModule' />
+    <entry-point class='com.campscribe.client.ClazzModule' />
+    <entry-point class='com.campscribe.client.EventModule' />
 	<entry-point class='com.campscribe.client.MeritBadgeMetadataModule' />
-	<entry-point class='com.campscribe.client.EventModule' />
-	<entry-point class='com.campscribe.client.ClazzModule' />
+    <entry-point class='com.campscribe.client.MeritBadgeModule' />
 	<entry-point class='com.campscribe.client.ScoutModule' />
+    <entry-point class='com.campscribe.client.ScoutClazzModule' />
 	<entry-point class='com.campscribe.client.StaffModule' />
-	<entry-point class='com.campscribe.client.ScoutClazzModule' />
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
