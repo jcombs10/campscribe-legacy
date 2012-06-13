@@ -20,6 +20,7 @@ public class CampInfoController {
 
 	@RequestMapping(value="/campInfo.cs", method=RequestMethod.GET)
 	public ModelAndView getCampInfo() {
+		System.out.println("getting campInfo");
 		
 		ModelAndView mav = new ModelAndView("campInfo.jsp");
 		
@@ -33,6 +34,7 @@ public class CampInfoController {
 		
 		mav.addObject("campInfo", ci);
 		
+		System.out.println("returning mav");
 		return mav;
 	}
 

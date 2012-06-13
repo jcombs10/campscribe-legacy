@@ -20,6 +20,7 @@ public class AddEditCampInfoView extends Composite implements CampScribeBodyWidg
 	@UiField TextBox city;
 	@UiField TextBox state;
 	@UiField TextBox zip;
+	@UiField TextBox phoneNbr;
 	@UiField TextBox meritBadgeSigner;
 
 	private Long id = null;
@@ -48,6 +49,7 @@ public class AddEditCampInfoView extends Composite implements CampScribeBodyWidg
 				city.setText(ci.getCity());
 				state.setText(ci.getState());
 				zip.setText(ci.getZip());
+				phoneNbr.setText(ci.getPhoneNbr());
 				meritBadgeSigner.setText(ci.getMeritBadgeSigner());
 			}
 
@@ -77,6 +79,7 @@ public class AddEditCampInfoView extends Composite implements CampScribeBodyWidg
 		ci.setCity(city.getText());
 		ci.setState(state.getText());
 		ci.setZip(zip.getText());
+		ci.setPhoneNbr(phoneNbr.getText());
 		ci.setMeritBadgeSigner(meritBadgeSigner.getText());
 		return ci;
 	}

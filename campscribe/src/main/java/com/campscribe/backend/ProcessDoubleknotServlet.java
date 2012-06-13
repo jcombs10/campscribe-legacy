@@ -100,7 +100,13 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 				String unitType = unitFields[0];
 				String unitNumber = unitFields[1];
 				String lastName = nextLine[1];
+				if (lastName != null) {
+					lastName = lastName.replaceAll("\"", "'");
+				}
 				String firstName = nextLine[2];
+				if (firstName != null) {
+					firstName = firstName.replaceAll("\"", "'");
+				}
 				Key<Event> e = null;
 				if (eventIdMap.containsKey(nextLine[3])) {
 					e = eventIdMap.get(nextLine[3]);
@@ -176,7 +182,13 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 				String unitType = unitFields[0];
 				String unitNumber = unitFields[1];
 				String lastName = nextLine[1];
+				if (lastName != null) {
+					lastName = lastName.replaceAll("\"", "'");
+				}
 				String firstName = nextLine[2];
+				if (firstName != null) {
+					firstName = firstName.replaceAll("\"", "'");
+				}
 				
 				String scoutKeyStr = firstName+","+lastName+","+unitType+","+unitNumber;
 

@@ -16,6 +16,10 @@
         </td>
     </tr>
     <tr>
+        <td>Phone Number</td>
+        <td><c:out value="${campInfo.phoneNbr}" /></td>
+    </tr>
+    <tr>
         <td>Merit Badge Signer</td>
         <td><c:out value="${campInfo.meritBadgeSigner}" /></td>
     </tr>

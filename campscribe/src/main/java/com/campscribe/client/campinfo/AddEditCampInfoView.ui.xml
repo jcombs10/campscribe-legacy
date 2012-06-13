@@ -33,6 +33,12 @@
                 </td>
             </tr>
             <tr>
+                <td>Phone Number:</td>
+                <td>
+                    <g:TextBox ui:field="phoneNbr" />
+                </td>
+            </tr>
+            <tr>
                 <td>Zip:</td>
                 <td>
                     <g:TextBox ui:field="zip" />

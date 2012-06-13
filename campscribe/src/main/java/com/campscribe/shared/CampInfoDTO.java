@@ -8,6 +8,7 @@ public class CampInfoDTO {
 	private String city;
 	private String state;
 	private String zip;
+	private String phoneNbr;
 	private String meritBadgeSigner;
 	
 	public CampInfoDTO() {
@@ -59,6 +60,14 @@ public class CampInfoDTO {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+
+	public String getPhoneNbr() {
+		return phoneNbr;
+	}
+
+	public void setPhoneNbr(String phoneNbr) {
+		this.phoneNbr = phoneNbr;
 	}
 
 	public String getMeritBadgeSigner() {

@@ -10,12 +10,13 @@ import com.googlecode.objectify.annotation.Cached;
 public class CampInfo {
     @Id
     private Long id;
-    private String campName;
-	private String address;
-	private String city;
-	private String state;
-	private String zip;
-	private String meritBadgeSigner;
+    private String campName = "";
+	private String address = "";
+	private String city = "";
+	private String state = "";
+	private String zip = "";
+	private String phoneNbr = "";
+	private String meritBadgeSigner = "";
 	
 	public Long getId() {
 		return id;
@@ -63,6 +64,14 @@ public class CampInfo {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+
+	public String getPhoneNbr() {
+		return phoneNbr;
+	}
+
+	public void setPhoneNbr(String phoneNbr) {
+		this.phoneNbr = phoneNbr;
 	}
 
 	public String getMeritBadgeSigner() {
