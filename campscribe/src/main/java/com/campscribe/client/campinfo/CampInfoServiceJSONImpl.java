@@ -78,6 +78,8 @@ public class CampInfoServiceJSONImpl implements CampInfoService {
 		sb.append(data.getState());
 		sb.append("\",\"zip\":\"");
 		sb.append(data.getZip());
+		sb.append("\",\"phoneNbr\":\"");
+		sb.append(data.getPhoneNbr());
 		sb.append("\",\"meritBadgeSigner\":\"");
 		sb.append(data.getMeritBadgeSigner());
 		sb.append("\"}");

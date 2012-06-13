@@ -3,7 +3,6 @@ package com.campscribe.controller.services;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +29,7 @@ public class CampInfoServiceController {
 			ci.setCity(ciList.get(0).getCity());
 			ci.setState(ciList.get(0).getState());
 			ci.setZip(ciList.get(0).getZip());
+			ci.setPhoneNbr(ciList.get(0).getPhoneNbr());
 			ci.setMeritBadgeSigner(ciList.get(0).getMeritBadgeSigner());
 		}
 		return ci;
@@ -44,6 +44,7 @@ public class CampInfoServiceController {
 		ci.setCity(ciDTO.getCity());
 		ci.setState(ciDTO.getState());
 		ci.setZip(ciDTO.getZip());
+		ci.setPhoneNbr(ciDTO.getPhoneNbr());
 		ci.setMeritBadgeSigner(ciDTO.getMeritBadgeSigner());
 		ciMgr.updateCampInfo(ci);
 		return ciDTO;
