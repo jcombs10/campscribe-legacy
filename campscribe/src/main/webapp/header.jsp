@@ -25,7 +25,7 @@
 	</noscript>
 	<img src="images/campscribe.png" alt="CampScribe Logo"
 		class="leftfloat marginBottom10" />
-	<div class="logoTitle">CampScribe Advancement Tracker</div>
+	<div class="logoTitle">Advancement Tracker</div>
 	<div id="menuBar">
 		<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
 			<a href="admin.cs">Administration</a>
