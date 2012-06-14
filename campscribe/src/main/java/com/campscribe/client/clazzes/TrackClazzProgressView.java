@@ -112,6 +112,17 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 				int row = 2;
 				boolean foundAllSelected[] = null;
 				boolean foundAllReqSelected[] = null;
+				
+				Label attendanceLbl = new Label("Select All");
+				attendanceLbl.addStyleName("italic");
+				attendanceTable.setWidget(1, 0, attendanceLbl);
+				attendanceTable.getCellFormatter().addStyleName(1, 0, "borderBottom");
+
+				Label reqLbl = new Label("Select All");
+				reqLbl.addStyleName("italic");
+				requirementsTable.setWidget(1, 0, reqLbl);
+				requirementsTable.getCellFormatter().addStyleName(1, 0, "borderBottom");
+
 				for (TrackProgressDTO t:progressList) {
 					if (foundAllSelected == null) {
 						foundAllSelected = new boolean[t.getAttendanceList().size()];
@@ -141,6 +152,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 							cb.addClickHandler(new SelectAllClickHandler(column));
 							selectAllCheckboxes.add(cb);
 							attendanceTable.setWidget(1, column, cb);
+							attendanceTable.getCellFormatter().addStyleName(1, column, "borderBottom");
 						}
 
 						CheckBox cb = new CheckBox();
@@ -177,6 +189,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 							selectAllReqCheckboxes.add(cb);
 							requirementsTable.setWidget(1, column, cb);
 							requirementsTable.getCellFormatter().addStyleName(1, column, shadingStyle);
+							requirementsTable.getCellFormatter().addStyleName(1, column, "borderBottom");
 						}
 
 						CheckBox cb = new CheckBox();
