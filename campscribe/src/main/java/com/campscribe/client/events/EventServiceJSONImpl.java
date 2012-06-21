@@ -1,7 +1,7 @@
 package com.campscribe.client.events;
 
-import java.util.logging.Logger;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import com.campscribe.shared.EventDTO;
 import com.google.gwt.http.client.Request;

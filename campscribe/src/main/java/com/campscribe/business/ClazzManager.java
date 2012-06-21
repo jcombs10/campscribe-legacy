@@ -12,9 +12,7 @@ import com.campscribe.model.Clazz.Note;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.campscribe.model.Staff;
-import com.campscribe.model.TrackProgress;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.ObjectifyService;
 
 
 

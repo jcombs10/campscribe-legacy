@@ -46,9 +46,9 @@ public class ReportsController {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private EventManager eventMgr;
-	private TrackProgressManager tpMgr;
 	private ScoutManager scoutMgr;
 	private StaffManager staffMgr;
+	private TrackProgressManager tpMgr;
 
 	@RequestMapping(value="/reports.cs", method=RequestMethod.POST)
 	public ModelAndView getTracking(@ModelAttribute("reportFilter")

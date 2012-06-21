@@ -1,7 +1,6 @@
 package com.campscribe.client.campinfo;
 
 import com.campscribe.shared.CampInfoDTO;
-import com.campscribe.shared.EventDTO;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;

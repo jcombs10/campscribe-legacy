@@ -45,6 +45,11 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+    <servlet>
+        <servlet-name>ReportServlet</servlet-name>
+        <servlet-class>com.campscribe.backend.ReportServlet</servlet-class>
+    </servlet>
+
 	<servlet-mapping>
 		<servlet-name>ProcessDoubleknotServlet</servlet-name>
 		<url-pattern>/processDoubleknot</url-pattern>
@@ -64,6 +69,11 @@
 		<servlet-name>campscribe</servlet-name>
 		<url-pattern>*.cs</url-pattern>
 	</servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ReportServlet</servlet-name>
+        <url-pattern>/reportServlet</url-pattern>
+    </servlet-mapping>
 
 	<mime-mapping>
 		<extension>css</extension>
