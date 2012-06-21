@@ -40,6 +40,8 @@
 		</c:choose>
 	</form:form>
 <p>
+<a href="/reportServlet" target="_top">Print Report</a>
+<p>
 
 	<c:if test="${reportFilter.groupBy eq 'Program Area'}">
 		<c:forEach var="entry" items="${clazzByProgramAreaMap}">

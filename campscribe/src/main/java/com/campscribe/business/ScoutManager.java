@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.campscribe.dao.ScoutDao;
-import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
 import com.googlecode.objectify.Key;

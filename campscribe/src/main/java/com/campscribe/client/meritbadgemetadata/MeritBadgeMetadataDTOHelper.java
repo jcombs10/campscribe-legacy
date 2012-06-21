@@ -4,7 +4,6 @@ import com.campscribe.shared.MeritBadgeMetadataDTO;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 
 public class MeritBadgeMetadataDTOHelper {
 	public static MeritBadgeMetadataDTO parseMeritBadgeJsonData(String json) {

@@ -13,6 +13,7 @@
         <intercept-url pattern="/" access="permitAll" />
         <intercept-url pattern="/processDoubleknot/**" access="permitAll" />
         <intercept-url pattern="/setupMeritBadgeMetadata/**" access="isAuthenticated()" />
+        <intercept-url pattern="/reportServlet/**" access="isAuthenticated()" />
         <intercept-url pattern="/service/**" access="permitAll" />
         <intercept-url pattern="/index.jsp" access="permitAll" />
         <intercept-url pattern="/_ah/**" access="permitAll" />
