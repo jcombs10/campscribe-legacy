@@ -5,8 +5,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -16,18 +16,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.campscribe.business.CampInfoManager;
 import com.campscribe.business.EventManager;
 import com.campscribe.business.ScoutManager;
 import com.campscribe.business.TrackProgressManager;
+import com.campscribe.model.CampInfo;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
 import com.campscribe.model.EventUtil;
 import com.campscribe.model.Scout;
 import com.campscribe.model.ScoutComparator;
 import com.campscribe.model.TrackProgress;
+import com.campscribe.model.TrackProgress.RequirementCompletion;
 import com.campscribe.model.Unit;
 import com.campscribe.model.UnitComparator;
 import com.googlecode.objectify.Key;
+import com.pdfjet.Align;
 import com.pdfjet.Cell;
 import com.pdfjet.CoreFont;
 import com.pdfjet.Font;
@@ -43,6 +47,7 @@ public class ReportServlet extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(ReportServlet.class.getName());
 
+	private CampInfoManager campInfoMgr;
 	private EventManager eventMgr;
 	private ScoutManager scoutMgr;
 	private TrackProgressManager tpMgr;
@@ -50,21 +55,28 @@ public class ReportServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-		List<Event> events = getEventManager().listEvents();
 
-		Long eventId = EventUtil.findCurrentEventId(events);
+		List<Event> events = getEventManager().listEvents();
+		Event event = EventUtil.findCurrentEvent(events);
+
+		//get the request parms to filter results
+		Long eventIdParm = Long.valueOf(req.getParameter("eventId"));
+		if (eventIdParm == null) {
+			eventIdParm = EventUtil.findCurrentEventId(events);
+		}
+		String programAreaParm = req.getParameter("programArea");
+		String unitParm = req.getParameter("unit");
 
 		Set<Unit> unitSet = new TreeSet<Unit>(new UnitComparator());
-		List<Scout> allScoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, eventId));
+		List<Scout> allScoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, eventIdParm));
 		for (Scout s:allScoutList) {
 			unitSet.add(new Unit(s.getUnitType(), s.getUnitNumber()));
 		}
 
-        Map<Key<Clazz>, Clazz> clazzLookup = getClazzLookup(new Key<Event>(Event.class, eventId));
-        
+		Map<Key<Clazz>, Clazz> clazzLookup = getClazzLookup(new Key<Event>(Event.class, eventIdParm));
 
-        String fileName = "campscribe_unit_report.pdf"; 
+
+		String fileName = "campscribe_unit_report.pdf"; 
 
 		resp.setContentType("application/pdf"); 
 		resp.setHeader("Content-Disposition", "attachment; filename=\"" + 
@@ -78,97 +90,146 @@ public class ReportServlet extends HttpServlet {
 			pdf.setSubject("CampScribe Unit Report");
 			pdf.setAuthor("CampScribe Software");
 
-	        Font unitFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
-	        unitFont.setSize(12.0);
+			Font unitFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
+			unitFont.setSize(12.0);
 
-	        Font headerFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
-	        headerFont.setSize(9.0);
+			Font headerFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
+			headerFont.setSize(9.0);
 
-	        Font bodyFont = new Font(pdf, CoreFont.HELVETICA);
-	        bodyFont.setSize(9.0);
+			Font bodyFont = new Font(pdf, CoreFont.HELVETICA);
+			bodyFont.setSize(9.0);
 
-	        TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
-			
+			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
+
 			List<Scout> scoutList = null;
-//			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
-				scoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, eventId));
-//			} else {
-//				String[] unitParts = fbo.getUnit().split(" ");
-//				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, eventId), unitParts[0], unitParts[1]);
-//			}
+			//			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
+			scoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, eventIdParm));
+			//			} else {
+			//				String[] unitParts = fbo.getUnit().split(" ");
+			//				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, eventId), unitParts[0], unitParts[1]);
+			//			}
 			for (Scout s:scoutList) {
 				String unit = s.getUnitType()+" "+s.getUnitNumber();
-				if (!scoutByUnitMap.containsKey(unit)) {
-					TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
-					scoutByUnitMap.put(unit, trackingMap);
-				}
-
-				List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
-				for (TrackProgress tp:trackingList) {
-					if (!scoutByUnitMap.get(unit).containsKey(s)) {
-						ArrayList<TrackProgress> badgeList = new ArrayList<TrackProgress>();
-						scoutByUnitMap.get(unit).put(s, badgeList);
+				if ("ALL".equals(unitParm) || unit.equals(unitParm)) {
+					if (!scoutByUnitMap.containsKey(unit)) {
+						TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
+						scoutByUnitMap.put(unit, trackingMap);
 					}
-					scoutByUnitMap.get(unit).get(s).add(tp);
+
+					List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
+					for (TrackProgress tp:trackingList) {
+						Clazz c = clazzLookup.get(tp.getClazzKey());
+						if ("ALL".equals(programAreaParm) || c.getProgramArea().equals(programAreaParm)) {
+							if (!scoutByUnitMap.get(unit).containsKey(s)) {
+								ArrayList<TrackProgress> badgeList = new ArrayList<TrackProgress>();
+								scoutByUnitMap.get(unit).put(s, badgeList);
+							}
+							scoutByUnitMap.get(unit).get(s).add(tp);
+						}
+					}
 				}
 			}
 
 			for (Map.Entry<String, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
-		        Page page = new Page(pdf, Letter.LANDSCAPE);
+				Page page = new Page(pdf, Letter.LANDSCAPE);
 
-		        TextLine text = new TextLine(unitFont, unit.getKey());
-		        text.setPosition(90, 30);
-		        text.drawOn(page);
+				List<CampInfo> ciList = getCampInfoManager().listCampInfos();
+				CampInfo ci = null;
+				if (ciList!=null && ciList.size()>0) {
+					ci = ciList.get(0);
+				} else {
+					ci = new CampInfo();
+				}
 
-		        Table table = new Table();
-		        table.setLineWidth(0.2);
-		        table.setPosition(140, 30);
-		        List<List<Cell>> tableData = new ArrayList<List<Cell>>();
-		        
-		        List<Cell> headerRow = new ArrayList<Cell>();
-		        headerRow.add(new Cell(headerFont, "Scout Name"));
-		        headerRow.add(new Cell(headerFont, "Merit Badge"));
-		        headerRow.add(new Cell(headerFont, "Status"));
-		        headerRow.add(new Cell(headerFont, "Completed Requirements"));
-		        headerRow.add(new Cell(headerFont, "Incomplete Requirements"));
-		        tableData.add(headerRow);
-		        
-		        for (Map.Entry<Scout,ArrayList<TrackProgress>> scout:unit.getValue().entrySet()) {
-			        for (TrackProgress tp:scout.getValue()) {
-				        List<Cell> aRow = new ArrayList<Cell>();
-				        aRow.add(new Cell(bodyFont, scout.getKey().getDisplayName()));
-				        aRow.add(new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName()));
-				        aRow.add(new Cell(bodyFont, tp.getComplete()?"Complete":"Partial"));
-				        aRow.add(new Cell(bodyFont, "Completed Requirements"));
-				        aRow.add(new Cell(bodyFont, "Incomplete Requirements"));
-				        tableData.add(aRow);
-			        }
-		        }
-		        
-		        table.setData(tableData, Table.DATA_HAS_1_HEADER_ROWS);
-		        table.drawOn(page);
+				TextLine text = new TextLine(unitFont, ci.getCampName());
+				text.setPosition(36,36);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, ci.getAddress());
+				text.setPosition(36,51);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, ci.getCity()+", "+ci.getState()+" "+ci.getZip());
+				text.setPosition(36,66);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, ci.getPhoneNbr());
+				text.setPosition(36,81);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, unit.getKey());
+				text.setPosition(36,111);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, event.getDescription());
+				text.setPosition(400,36);
+				text.drawOn(page);
+
+				text = new TextLine(unitFont, event.getStartDateDisplayStr()+" - "+event.getEndDateDisplayStr());
+				text.setPosition(400,51);
+				text.drawOn(page);
+
+				Table table = new Table();
+				table.setLineWidth(0.2);
+				table.setPosition(36, 126);
+				List<List<Cell>> tableData = new ArrayList<List<Cell>>();
+
+				List<Cell> headerRow = new ArrayList<Cell>();
+				Cell c = new Cell(headerFont, "Scout Name");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				c = new Cell(headerFont, "Merit Badge");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				c = new Cell(headerFont, "Status");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				c = new Cell(headerFont, "Completed Requirements");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				c = new Cell(headerFont, "Incomplete Requirements");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				tableData.add(headerRow);
+
+				for (Map.Entry<Scout,ArrayList<TrackProgress>> scout:unit.getValue().entrySet()) {
+					for (TrackProgress tp:scout.getValue()) {
+						if ("ALL".equals(programAreaParm) || clazzLookup.get(tp.getClazzKey()).getProgramArea().equals(programAreaParm)) {
+							List<Cell> aRow = new ArrayList<Cell>();
+							aRow.add(new Cell(bodyFont, scout.getKey().getDisplayName()));
+							aRow.add(new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName()));
+							aRow.add(new Cell(bodyFont, tp.getComplete()?"Complete":"Partial"));
+							StringBuilder completeReqs = new StringBuilder();
+							StringBuilder incompleteReqs = new StringBuilder();
+							for (RequirementCompletion rc:tp.getRequirementList()) {
+								if (rc.isCompleted()) {
+									if (completeReqs.length() > 0) {
+										completeReqs.append(", ");
+									}
+									completeReqs.append(rc.getReqNumber());
+								} else {
+									if (incompleteReqs.length() > 0) {
+										incompleteReqs.append(", ");
+									}
+									incompleteReqs.append(rc.getReqNumber());
+								}
+							}
+							aRow.add(new Cell(bodyFont, completeReqs.toString()));
+							aRow.add(new Cell(bodyFont, tp.getComplete()?"":incompleteReqs.toString()));
+							tableData.add(aRow);
+						}
+					}
+				}
+
+				table.setData(tableData, Table.DATA_HAS_1_HEADER_ROWS);
+				table.setColumnWidth(0, 100);
+				table.setColumnWidth(1, 100);
+				table.setColumnWidth(2, 40);
+				table.setColumnWidth(3, 225);
+				table.setColumnWidth(4, 225);
+				table.wrapAroundCellText();
+				table.drawOn(page);
 			}
-
-//	        Table table = new Table();
-//	        List<List<Cell>> tableData = getData(Table.DATA_HAS_2_HEADER_ROWS, f1, f2);
-//	        table.setData(tableData, Table.DATA_HAS_2_HEADER_ROWS);
-//	        
-//	        table.setTextColorInRow(6, RGB.BLUE);
-//	        table.setTextColorInRow(39, RGB.RED);
-//	        table.setTextFontInRow(26, f3, 7);
-//	        table.removeLineBetweenRows(0, 1);  
-//	        table.autoAdjustColumnWidths();
-//	        table.setColumnWidth(0, 120);
-//	        table.rightAlignNumbers();
-//	        int numOfPages = table.getNumberOfPages(page);
-//	        while (true) {
-//	            Point point = table.drawOn(page);
-//	            // System.out.println(table.getRowsRendered());
-//	            // System.out.println(point.getX() + " " + point.getY());
-//	            // TO DO: Draw "Page 1 of N" here
-//	            if (!table.hasMoreData()) break;
-//	            page = new Page(pdf, Letter.PORTRAIT);
-//	        }
 
 			pdf.flush();
 			ostream.close();
@@ -179,27 +240,19 @@ public class ReportServlet extends HttpServlet {
 
 	}
 
-//    private void appendMissingCells(List<List<Cell>> tableData, Font f2) {
-//        List<Cell> firstRow = tableData.get(0);
-//        int numOfColumns = firstRow.size();
-//        for (int i = 0; i < tableData.size(); i++) {
-//            List<Cell> dataRow = tableData.get(i);
-//            int dataRowColumns = dataRow.size();
-//            if (dataRowColumns < numOfColumns) {
-//                for (int j = 0; j < (numOfColumns - dataRowColumns); j++) {
-//                    dataRow.add(new Cell(f2));
-//                }
-//                dataRow.get(dataRowColumns - 1).setColSpan((numOfColumns - dataRowColumns) + 1);
-//            }
-//        }
-//    }
-//
 	private Map<Key<Clazz>, Clazz> getClazzLookup(Key<Event> eKey) {
 		Map<Key<Clazz>, Clazz> staffLookup = new HashMap<Key<Clazz>, Clazz>();
 		for(Clazz c:getEventManager().getClazzesByEvent(eKey)) {
 			staffLookup.put(new Key<Clazz>(eKey, Clazz.class, c.getId()), c);
 		}
 		return staffLookup;
+	}
+
+	private CampInfoManager getCampInfoManager() {
+		if (campInfoMgr == null) {
+			campInfoMgr = new CampInfoManager();
+		}
+		return campInfoMgr;
 	}
 
 	private EventManager getEventManager() {

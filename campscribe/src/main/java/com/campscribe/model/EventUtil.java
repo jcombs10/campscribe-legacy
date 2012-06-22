@@ -22,4 +22,19 @@ public class EventUtil {
 		return eventId;
 	}
 
+	public static Event findCurrentEvent(List<Event> events) {
+		Date today = new Date();
+		for (Event e:events) {
+			Date startDate = (Date) e.getStartDate().clone();
+			startDate.setDate(startDate.getDate()-2);
+			Date endDate = (Date) e.getEndDate().clone();
+			endDate.setDate(endDate.getDate()+2);
+			if (today.after(startDate) && today.before(endDate)) {
+				return e;
+			}
+		}
+		
+		return null;
+	}
+
 }

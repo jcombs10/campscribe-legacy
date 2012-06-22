@@ -2,7 +2,6 @@
 /* 
 khaki #9F9F5F
 */
-/** Example rules used by the template application (remove for your app) */
 h1 {
 	font-size: 2em;
 	font-weight: bold;
@@ -19,16 +18,16 @@ h1 {
 	float: right;
 }
 
+.clear {
+    clear: both;
+}
+
 .even {
 	background-color: lightGrey;
 }
 
 .odd {
 	background-color: white;
-}
-
-.clear {
-	clear: both;
 }
 
 .center {
@@ -101,9 +100,18 @@ table.campscribeList td,table.campscribeList th {
 }
 
 .paddingLeft20 {
-	padding-left: 20px;
+    padding-left: 20px;
 }
 
 .paddingLeft40 {
-	padding-left: 40px;
+    padding-left: 40px;
 }
+
+.paddingLeft50 {
+    padding-left: 50px;
+}
+
+.paddingTop10 {
+    padding-top: 10px;
+}
+

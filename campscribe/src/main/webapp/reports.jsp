@@ -1,46 +1,62 @@
 <%@ include file="header.jsp"%>
-<p>
+<div class="leftfloat paddingTop10">
 	<form:form commandName="reportFilter">
-		<label>Event: </label>
-		<form:select path="eventId" onchange='this.form.submit()'>
-			<form:options items="${eventList}" itemLabel="description"
-				itemValue="id" />
-		</form:select>
-		<br>
-		<label>Group By: </label>
-		<form:select path="groupBy" onchange='this.form.submit()'>
-			<form:option value="Program Area">Program Area</form:option>
-			<form:option value="Unit">Unit</form:option>
-		</form:select>
-		<br>
-		<c:choose>
-			<c:when test="${reportFilter.groupBy eq 'Program Area'}">
-				<label>Program Area: </label>
-				<form:select path="programArea" onchange='this.form.submit()'>
-					<form:option value="ALL">All Program Areas</form:option>
-					<form:option value="Aquatics">Aquatics</form:option>
-					<form:option value="COPE and Climbing">COPE and Climbing</form:option>
-					<form:option value="Eagle Ridge">Eagle Ridge</form:option>
-					<form:option value="Handicraft">Handicraft</form:option>
-					<form:option value="Handyman">Handyman</form:option>
-					<form:option value="Health Lodge">Health Lodge</form:option>
-					<form:option value="Native American Village">Native American Village</form:option>
-					<form:option value="NEST">NEST</form:option>
-					<form:option value="Outdoor Skills">Outdoor Skills</form:option>
-					<form:option value="Shooting Sports">Shooting Sports</form:option>
-				</form:select>
-			</c:when>
-			<c:when test="${reportFilter.groupBy eq 'Unit'}">
-				<label>Unit: </label>
-				<form:select path="unit" onchange='this.form.submit()'>
-					<form:option value="ALL">All Units</form:option>
-					<form:options items="${unitSet}" />
-				</form:select>
-			</c:when>
-		</c:choose>
+		<table>
+			<tr>
+				<td><label>Event: </label></td>
+				<td><form:select path="eventId" onchange='this.form.submit()'>
+						<form:options items="${eventList}" itemLabel="description"
+							itemValue="id" />
+					</form:select></td>
+			</tr>
+			<tr>
+				<td><label>Group By: </label></td>
+				<td><form:select path="groupBy" onchange='this.form.submit()'>
+						<form:option value="Program Area">Program Area</form:option>
+						<form:option value="Unit">Unit</form:option>
+					</form:select></td>
+			</tr>
+			<tr>
+				<td><label>Program Area: </label></td>
+				<td><form:select path="programArea"
+						onchange='this.form.submit()'>
+						<form:option value="ALL">All Program Areas</form:option>
+						<form:option value="Aquatics">Aquatics</form:option>
+						<form:option value="COPE and Climbing">COPE and Climbing</form:option>
+						<form:option value="Eagle Ridge">Eagle Ridge</form:option>
+						<form:option value="Handicraft">Handicraft</form:option>
+						<form:option value="Handyman">Handyman</form:option>
+						<form:option value="Health Lodge">Health Lodge</form:option>
+						<form:option value="Native American Village">Native American Village</form:option>
+						<form:option value="NEST">NEST</form:option>
+						<form:option value="Outdoor Skills">Outdoor Skills</form:option>
+						<form:option value="Shooting Sports">Shooting Sports</form:option>
+					</form:select></td>
+			</tr>
+			<tr>
+				<td><label>Unit: </label></td>
+				<td><form:select path="unit" onchange='this.form.submit()'>
+						<form:option value="ALL">All Units</form:option>
+						<form:options items="${unitSet}" />
+					</form:select></td>
+			</tr>
+		</table>
 	</form:form>
-<p>
-<a href="/reportServlet" target="_top">Print Report</a>
+</div>
+<c:url value="/reportServlet" var="reportUrl">
+	<c:param name="eventId" value="${reportFilter.eventId}" />
+	<c:param name="groupBy" value="${reportFilter.groupBy}" />
+	<c:param name="programArea" value="${reportFilter.programArea}" />
+	<c:param name="unit" value="${reportFilter.unit}" />
+</c:url>
+<c:if test="${reportFilter.groupBy eq 'Unit'}">
+<div class="leftfloat paddingTop10 paddingLeft50">
+    <a href="<c:out value="${reportUrl}"/>" target="_top"><img
+        src="images/AdobeReaderIcon.png" alt="Print Report"
+        title="Print Report"></a>
+</div>
+</c:if>
+<div class="clear"></div>
 <p>
 
 	<c:if test="${reportFilter.groupBy eq 'Program Area'}">
