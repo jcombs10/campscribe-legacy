@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -130,45 +131,17 @@ public class ReportServlet extends HttpServlet {
 				}
 			}
 
+			List<CampInfo> ciList = getCampInfoManager().listCampInfos();
+			CampInfo ci = null;
+			if (ciList!=null && ciList.size()>0) {
+				ci = ciList.get(0);
+			} else {
+				ci = new CampInfo();
+			}
+
 			for (Map.Entry<String, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
-				Page page = new Page(pdf, Letter.LANDSCAPE);
-
-				List<CampInfo> ciList = getCampInfoManager().listCampInfos();
-				CampInfo ci = null;
-				if (ciList!=null && ciList.size()>0) {
-					ci = ciList.get(0);
-				} else {
-					ci = new CampInfo();
-				}
-
-				TextLine text = new TextLine(unitFont, ci.getCampName());
-				text.setPosition(36,36);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, ci.getAddress());
-				text.setPosition(36,51);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, ci.getCity()+", "+ci.getState()+" "+ci.getZip());
-				text.setPosition(36,66);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, ci.getPhoneNbr());
-				text.setPosition(36,81);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, unit.getKey());
-				text.setPosition(36,111);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, event.getDescription());
-				text.setPosition(400,36);
-				text.drawOn(page);
-
-				text = new TextLine(unitFont, event.getStartDateDisplayStr()+" - "+event.getEndDateDisplayStr());
-				text.setPosition(400,51);
-				text.drawOn(page);
-
+				Page page = createPage(pdf, unitFont, ci, event, unit);
+				
 				Table table = new Table();
 				table.setLineWidth(0.2);
 				table.setPosition(36, 126);
@@ -228,7 +201,14 @@ public class ReportServlet extends HttpServlet {
 				table.setColumnWidth(3, 225);
 				table.setColumnWidth(4, 225);
 				table.wrapAroundCellText();
-				table.drawOn(page);
+
+		        while (true) {
+		            table.drawOn(page);
+		            // System.out.println(table.getRowsRendered());
+		            // TO DO: Draw "Page 1 of N" here
+		            if (!table.hasMoreData()) break;
+					page = createPage(pdf, unitFont, ci, event, unit);
+		        }
 			}
 
 			pdf.flush();
@@ -238,6 +218,40 @@ public class ReportServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+	}
+
+	private Page createPage(PDF pdf, Font unitFont, CampInfo ci, Event event, Entry<String, TreeMap<Scout, ArrayList<TrackProgress>>> unit) throws Exception {
+		Page page = new Page(pdf, Letter.LANDSCAPE);
+
+		TextLine text = new TextLine(unitFont, ci.getCampName());
+		text.setPosition(36,36);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, ci.getAddress());
+		text.setPosition(36,51);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, ci.getCity()+", "+ci.getState()+" "+ci.getZip());
+		text.setPosition(36,66);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, ci.getPhoneNbr());
+		text.setPosition(36,81);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, unit.getKey());
+		text.setPosition(36,111);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, event.getDescription());
+		text.setPosition(400,36);
+		text.drawOn(page);
+
+		text = new TextLine(unitFont, event.getStartDateDisplayStr()+" - "+event.getEndDateDisplayStr());
+		text.setPosition(400,51);
+		text.drawOn(page);
+
+		return page;
 	}
 
 	private Map<Key<Clazz>, Clazz> getClazzLookup(Key<Event> eKey) {
