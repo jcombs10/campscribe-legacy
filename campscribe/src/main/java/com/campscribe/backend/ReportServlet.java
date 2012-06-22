@@ -163,7 +163,7 @@ public class ReportServlet extends HttpServlet {
 				c = new Cell(headerFont, "Counselor Signature");
 				c.setTextAlignment(Align.CENTER);
 				headerRow.add(c);
-				c = new Cell(headerFont, "Complete Date");
+				c = new Cell(headerFont, "Date");
 				c.setTextAlignment(Align.CENTER);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Completed Requirements");
@@ -182,7 +182,7 @@ public class ReportServlet extends HttpServlet {
 							aRow.add(new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName()));
 							aRow.add(new Cell(bodyFont, tp.getComplete()?"Complete":"Partial"));
 							aRow.add(new Cell(bodyFont, "")); //signature block
-							aRow.add(new Cell(bodyFont, !tp.getComplete()?event.getEndDateDisplayStr():""));
+							aRow.add(new Cell(bodyFont, tp.getComplete()?event.getEndDateDisplayStr():""));
 							StringBuilder completeReqs = new StringBuilder();
 							StringBuilder incompleteReqs = new StringBuilder();
 							for (RequirementCompletion rc:tp.getRequirementList()) {
@@ -208,9 +208,9 @@ public class ReportServlet extends HttpServlet {
 				table.setData(tableData, Table.DATA_HAS_1_HEADER_ROWS);
 				table.setColumnWidth(0, 100);
 				table.setColumnWidth(1, 100);
-				table.setColumnWidth(2, 40);
+				table.setColumnWidth(2, 30);
 				table.setColumnWidth(3, 150);
-				table.setColumnWidth(4, 60);
+				table.setColumnWidth(4, 45);
 				table.setColumnWidth(5, 150);
 				table.setColumnWidth(6, 150);
 				table.wrapAroundCellText();
