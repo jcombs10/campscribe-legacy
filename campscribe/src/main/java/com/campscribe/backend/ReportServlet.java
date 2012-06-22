@@ -95,10 +95,13 @@ public class ReportServlet extends HttpServlet {
 			unitFont.setSize(12.0);
 
 			Font headerFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
-			headerFont.setSize(9.0);
+			headerFont.setSize(8.0);
 
 			Font bodyFont = new Font(pdf, CoreFont.HELVETICA);
-			bodyFont.setSize(9.0);
+			bodyFont.setSize(8.0);
+
+			Font footerFont = new Font(pdf, CoreFont.HELVETICA_OBLIQUE);
+			footerFont.setSize(8.0);
 
 			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
 
@@ -157,6 +160,12 @@ public class ReportServlet extends HttpServlet {
 				c = new Cell(headerFont, "Status");
 				c.setTextAlignment(Align.CENTER);
 				headerRow.add(c);
+				c = new Cell(headerFont, "Counselor Signature");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
+				c = new Cell(headerFont, "Complete Date");
+				c.setTextAlignment(Align.CENTER);
+				headerRow.add(c);
 				c = new Cell(headerFont, "Completed Requirements");
 				c.setTextAlignment(Align.CENTER);
 				headerRow.add(c);
@@ -172,6 +181,8 @@ public class ReportServlet extends HttpServlet {
 							aRow.add(new Cell(bodyFont, scout.getKey().getDisplayName()));
 							aRow.add(new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName()));
 							aRow.add(new Cell(bodyFont, tp.getComplete()?"Complete":"Partial"));
+							aRow.add(new Cell(bodyFont, "")); //signature block
+							aRow.add(new Cell(bodyFont, !tp.getComplete()?event.getEndDateDisplayStr():""));
 							StringBuilder completeReqs = new StringBuilder();
 							StringBuilder incompleteReqs = new StringBuilder();
 							for (RequirementCompletion rc:tp.getRequirementList()) {
@@ -198,8 +209,10 @@ public class ReportServlet extends HttpServlet {
 				table.setColumnWidth(0, 100);
 				table.setColumnWidth(1, 100);
 				table.setColumnWidth(2, 40);
-				table.setColumnWidth(3, 225);
-				table.setColumnWidth(4, 225);
+				table.setColumnWidth(3, 150);
+				table.setColumnWidth(4, 60);
+				table.setColumnWidth(5, 150);
+				table.setColumnWidth(6, 150);
 				table.wrapAroundCellText();
 
 		        while (true) {
