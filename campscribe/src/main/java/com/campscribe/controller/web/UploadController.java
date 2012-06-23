@@ -11,18 +11,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.campscribe.business.ImportedFileManager;
+import com.campscribe.model.ImportedFile;
 import com.campscribe.model.UploadItem;
 import com.google.appengine.api.backends.BackendServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
+import com.googlecode.objectify.Key;
 
 
 @Controller
 @RequestMapping(value = "/upload.cs")
 public class UploadController {
 	private static final Logger log = Logger.getLogger(UploadController.class.getName());
+
+	private ImportedFileManager mgr;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getUploadForm(Model model)
@@ -48,19 +53,33 @@ public class UploadController {
 		}
 		String file = new String(dataBytes);
 		log.log(Level.FINE, "adding to OrderQueue {0}", file);
+		
+		ImportedFile impFile = new ImportedFile();
+		impFile.setCsvText(file);
+		impFile.setOriginalFileName(fileData.getOriginalFilename());
+		Key<ImportedFile> impFileKey = getImportedFileManager().addImportedFile(impFile );
+		
 		// Create Task and push it into Task Queue
-		createBackendTask(file);
+		createBackendTask(impFileKey.getId());
 		
 		return "redirect:/admin.cs"; // redirect after processing!!!
 	}
 
-	private void createBackendTask(String data) {
+	private void createBackendTask(Long importedFileId) {
 		 // Create Task and push it into Task Queue
 		Queue queue = QueueFactory.getQueue("UploadQueue");
 		TaskOptions taskOptions = TaskOptions.Builder.withUrl("/processDoubleknot")
-		                          .param("csv", data)
+		                          .param("importedFileId", importedFileId.toString())
 		                          .header("Host", BackendServiceFactory.getBackendService().getBackendAddress("doubleknot-backend"))
 		                          .method(Method.POST);
 		queue.add(taskOptions);	
 	}
+
+	private ImportedFileManager getImportedFileManager() {
+		if (mgr == null) {
+			mgr = new ImportedFileManager();
+		}
+		return mgr;
+	}
+
 }

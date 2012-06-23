@@ -38,6 +38,10 @@ h1 {
     width: 100%;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .italic {
     font-style: italic;
 }

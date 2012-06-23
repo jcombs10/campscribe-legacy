@@ -3,6 +3,7 @@ package com.campscribe.business;
 import com.campscribe.model.CampInfo;
 import com.campscribe.model.Clazz;
 import com.campscribe.model.Event;
+import com.campscribe.model.ImportedFile;
 import com.campscribe.model.MeritBadge;
 import com.campscribe.model.MeritBadgeMetadata;
 import com.campscribe.model.Scout;
@@ -16,6 +17,7 @@ public class BaseManager {
 		ObjectifyService.register(CampInfo.class);
 		ObjectifyService.register(Clazz.class);
 		ObjectifyService.register(Event.class);
+		ObjectifyService.register(ImportedFile.class);
 		ObjectifyService.register(MeritBadge.class);
 		ObjectifyService.register(MeritBadgeMetadata.class);
 		ObjectifyService.register(Scout.class);
