@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.campscribe.business.CampInfoManager;
 import com.campscribe.business.EventManager;
@@ -50,7 +51,8 @@ public class ReportServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4984668055373587237L;
 
-	private static final Logger log = Logger.getLogger(ReportServlet.class.getName());
+	protected final Log logger = LogFactory.getLog(getClass());
+
 
 	private CampInfoManager campInfoMgr;
 	private EventManager eventMgr;
@@ -60,6 +62,8 @@ public class ReportServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		logger.info("starting report generation");
 
 		List<Event> events = getEventManager().listEvents();
 		Event event = EventUtil.findCurrentEvent(events);
@@ -92,6 +96,8 @@ public class ReportServlet extends HttpServlet {
 		Map<String, List<Page>> unitPageMap = new HashMap<String, List<Page>>(); 
 
 		try {
+			logger.info("tie PDF to ostream");
+
 			PDF pdf = new PDF(ostream);
 			pdf.setTitle("CampScribe Unit Report");
 			pdf.setSubject("CampScribe Unit Report");
@@ -109,6 +115,8 @@ public class ReportServlet extends HttpServlet {
 			Font footerFont = new Font(pdf, CoreFont.HELVETICA_OBLIQUE);
 			footerFont.setSize(8.0);
 
+			logger.info("gathering data");
+
 			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
 
 			List<Scout> scoutList = null;
@@ -118,6 +126,8 @@ public class ReportServlet extends HttpServlet {
 			//				String[] unitParts = fbo.getUnit().split(" ");
 			//				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, eventId), unitParts[0], unitParts[1]);
 			//			}
+			logger.info("got list of scouts");
+
 			for (Scout s:scoutList) {
 				String unit = s.getUnitType()+" "+s.getUnitNumber();
 				if ("ALL".equals(unitParm) || unit.equals(unitParm)) {
@@ -125,6 +135,8 @@ public class ReportServlet extends HttpServlet {
 						TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
 						scoutByUnitMap.put(unit, trackingMap);
 					}
+
+					logger.info("building tracking list for scout "+s.getDisplayName());
 
 					List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
 					for (TrackProgress tp:trackingList) {
@@ -140,6 +152,8 @@ public class ReportServlet extends HttpServlet {
 				}
 			}
 
+			logger.info("done gathering tracking data");
+
 			List<CampInfo> ciList = getCampInfoManager().listCampInfos();
 			CampInfo ci = null;
 			if (ciList!=null && ciList.size()>0) {
@@ -148,7 +162,11 @@ public class ReportServlet extends HttpServlet {
 				ci = new CampInfo();
 			}
 
+			logger.info("done gathering camp data");
+
 			for (Map.Entry<String, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
+				logger.info("starting page generation for "+unit.getKey());
+
 				Page page = createPage(pdf, unitFont, ci, event, unit);
 				if (!unitPageMap.containsKey(unit.getKey())) {
 					unitPageMap.put(unit.getKey(), new ArrayList<Page>());
@@ -184,6 +202,7 @@ public class ReportServlet extends HttpServlet {
 				headerRow.add(c);
 				tableData.add(headerRow);
 
+				logger.info("adding scouts to table");
 				for (Map.Entry<Scout,ArrayList<TrackProgress>> scout:unit.getValue().entrySet()) {
 					for (TrackProgress tp:scout.getValue()) {
 						if ("ALL".equals(programAreaParm) || clazzLookup.get(tp.getClazzKey()).getProgramArea().equals(programAreaParm)) {
@@ -214,18 +233,21 @@ public class ReportServlet extends HttpServlet {
 						}
 					}
 				}
+				logger.info("done adding scouts to table");
 
 				table.setData(tableData, Table.DATA_HAS_1_HEADER_ROWS);
 				table.setColumnWidth(0, 100);
 				table.setColumnWidth(1, 100);
-				table.setColumnWidth(2, 30);
+				table.setColumnWidth(2, 40);
 				table.setColumnWidth(3, 150);
 				table.setColumnWidth(4, 45);
 				table.setColumnWidth(5, 150);
 				table.setColumnWidth(6, 150);
 				table.wrapAroundCellText();
 
+				logger.info("drawing table on page");
 		        while (true) {
+					logger.info("drawing table on page");
 		            table.drawOn(page);
 		            // System.out.println(table.getRowsRendered());
 		            // TO DO: Draw "Page 1 of N" here
@@ -235,10 +257,12 @@ public class ReportServlet extends HttpServlet {
 		        }
 			}
 
+			logger.info("getting date time of generation");
 			TimeZone tz = TimeZone.getTimeZone("America/New_York");
 			FastDateFormat formatter = FastDateFormat.getInstance("MM/dd/yyyy HH:mm:ss", tz);
 			String nowStr = formatter.format(new Date());
 
+			logger.info("numbering pages");
 			for (List<Page> unitPageList:unitPageMap.values()) {
 				int n = 1;
 				int m = unitPageList.size();
@@ -247,19 +271,20 @@ public class ReportServlet extends HttpServlet {
 					text.setPosition(36,590);
 					text.drawOn(page);
 
-					text = new TextLine(footerFont, "Page "+n+" of "+m);
+					text = new TextLine(footerFont, "Page "+(n++)+" of "+m);
 					text.setPosition(350,590);
 					text.drawOn(page);
 				}
 			}
+			logger.info("finished numbering pages");
 			
 			pdf.flush();
 			ostream.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("report generation failed", e);
 		}
 
+		logger.info("done generating report");
 	}
 
 	private Page createPage(PDF pdf, Font unitFont, CampInfo ci, Event event, Entry<String, TreeMap<Scout, ArrayList<TrackProgress>>> unit) throws Exception {
