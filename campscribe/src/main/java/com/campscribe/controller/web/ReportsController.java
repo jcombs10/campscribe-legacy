@@ -136,7 +136,7 @@ public class ReportsController {
 			mav.addObject("clazzByProgramAreaMap", clazzByProgramAreaMap);
 			mav.addObject("scoutLookup", scoutLookup);
 		} else {
-			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
+			TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>>(new UnitComparator());
 			
 			List<Scout> scoutList = null;
 			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
@@ -146,7 +146,7 @@ public class ReportsController {
 				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, fbo.getEventId()), unitParts[0], unitParts[1]);
 			}
 			for (Scout s:scoutList) {
-				String unit = s.getUnitType()+" "+s.getUnitNumber();
+				Unit unit = new Unit(s.getUnitType(), s.getUnitNumber());
 				if (!scoutByUnitMap.containsKey(unit)) {
 					TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
 					scoutByUnitMap.put(unit, trackingMap);

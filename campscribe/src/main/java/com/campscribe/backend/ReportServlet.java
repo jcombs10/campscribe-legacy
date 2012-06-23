@@ -8,10 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -79,14 +77,7 @@ public class ReportServlet extends HttpServlet {
 		String programAreaParm = req.getParameter("programArea");
 		String unitParm = req.getParameter("unit");
 
-		Set<Unit> unitSet = new TreeSet<Unit>(new UnitComparator());
-		List<Scout> allScoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, eventIdParm));
-		for (Scout s:allScoutList) {
-			unitSet.add(new Unit(s.getUnitType(), s.getUnitNumber()));
-		}
-
 		Map<Key<Clazz>, Clazz> clazzLookup = getClazzLookup(new Key<Event>(Event.class, eventIdParm));
-
 
 		String fileName = "campscribe_unit_report.pdf"; 
 
@@ -96,7 +87,7 @@ public class ReportServlet extends HttpServlet {
 
 		OutputStream ostream = resp.getOutputStream();
 		
-		Map<String, List<Page>> unitPageMap = new HashMap<String, List<Page>>(); 
+		Map<Unit, List<Page>> unitPageMap = new HashMap<Unit, List<Page>>(); 
 
 		try {
 			logger.info("tie PDF to ostream");
@@ -120,7 +111,7 @@ public class ReportServlet extends HttpServlet {
 
 			logger.info("gathering data");
 
-			TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<String, TreeMap<Scout,ArrayList<TrackProgress>>>();
+			TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>>(new UnitComparator());
 
 			List<Scout> scoutList = null;
 			//			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
@@ -132,7 +123,7 @@ public class ReportServlet extends HttpServlet {
 			logger.info("got list of scouts");
 
 			for (Scout s:scoutList) {
-				String unit = s.getUnitType()+" "+s.getUnitNumber();
+				Unit unit = new Unit(s.getUnitType(), s.getUnitNumber());
 				if ("ALL".equals(unitParm) || unit.equals(unitParm)) {
 					if (!scoutByUnitMap.containsKey(unit)) {
 						TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
@@ -167,7 +158,7 @@ public class ReportServlet extends HttpServlet {
 
 			logger.info("done gathering camp data");
 
-			for (Map.Entry<String, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
+			for (Map.Entry<Unit, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
 				logger.info("starting page generation for "+unit.getKey());
 
 				Page page = createPage(pdf, unitFont, ci, event, unit);
@@ -313,7 +304,7 @@ public class ReportServlet extends HttpServlet {
 		logger.info("done generating report");
 	}
 
-	private Page createPage(PDF pdf, Font unitFont, CampInfo ci, Event event, Entry<String, TreeMap<Scout, ArrayList<TrackProgress>>> unit) throws Exception {
+	private Page createPage(PDF pdf, Font unitFont, CampInfo ci, Event event, Entry<Unit, TreeMap<Scout, ArrayList<TrackProgress>>> unit) throws Exception {
 		Page page = new Page(pdf, Letter.LANDSCAPE);
 
 		TextLine text = new TextLine(unitFont, ci.getCampName());
@@ -332,7 +323,7 @@ public class ReportServlet extends HttpServlet {
 		text.setPosition(36,81);
 		text.drawOn(page);
 
-		text = new TextLine(unitFont, unit.getKey());
+		text = new TextLine(unitFont, unit.getKey().toString());
 		text.setPosition(36,111);
 		text.drawOn(page);
 
