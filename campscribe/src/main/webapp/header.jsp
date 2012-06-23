@@ -26,6 +26,11 @@
 	<img src="images/campscribe.png" alt="CampScribe Logo"
 		class="leftfloat marginBottom10" />
 	<div class="logoTitle">Advancement Tracker</div>
+	<div class="rightfloat">
+        <sec:authorize access="isAuthenticated()">
+            <span class="bold">Logged in as </span> <sec:authentication property="principal.username" />
+        </sec:authorize>
+	</div>
 	<div id="menuBar">
 		<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
 			<a href="admin.cs">Administration</a>

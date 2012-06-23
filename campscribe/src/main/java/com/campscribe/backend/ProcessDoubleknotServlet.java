@@ -24,6 +24,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.campscribe.business.ClazzManager;
 import com.campscribe.business.EventManager;
+import com.campscribe.business.ImportedFileManager;
 import com.campscribe.business.MeritBadgeManager;
 import com.campscribe.business.MeritBadgeMetadataManager;
 import com.campscribe.business.ScoutManager;
@@ -40,6 +41,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(ProcessDoubleknotServlet.class.getName());
 
+	private ImportedFileManager importedFileManager = new ImportedFileManager();
 	private ScoutManager scoutManager = new ScoutManager();
 	private EventManager eventManager = new EventManager();
 	private ClazzManager clazzManager = new ClazzManager();
@@ -52,7 +54,8 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String csvString = req.getParameter("csv");
+		Long importedFileId = Long.valueOf(req.getParameter("importedFileId"));
+		String csvString = importedFileManager.getImportedFile(importedFileId.longValue()).getCsvText();
 
 		//first pass - look for events to add
 		CSVReader reader = new CSVReader(new StringReader(csvString));

@@ -50,6 +50,9 @@ public class EventModule implements EntryPoint {
 
 	private native void addGWTActionTriggers(EventModule module)/*-{
         $wnd.EventGWT = {
+            deleteEvent: function(id) {
+                module.@com.campscribe.client.EventModule::deleteEvent(Ljava/lang/String;)(id);
+            },
             editEvent: function(id) {
                 module.@com.campscribe.client.EventModule::editEvent(Ljava/lang/String;)(id);
             }
@@ -57,7 +60,7 @@ public class EventModule implements EntryPoint {
     }-*/;
 
 	public void deleteEvent(String id) {
-		if (Window.confirm("Are you sure you want to delete this Scout?")) {
+		if (Window.confirm("Are you sure you want to delete this Event?")) {
 			eventService.deleteEvent(id);
 		}
 	}
