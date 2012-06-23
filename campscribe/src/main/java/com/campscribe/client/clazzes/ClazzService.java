@@ -14,6 +14,8 @@ public interface ClazzService {
     
     public void addScoutToClazz(Long eventId, Long clazzId, List<ScoutDTO> s);
     
+    public void deleteScoutFromClazz(Long eventId, Long clazzId, Long scoutId);
+    
     public void getClazz(Long eventId, Long clazzId, RequestCallback callback);
     
     public void getClazzTracking(Long eventId, Long clazzId, RequestCallback callback);

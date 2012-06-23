@@ -27,8 +27,8 @@
         <td><c:out value="${scout.rank}" /></td>
         <td><c:out value="${scout.unitType}" /> <c:out
                         value="${scout.unitNumber}" /></td>
-        <td style="text-align:center;"><a href="deleteScoutClazz.cs?clazzId=${clazz.id}&scoutId=${scout}"><img
-                        src="images/16x16/delete.png" alt="Delete"></a></td>
+        <td style="text-align: center;"><a onclick="ScoutClazzGWT.deleteScoutFromClazz(<c:out value="${clazz.event.id}"/>, <c:out value="${clazz.id}"/>, <c:out value="${scout.id}"/>, '<c:out value="${mbLookup[clazz.mbId].badgeName}" /> <c:out value="${clazz.description}" />', '<c:out value="${scout.displayName}" />');" ><img
+                        src="images/16x16/delete.png" alt="Remove From Class" title="Remove From Class"></a></td>
       </tr>
     </c:forEach>
   </table>

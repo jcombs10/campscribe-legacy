@@ -44,6 +44,10 @@ public class ClazzManager extends BaseManager {
 		ClazzDao.INSTANCE.addScoutsToClazz(clazzKey, scoutList);
 	}
 
+	public void deleteScoutFromClazz(Key<Clazz> clazzKey, Key<Scout> scoutKey) {
+		ClazzDao.INSTANCE.deleteScoutFromClazz(clazzKey, scoutKey);
+	}
+
 	public void updateComments(Long eventId, Long clazzId, String comments) {
 		Key<Event> eKey = new Key<Event>(Event.class, eventId);
 		Clazz c = ClazzDao.INSTANCE.get(new Key<Clazz>(eKey, Clazz.class, clazzId));

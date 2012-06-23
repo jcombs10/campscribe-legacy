@@ -56,4 +56,13 @@ public class ClazzServiceController {
 		clazzMgr.addScoutsToClazz(cKey, scoutKeyList );
 	}
 
+	@RequestMapping(method=RequestMethod.DELETE, value = "/events/{eventId}/classes/{clazzId}/scouts/{scoutId}",headers="Accept=application/json")
+	public @ResponseBody void deleteScoutFromClazz(@PathVariable Long eventId, @PathVariable Long clazzId, @PathVariable Long scoutId) {
+		System.err.println("deleteScoutFromClazz called");
+
+		Key<Event> eKey = new Key<Event>(Event.class, eventId);
+		Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
+		clazzMgr.deleteScoutFromClazz(cKey, new Key<Scout>(Scout.class, scoutId) );
+	}
+
 }

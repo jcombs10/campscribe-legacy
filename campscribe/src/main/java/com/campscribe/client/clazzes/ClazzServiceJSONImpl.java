@@ -106,6 +106,39 @@ public class ClazzServiceJSONImpl implements ClazzService {
 	}
 
 	@Override
+    public void deleteScoutFromClazz(Long eventId, Long clazzId, Long scoutId) {
+		log.info("Posting to /service/events/"+eventId+"/classes/"+clazzId+"/scouts/"+scoutId);
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, "/service/events/"+eventId+"/classes/"+clazzId+"/scouts/"+scoutId);
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getStatusCode());
+				log.fine("deleteScout received response "+response.getStatusCode());
+				Window.Location.reload();
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		});
+
+		rb.setRequestData("{}");
+
+		try {
+			rb.send();
+		} catch (RequestException e) {
+			Window.alert("Error Occurred: " + e.getMessage());
+		}
+
+    }
+    
+	@Override
     public void getClazz(Long eventId, Long clazzId, RequestCallback callback) {
 		log.info("Getting /service/events/"+eventId+"/classes/"+clazzId+"/progress");
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, "/service/events/"+eventId+"/classes/"+clazzId+"/progress");

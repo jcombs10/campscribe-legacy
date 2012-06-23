@@ -1,6 +1,6 @@
 package com.campscribe.dao;
 
- import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +63,7 @@ public enum ClazzDao {
 		if (c == null) {
 			throw new RuntimeException("Clazz " + clazzKey.getId() + " not found!");
 		}
-		
+
 		Event e = ofy.get(c.getEvent());
 		for (Key<Scout> scoutId:scoutList) {
 			if (!c.getScoutIds().contains(scoutId)) {
@@ -88,7 +88,7 @@ public enum ClazzDao {
 			tp.setRequirementList(buildRequirementList(mb.getRequirements(), "", 0));
 			ofy.put(tp);
 		}
-		
+
 		ofy.put(c);
 	}
 
@@ -122,6 +122,25 @@ public enum ClazzDao {
 		synchronized(this) {
 			Objectify ofy = ObjectifyService.begin();
 			ofy.put(c);
+		}
+	}
+
+	public void deleteScoutFromClazz(Key<Clazz> clazzKey, Key<Scout> scoutKey) {
+		Objectify ofy = ObjectifyService.begin();
+		Clazz c = get(clazzKey);
+
+		if (c == null) {
+			throw new RuntimeException("Clazz " + clazzKey.getId() + " not found!");
+		}
+
+		c.getScoutIds().remove(scoutKey);
+		ofy.put(c);
+
+		List<TrackProgress> tpList = ofy.query(TrackProgress.class).filter("clazzKey", clazzKey).list();
+		for (TrackProgress tp: tpList) {
+			if (tp.getScoutKey().equals(scoutKey)) {
+				ofy.delete(tp);
+			}
 		}
 	}
 
