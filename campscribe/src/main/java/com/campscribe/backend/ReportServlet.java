@@ -50,6 +50,9 @@ import com.pdfjet.TextLine;
 public class ReportServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4984668055373587237L;
+	private static final int[] grey = {190,190,190};
+	private static final int[] lightGrey = {211,211,211};
+	private static final int[] white = {255,255,255};
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -181,37 +184,55 @@ public class ReportServlet extends HttpServlet {
 				List<Cell> headerRow = new ArrayList<Cell>();
 				Cell c = new Cell(headerFont, "Scout Name");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Merit Badge");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Status");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Counselor Signature");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Date");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Completed Requirements");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				c = new Cell(headerFont, "Incomplete Requirements");
 				c.setTextAlignment(Align.CENTER);
+				c.setBgColor(grey);
 				headerRow.add(c);
 				tableData.add(headerRow);
 
+				boolean evenRow = false;
 				logger.info("adding scouts to table");
 				for (Map.Entry<Scout,ArrayList<TrackProgress>> scout:unit.getValue().entrySet()) {
 					for (TrackProgress tp:scout.getValue()) {
 						if ("ALL".equals(programAreaParm) || clazzLookup.get(tp.getClazzKey()).getProgramArea().equals(programAreaParm)) {
 							List<Cell> aRow = new ArrayList<Cell>();
-							aRow.add(new Cell(bodyFont, scout.getKey().getDisplayName()));
-							aRow.add(new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName()));
-							aRow.add(new Cell(bodyFont, tp.getComplete()?"Complete":"Partial"));
-							aRow.add(new Cell(bodyFont, "")); //signature block
-							aRow.add(new Cell(bodyFont, tp.getComplete()?event.getEndDateDisplayStr():""));
+							c = new Cell(bodyFont, scout.getKey().getDisplayName());
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
+							c = new Cell(bodyFont, clazzLookup.get(tp.getClazzKey()).getMbName());
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
+							c = new Cell(bodyFont, tp.getComplete()?"Complete":"Partial");
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
+							c = new Cell(bodyFont, ""); //signature block
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
+							c = new Cell(bodyFont, tp.getComplete()?event.getEndDateDisplayStr():"");
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
 							StringBuilder completeReqs = new StringBuilder();
 							StringBuilder incompleteReqs = new StringBuilder();
 							for (RequirementCompletion rc:tp.getRequirementList()) {
@@ -227,9 +248,14 @@ public class ReportServlet extends HttpServlet {
 									incompleteReqs.append(rc.getReqNumber());
 								}
 							}
-							aRow.add(new Cell(bodyFont, completeReqs.toString()));
-							aRow.add(new Cell(bodyFont, tp.getComplete()?"":incompleteReqs.toString()));
+							c = new Cell(bodyFont, completeReqs.toString());
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
+							c = new Cell(bodyFont, tp.getComplete()?"":incompleteReqs.toString());
+							c.setBgColor(evenRow?lightGrey:white);
+							aRow.add(c);
 							tableData.add(aRow);
+							evenRow = !evenRow;
 						}
 					}
 				}
