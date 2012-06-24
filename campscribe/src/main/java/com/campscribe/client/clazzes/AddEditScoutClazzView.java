@@ -7,8 +7,9 @@ import com.campscribe.client.CampScribeBodyWidget;
 import com.campscribe.client.scouts.ScoutService;
 import com.campscribe.client.scouts.ScoutServiceJSONImpl;
 import com.campscribe.shared.ScoutDTO;
+import com.campscribe.shared.UnitDTO;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
@@ -21,19 +22,14 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AddEditScoutClazzView extends Composite implements CampScribeBodyWidget {
 
-	@UiField TextBox lastName;
-	@UiField ListBox unitType;
-	@UiField TextBox unitNumber;
-	@UiField Button searchButton;
+	@UiField ListBox unitList;
 	@UiField FlowPanel searchResultsPanel;
 	@UiField ListBox searchResults;
 
@@ -55,11 +51,51 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 	public AddEditScoutClazzView() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		unitType.addItem(ScoutDTO.TROOP);
-		unitType.addItem(ScoutDTO.CREW);
-		unitType.addItem(ScoutDTO.TEAM);
-		unitType.addItem(ScoutDTO.POST);
-	}
+		RequestCallback callback = new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getText());
+				String s = response.getText();
+				List<UnitDTO> units = parseUnitJsonData(s);
+				unitList.addItem("All Units", "ALL");
+				for (UnitDTO unit:units) {
+					unitList.addItem(unit.getUnitType()+" "+unit.getUnitNumber());
+				}
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		};
+
+		scoutService.getUnits(getEventIdFromPage(), callback);
+
+		callback = new RequestCallback() {
+
+			@Override
+			public void onResponseReceived(Request request, Response response) {
+//				Window.alert("received response "+response.getText());
+				searchResults.clear();
+				String s = response.getText();
+				List<ScoutDTO> scouts = parseScoutJsonData(s);
+				AddEditScoutClazzView.this.scouts = scouts;
+				for (ScoutDTO scout:scouts) {
+					searchResults.addItem(scout.getDisplayName(), scout.getId().toString());
+				}
+			}
+
+			@Override
+			public void onError(Request request, Throwable exception) {
+				Window.alert("Error Occurred: " + exception.getMessage());
+			}
+
+		};
+
+		scoutService.getScouts(getEventIdFromPage(), "ALL", callback);
+}
 
 	@UiFactory
 	public ListBox getSearchResultsBox(Boolean allowMultiSelect) {
@@ -86,31 +122,30 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 	public void onCancel() {
 	}
 
-	@UiHandler("searchButton")
-	public void onSearch(ClickEvent ce) {
+	@UiHandler("unitList")
+	public void onSearch(ChangeEvent ce) {
 		RequestCallback callback = new RequestCallback() {
 
-			@Override
-			public void onResponseReceived(Request request, Response response) {
-								Window.alert("received response "+response.getText());
-				searchResults.clear();
-				String s = response.getText();
-				List<ScoutDTO> scouts = parseScoutJsonData(s);
-				AddEditScoutClazzView.this.scouts = scouts;
-				for (ScoutDTO scout:scouts) {
-					searchResults.addItem(scout.getDisplayName(), scout.getId().toString());
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+//					Window.alert("received response "+response.getText());
+					searchResults.clear();
+					String s = response.getText();
+					List<ScoutDTO> scouts = parseScoutJsonData(s);
+					AddEditScoutClazzView.this.scouts = scouts;
+					for (ScoutDTO scout:scouts) {
+						searchResults.addItem(scout.getDisplayName(), scout.getId().toString());
+					}
 				}
-				searchResultsPanel.setVisible(true);
-			}
 
-			@Override
-			public void onError(Request request, Throwable exception) {
-				Window.alert("Error Occurred: " + exception.getMessage());
-			}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					Window.alert("Error Occurred: " + exception.getMessage());
+				}
 
-		};
+			};
 
-		scoutService.searchScouts(Long.decode(getEventIdFromPage()), lastName.getText(), unitType.getValue(unitType.getSelectedIndex()), unitNumber.getText(), callback);
+			scoutService.getScouts(getEventIdFromPage(), unitList.getValue(unitList.getSelectedIndex()), callback);
 	}
 
 	private List<ScoutDTO> parseScoutJsonData(String json) {
@@ -141,6 +176,31 @@ public class AddEditScoutClazzView extends Composite implements CampScribeBodyWi
 		}
 
 		return scouts;
+	}
+
+	private List<UnitDTO> parseUnitJsonData(String json) {
+
+		List<UnitDTO> units = new ArrayList<UnitDTO>();
+
+		JSONValue value = JSONParser.parseLenient(json);
+		JSONArray unitArray = value.isArray();
+
+		//		Window.alert("Got response: " + json);
+		if (unitArray != null) {
+			for (int i=0; i<=unitArray.size()-1; i++) {
+				JSONObject mbObj = unitArray.get(i).isObject();
+
+				String unitType = mbObj.get("unitType").isString().stringValue();
+				String unitNumber = mbObj.get("unitNumber").isString().stringValue();
+
+				UnitDTO u = new UnitDTO(unitType, unitNumber);
+
+				units.add(u);
+			}
+
+		}
+
+		return units;
 	}
 
 	private native String getClazzIdFromPage() /*-{

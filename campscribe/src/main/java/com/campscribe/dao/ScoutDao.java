@@ -23,13 +23,13 @@ public enum ScoutDao {
 			q = q.filter("eventKey", eKey);
 		}
 		if (StringUtils.isNotEmpty(name)) {
-			q = q.filter("lastName >=", name).filter("lastName <", "u’"+name+"’ + u’\ufffd’");
+			q = q.filter("lastName >=", "'"+name+"'").filter("lastName <", "u’"+name+"’ + u’\ufffd’");
 		}
 		if (StringUtils.isNotEmpty(unitType)) {
-			q = q.filter("unitType", unitType);
+			q = q.filter("unitType", "'"+unitType+"'");
 		}
 		if (StringUtils.isNotEmpty(unitNumber)) {
-			q = q.filter("unitNumber", unitNumber);
+			q = q.filter("unitNumber", "'"+unitNumber+"'");
 		}
 		List<Scout> allScouts = new ArrayList<Scout>();
 		for (Scout s: q) {

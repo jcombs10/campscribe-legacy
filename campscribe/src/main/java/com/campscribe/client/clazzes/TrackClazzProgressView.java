@@ -193,6 +193,7 @@ public class TrackClazzProgressView extends Composite implements CampScribeBodyW
 						}
 
 						CheckBox cb = new CheckBox();
+						cb.setTitle(t.getScout().getDisplayName()+", "+rc.getReqNumber());
 						cb.setValue(t.getRequirementList().get(column-1).isCompleted());
 						if (!t.getRequirementList().get(column-1).isCompleted()) {
 							foundAllReqSelected[column-1] = false;
