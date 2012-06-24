@@ -2,10 +2,14 @@ package com.campscribe.business;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.campscribe.dao.ScoutDao;
 import com.campscribe.model.Event;
 import com.campscribe.model.Scout;
+import com.campscribe.model.Unit;
+import com.campscribe.model.UnitComparator;
 import com.googlecode.objectify.Key;
 
 public class ScoutManager extends BaseManager {
@@ -28,6 +32,15 @@ public class ScoutManager extends BaseManager {
 
 	public List<Scout> listScouts(Key<Event> eKey) {
 		return ScoutDao.INSTANCE.listScouts(eKey, null, null, null);
+	}
+
+	public Set<Unit> listUnits(Key<Event> eventKey) {
+		Set<Unit> units = new TreeSet<Unit>(new UnitComparator());
+		List<Scout> scouts = ScoutDao.INSTANCE.listScouts(eventKey, null, null, null);
+		for (Scout s:scouts) {
+			units.add(new Unit(s.getUnitType(), s.getUnitNumber()));
+		}
+		return units;
 	}
 
 	public List<Scout> listScouts(Key<Event> eKey, String name, String unitType, String unitNumber) {

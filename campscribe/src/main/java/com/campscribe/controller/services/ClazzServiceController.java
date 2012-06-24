@@ -44,7 +44,7 @@ public class ClazzServiceController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value = "/events/{eventId}/classes/{clazzId}",headers="Accept=application/json")
-	public @ResponseBody void addScoutToClazz(@PathVariable String eventId, @PathVariable String clazzId, @RequestBody List<Long> scoutList) {
+	public @ResponseBody void addScoutToClazz(@PathVariable Long eventId, @PathVariable Long clazzId, @RequestBody Long[] scoutList) {
 		System.err.println("addScoutToClazz called");
 
 		Key<Event> eKey = new Key<Event>(Event.class, eventId);

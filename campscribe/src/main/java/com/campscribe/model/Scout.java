@@ -79,11 +79,15 @@ public class Scout {
 		this.unitNumber = unitNumber;
 	}
 
+	public void setUnitNumber(Key<Event> eventKey) {
+		this.eventKey = eventKey;
+	}
+
 	public Key<Event> getEventKey() {
 		return eventKey;
 	}
 
-	public void setUnitNumber(Key<Event> eventKey) {
+	public void setEventKey(Key<Event> eventKey) {
 		this.eventKey = eventKey;
 	}
 

@@ -11,27 +11,14 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<table>
-			<tr>
-				<td>Last Name:</td>
-				<td>
-					<g:TextBox ui:field="lastName" />
-				</td>
-			</tr>
             <tr>
-                <td>Unit Type:</td>
+                <td>Unit:</td>
                 <td>
-                    <g:ListBox ui:field="unitType" allowMultiSelect="false" />
-                </td>
-            </tr>
-            <tr>
-                <td>Unit Number:</td>
-                <td>
-                    <g:TextBox ui:field="unitNumber" />
+                    <g:ListBox ui:field="unitList" allowMultiSelect="false" />
                 </td>
             </tr>
 		</table>
-		<g:Button ui:field="searchButton" >Search</g:Button>
-		<g:FlowPanel ui:field="searchResultsPanel" visible="false" >
+		<g:FlowPanel ui:field="searchResultsPanel" >
 		    <g:ListBox ui:field="searchResults" allowMultiSelect="true" visibleItemCount="10" styleName="{style.wide}"/>
 		</g:FlowPanel>
 	</g:HTMLPanel>

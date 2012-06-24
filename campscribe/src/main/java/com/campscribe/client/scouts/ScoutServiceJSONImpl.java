@@ -101,16 +101,34 @@ public class ScoutServiceJSONImpl implements ScoutService {
 	}
 
 	@Override
-	public void searchScouts(Long eventId, String name, String unitType, String unitNumber, RequestCallback callback) {
-		StringBuilder url = new StringBuilder("/service/scouts/");
-		url.append("?eventId=");
+	public void getScouts(String eventId, String unit, RequestCallback callback) {
+		StringBuilder url = new StringBuilder("/service/events/");
 		url.append(eventId);
-		url.append("&name=");
-		url.append(name);
-		url.append("&unitType=");
-		url.append(unitType);
-		url.append("&unitNumber=");
-		url.append(unitNumber);
+		url.append("/units");
+		if (!"ALL".equals(unit)) {
+			url.append("/");
+			url.append(unit);
+		}
+		url.append("/scouts");
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url.toString());
+		rb.setHeader("Content-Type","application/json");
+		rb.setHeader("Accept","application/json");
+
+		rb.setCallback(callback);
+
+		try {
+			rb.send();
+		} catch (RequestException ex) {
+			Window.alert("Error Occurred: " + ex.getMessage());
+		}
+
+	}
+
+	@Override
+	public void getUnits(String eventId, RequestCallback callback) {
+		StringBuilder url = new StringBuilder("/service/events/");
+		url.append(eventId);
+		url.append("/units");
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url.toString());
 		rb.setHeader("Content-Type","application/json");
 		rb.setHeader("Accept","application/json");
