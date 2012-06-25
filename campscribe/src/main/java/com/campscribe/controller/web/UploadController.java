@@ -2,6 +2,7 @@ package com.campscribe.controller.web;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,6 +56,7 @@ public class UploadController {
 		log.log(Level.FINE, "adding to OrderQueue {0}", file);
 		
 		ImportedFile impFile = new ImportedFile();
+		impFile.setImportDate(new Date());
 		impFile.setCsvText(file);
 		impFile.setOriginalFileName(fileData.getOriginalFilename());
 		Key<ImportedFile> impFileKey = getImportedFileManager().addImportedFile(impFile );

@@ -27,12 +27,14 @@
 		class="leftfloat marginBottom10" />
 	<div class="logoTitle">Advancement Tracker</div>
 	<div class="rightfloat">
-        <sec:authorize access="isAuthenticated()">
-            <span class="bold">Logged in as </span> <sec:authentication property="principal.username" />
-        </sec:authorize>
+		<sec:authorize access="isAuthenticated()">
+			<span class="bold">Logged in as </span>
+			<sec:authentication property="principal.username" />
+		</sec:authorize>
 	</div>
 	<div id="menuBar">
-		<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
+		<sec:authorize
+			access="hasAnyRole('area_director', 'camp_admin', 'system_admin')">
 			<a href="admin.cs">Administration</a>
 		</sec:authorize>
 		<sec:authorize
@@ -51,5 +53,4 @@
 		</sec:authorize>
 		<div class="clear"></div>
 	</div>
-<div>
-	
+	<div>

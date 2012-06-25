@@ -7,8 +7,10 @@
 		<th>Description</th>
 		<th>Start Date</th>
 		<th>End Date</th>
-		<th>Edit</th>
-		<th>Delete</th>
+		<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
+			<th>Edit</th>
+			<th>Delete</th>
+		</sec:authorize>
 	</tr>
 	<c:forEach var="event" items="${events}">
 		<tr>
@@ -16,12 +18,14 @@
 						value="${event.description}" /></a></td>
 			<td><c:out value="${event.startDateDisplayStr}" /></td>
 			<td><c:out value="${event.endDateDisplayStr}" /></td>
-            <td style="text-align: center;"><a href="#"
-                onclick="EventGWT.editEvent('<c:out value="${event.id}"/>');"><img
-                    src="images/16x16/edit.gif" alt="Edit" title="Edit"></a></td>
-            <td style="text-align: center;"><a href="#"
-                onclick="EventGWT.deleteEvent('<c:out value="${event.id}"/>');"><img
-                    src="images/16x16/delete.png" alt="Delete" title="Delete"></a></td>
+			<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
+				<td style="text-align: center;"><a href="#"
+					onclick="EventGWT.editEvent('<c:out value="${event.id}"/>');"><img
+						src="images/16x16/edit.gif" alt="Edit" title="Edit"></a></td>
+				<td style="text-align: center;"><a href="#"
+					onclick="EventGWT.deleteEvent('<c:out value="${event.id}"/>');"><img
+						src="images/16x16/delete.png" alt="Delete" title="Delete"></a></td>
+			</sec:authorize>
 		</tr>
 	</c:forEach>
 </table>
