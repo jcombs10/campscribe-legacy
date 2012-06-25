@@ -101,10 +101,10 @@ public class ReportServlet extends HttpServlet {
 			unitFont.setSize(12.0);
 
 			Font headerFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
-			headerFont.setSize(8.0);
+			headerFont.setSize(7.0);
 
 			Font bodyFont = new Font(pdf, CoreFont.HELVETICA);
-			bodyFont.setSize(8.0);
+			bodyFont.setSize(7.0);
 
 			Font footerFont = new Font(pdf, CoreFont.HELVETICA_OBLIQUE);
 			footerFont.setSize(8.0);

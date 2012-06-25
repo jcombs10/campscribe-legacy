@@ -1,5 +1,7 @@
 package com.campscribe.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -7,6 +9,7 @@ import javax.persistence.Id;
 public class ImportedFile {
     @Id
     private Long id;
+    private Date importDate = new Date();
     private String csvText = "";
     private String originalFileName = "";
     
@@ -18,6 +21,14 @@ public class ImportedFile {
 		this.id = id;
 	}
 	
+	public Date getImportDate() {
+		return importDate;
+	}
+
+	public void setImportDate(Date importDate) {
+		this.importDate = importDate;
+	}
+
 	public String getCsvText() {
 		return csvText;
 	}
