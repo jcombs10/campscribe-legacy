@@ -196,7 +196,7 @@ public class ProcessDoubleknotServlet extends HttpServlet {
 				String scoutKeyStr = firstName+","+lastName+","+unitType+","+unitNumber;
 
 				//handle some weirdness in the data coming from doubleknot
-				String eventDesc = nextLine[3].replace(" (Pool)", "").replace("0 - ", "0-").replace("0- ", "0-");
+				String eventDesc = nextLine[3].replace("Swmming","Swimming").replace(" (Pool)", "").replace("Communication", "Communications").replace("0 - ", "0-").replace("0- ", "0-");
 				String clazzKeyStr = lastEventSeen.toString() + "," + eventDesc;
 				
 				if (clazzIdMap.containsKey(clazzKeyStr) && scoutIdMap.containsKey(scoutKeyStr)) {

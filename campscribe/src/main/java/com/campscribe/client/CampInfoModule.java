@@ -28,20 +28,20 @@ public class CampInfoModule implements EntryPoint {
 		// Use RootPanel.get() to get the entire body element
 		if (RootPanel.get("campInfoGWTBlock") != null) {
 			RootPanel.get("campInfoGWTBlock").add(editButton);
+
+			// Create the popup dialog box
+			final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Camp Info", new AddEditCampInfoView());
+			dialogBox.setAnimationEnabled(true);
+
+			// Add a handler to send the name to the server
+			editButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					dialogBox.center();
+				}
+			});
 		}
-
-		// Create the popup dialog box
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Edit Camp Info", new AddEditCampInfoView());
-		dialogBox.setAnimationEnabled(true);
-
-		// Add a handler to send the name to the server
-		editButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				dialogBox.center();
-			}
-		});
 	}
 
 }

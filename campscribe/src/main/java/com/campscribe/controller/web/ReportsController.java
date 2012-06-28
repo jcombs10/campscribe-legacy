@@ -139,28 +139,25 @@ public class ReportsController {
 			TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>> scoutByUnitMap = new TreeMap<Unit, TreeMap<Scout,ArrayList<TrackProgress>>>(new UnitComparator());
 			
 			List<Scout> scoutList = null;
-			if (fbo.getUnit()==null || "ALL".equals(fbo.getUnit())) {
 				scoutList = getScoutManager().getScoutsByEvent(new Key<Event>(Event.class, fbo.getEventId()));
-			} else {
-				String[] unitParts = fbo.getUnit().split(" ");
-				scoutList = getScoutManager().getScoutsByUnit(new Key<Event>(Event.class, fbo.getEventId()), unitParts[0], unitParts[1]);
-			}
 			for (Scout s:scoutList) {
 				Unit unit = new Unit(s.getUnitType(), s.getUnitNumber());
-				if (!scoutByUnitMap.containsKey(unit)) {
-					TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
-					scoutByUnitMap.put(unit, trackingMap);
-				}
+				if ("ALL".equals(fbo.getUnit()) || unit.toString().equals(fbo.getUnit())) {
+					if (!scoutByUnitMap.containsKey(unit)) {
+						TreeMap<Scout,ArrayList<TrackProgress>> trackingMap = new TreeMap<Scout,ArrayList<TrackProgress>>(new ScoutComparator());
+						scoutByUnitMap.put(unit, trackingMap);
+					}
 
-				List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
-				for (TrackProgress tp:trackingList) {
-					Clazz c = clazzLookup.get(tp.getClazzKey());
-					if ("ALL".equals(fbo.getProgramArea()) || c.getProgramArea().equals(fbo.getProgramArea())) {
-						if (!scoutByUnitMap.get(unit).containsKey(s)) {
-							ArrayList<TrackProgress> badgeList = new ArrayList<TrackProgress>();
-							scoutByUnitMap.get(unit).put(s, badgeList);
+					List<TrackProgress> trackingList = getTrackProgressManager().getTrackingForScout(new Key<Scout>(Scout.class, s.getId()));
+					for (TrackProgress tp:trackingList) {
+						Clazz c = clazzLookup.get(tp.getClazzKey());
+						if ("ALL".equals(fbo.getProgramArea()) || c.getProgramArea().equals(fbo.getProgramArea())) {
+							if (!scoutByUnitMap.get(unit).containsKey(s)) {
+								ArrayList<TrackProgress> badgeList = new ArrayList<TrackProgress>();
+								scoutByUnitMap.get(unit).put(s, badgeList);
+							}
+							scoutByUnitMap.get(unit).get(s).add(tp);
 						}
-						scoutByUnitMap.get(unit).get(s).add(tp);
 					}
 				}
 			}

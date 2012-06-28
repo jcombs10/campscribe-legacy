@@ -1,6 +1,8 @@
 <%@ include file="header.jsp"%>
 <h2>Event Details</h2>
-<div id="clazzGWTBlock" />
+<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
+	<div id="clazzGWTBlock" />
+</sec:authorize>
 <p>
 	<script type="text/javascript">
     var eventId = "<c:out value="${event.id}"/>";

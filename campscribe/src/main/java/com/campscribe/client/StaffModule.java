@@ -33,20 +33,20 @@ public class StaffModule implements EntryPoint {
 		// Use RootPanel.get() to get the entire body element
 		if (RootPanel.get("staffGWTBlock") != null) {
 			RootPanel.get("staffGWTBlock").add(addButton);
+
+			// Create the popup dialog box
+			final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Staff", new AddEditStaffView());
+			dialogBox.setAnimationEnabled(true);
+
+			// Add a handler to send the name to the server
+			addButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					dialogBox.center();
+				}
+			});
 		}
-
-		// Create the popup dialog box
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Staff", new AddEditStaffView());
-		dialogBox.setAnimationEnabled(true);
-
-		// Add a handler to send the name to the server
-		addButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				dialogBox.center();
-			}
-		});
 	}
 
 	private native void addGWTActionTriggers(StaffModule module)/*-{

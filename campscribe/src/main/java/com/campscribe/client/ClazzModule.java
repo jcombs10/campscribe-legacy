@@ -27,20 +27,20 @@ public class ClazzModule implements EntryPoint {
 		// Use RootPanel.get() to get the entire body element
 		if (RootPanel.get("clazzGWTBlock") != null) {
 			RootPanel.get("clazzGWTBlock").add(addButton);
-		}
 
-		// Create the popup dialog box
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Class", new AddEditClazzView());
-		dialogBox.setAnimationEnabled(true);
+			// Create the popup dialog box
+			final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Class", new AddEditClazzView());
+			dialogBox.setAnimationEnabled(true);
 
-		// Add a handler to send the name to the server
-		addButton.addClickHandler(new ClickHandler() {
+			// Add a handler to send the name to the server
+			addButton.addClickHandler(new ClickHandler() {
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				dialogBox.center();
-			}
-		});
+				@Override
+				public void onClick(ClickEvent event) {
+					dialogBox.center();
+				}
+			});
+		}
 	}
 	
 	private native void addGWTActionTriggers(ClazzModule module)/*-{
