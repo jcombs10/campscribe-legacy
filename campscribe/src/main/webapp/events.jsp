@@ -1,6 +1,8 @@
 <%@ include file="header.jsp"%>
 <h2>Event List</h2>
-<div id="eventGWTBlock" />
+<sec:authorize access="hasAnyRole('camp_admin', 'system_admin')">
+	<div id="eventGWTBlock" />
+</sec:authorize>
 <p>
 <table class="campscribeList">
 	<tr>

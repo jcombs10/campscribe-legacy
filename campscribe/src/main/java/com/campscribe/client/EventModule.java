@@ -32,20 +32,20 @@ public class EventModule implements EntryPoint {
 		// Use RootPanel.get() to get the entire body element
 		if (RootPanel.get("eventGWTBlock") != null) {
 			RootPanel.get("eventGWTBlock").add(addButton);
-		}
 
-		// Create the popup dialog box
-		final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Event", new AddEditEventView());
-		dialogBox.setAnimationEnabled(true);
+			// Create the popup dialog box
+			final CampScribeDialogBox dialogBox = new CampScribeDialogBox("Add Event", new AddEditEventView());
+			dialogBox.setAnimationEnabled(true);
 
-		// Add a handler to send the name to the server
-		addButton.addClickHandler(new ClickHandler() {
+			// Add a handler to send the name to the server
+			addButton.addClickHandler(new ClickHandler() {
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				dialogBox.center();
-			}
-		});
+				@Override
+				public void onClick(ClickEvent event) {
+					dialogBox.center();
+				}
+			});
+		}
 	}
 
 	private native void addGWTActionTriggers(EventModule module)/*-{
