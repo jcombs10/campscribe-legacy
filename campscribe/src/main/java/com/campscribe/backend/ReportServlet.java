@@ -66,6 +66,16 @@ public class ReportServlet extends HttpServlet {
 		
 		logger.info("starting report generation");
 
+		List<CampInfo> ciList = getCampInfoManager().listCampInfos();
+		CampInfo ci = null;
+		if (ciList!=null && ciList.size()>0) {
+			ci = ciList.get(0);
+		} else {
+			ci = new CampInfo();
+		}
+
+		logger.info("done gathering camp data");
+
 		List<Event> events = getEventManager().listEvents();
 		Event event = EventUtil.findCurrentEvent(events);
 
@@ -93,10 +103,9 @@ public class ReportServlet extends HttpServlet {
 			logger.info("tie PDF to ostream");
 
 			PDF pdf = new PDF(ostream);
-			//TODO - put week name in this metadata?
 			pdf.setTitle("CampScribe Unit Report");
-			pdf.setSubject("CampScribe Unit Report");
-			pdf.setAuthor("CampScribe Software");
+			pdf.setSubject("CampScribe Unit Report for "+event.getDescription());
+			pdf.setAuthor(ci.getCampName()+" via CampScribe Software");
 
 			Font unitFont = new Font(pdf, CoreFont.HELVETICA_BOLD);
 			unitFont.setSize(12.0);
@@ -143,16 +152,6 @@ public class ReportServlet extends HttpServlet {
 			}
 
 			logger.info("done gathering tracking data");
-
-			List<CampInfo> ciList = getCampInfoManager().listCampInfos();
-			CampInfo ci = null;
-			if (ciList!=null && ciList.size()>0) {
-				ci = ciList.get(0);
-			} else {
-				ci = new CampInfo();
-			}
-
-			logger.info("done gathering camp data");
 
 			for (Map.Entry<Unit, TreeMap<Scout,ArrayList<TrackProgress>>> unit:scoutByUnitMap.entrySet()) {
 				logger.info("starting page generation for "+unit.getKey());

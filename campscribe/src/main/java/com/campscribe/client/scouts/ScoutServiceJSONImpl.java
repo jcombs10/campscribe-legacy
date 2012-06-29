@@ -2,6 +2,7 @@ package com.campscribe.client.scouts;
 
 import java.util.logging.Logger;
 
+import com.campscribe.client.clazzes.ScoutDTOHelper;
 import com.campscribe.shared.ScoutDTO;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -39,7 +40,7 @@ public class ScoutServiceJSONImpl implements ScoutService {
 		});
 
 //		Window.alert("sending  MB" + buildJSON(mb));
-		rb.setRequestData(buildJSON(s));
+		rb.setRequestData(ScoutDTOHelper.buildJSON(s));
 
 		try {
 			rb.send();
@@ -79,25 +80,6 @@ public class ScoutServiceJSONImpl implements ScoutService {
 			Window.alert("Error Occurred: " + e.getMessage());
 		}
 
-	}
-
-	private String buildJSON(ScoutDTO s) {
-		StringBuilder sb = new StringBuilder("{ \"id\":\"");
-		sb.append(s.getId());
-		sb.append("\",\"firstName\":\"");
-		sb.append(s.getFirstName());
-		sb.append("\",\"lastName\":\"");
-		sb.append(s.getLastName());
-		sb.append("\",\"rank\":\"");
-		sb.append(s.getRank());
-		sb.append("\",\"unitType\":\"");
-		sb.append(s.getUnitType());
-		sb.append("\",\"unitNumber\":\"");
-		sb.append(s.getUnitNumber());
-		sb.append("\",\"eventId\":\"");
-		sb.append(s.getEventId());
-		sb.append("\"}");
-		return sb.toString();
 	}
 
 	@Override
