@@ -107,8 +107,8 @@ public class ClazzServiceJSONImpl implements ClazzService {
 
 	@Override
     public void deleteScoutFromClazz(Long eventId, Long clazzId, Long scoutId) {
-		log.info("Posting to /service/events/"+eventId+"/classes/"+clazzId+"/scouts/"+scoutId);
-		RequestBuilder rb = new RequestBuilder(RequestBuilder.DELETE, "/service/events/"+eventId+"/classes/"+clazzId+"/scouts/"+scoutId);
+		log.info("Posting to /service/events/"+eventId+"/classes/"+clazzId);
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.POST, "/service/events/"+eventId+"/classes/"+clazzId+"/deleteScout");
 		rb.setHeader("Content-Type","application/json");
 		rb.setHeader("Accept","application/json");
 
@@ -128,7 +128,9 @@ public class ClazzServiceJSONImpl implements ClazzService {
 
 		});
 
-		rb.setRequestData("{}");
+		ScoutDTO s = new ScoutDTO();
+		s.setId(scoutId);
+		rb.setRequestData(ScoutDTOHelper.buildJSON(s));
 
 		try {
 			rb.send();

@@ -19,6 +19,7 @@ import com.campscribe.model.MeritBadge;
 import com.campscribe.model.Scout;
 import com.campscribe.model.Staff;
 import com.campscribe.shared.ClazzDTO;
+import com.campscribe.shared.ScoutDTO;
 import com.googlecode.objectify.Key;
 
 @Controller
@@ -56,13 +57,13 @@ public class ClazzServiceController {
 		clazzMgr.addScoutsToClazz(cKey, scoutKeyList );
 	}
 
-	@RequestMapping(method=RequestMethod.DELETE, value = "/events/{eventId}/classes/{clazzId}/scouts/{scoutId}",headers="Accept=application/json")
-	public @ResponseBody void deleteScoutFromClazz(@PathVariable Long eventId, @PathVariable Long clazzId, @PathVariable Long scoutId) {
+	@RequestMapping(method=RequestMethod.POST, value = "/events/{eventId}/classes/{clazzId}/deleteScout",headers="Accept=application/json")
+	public @ResponseBody void deleteScoutFromClazz(@PathVariable Long eventId, @PathVariable Long clazzId, @RequestBody ScoutDTO droppedScout) {
 		System.err.println("deleteScoutFromClazz called");
 
 		Key<Event> eKey = new Key<Event>(Event.class, eventId);
 		Key<Clazz> cKey = new Key<Clazz>(eKey, Clazz.class, clazzId);
-		clazzMgr.deleteScoutFromClazz(cKey, new Key<Scout>(Scout.class, scoutId) );
+		clazzMgr.deleteScoutFromClazz(cKey, new Key<Scout>(Scout.class, droppedScout.getId()) );
 	}
 
 }
