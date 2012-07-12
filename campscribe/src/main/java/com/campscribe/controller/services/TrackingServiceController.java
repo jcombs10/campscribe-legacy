@@ -66,32 +66,38 @@ public class TrackingServiceController {
 			TrackProgressDTO tpDTO = new TrackProgressDTO();
 			tpDTO.setId(tp.getId());
 			
-			Scout scout = scoutMgr.getScout(tp.getScoutKey().getId());
-			ScoutDTO scoutDTO = new ScoutDTO();
-			scoutDTO.setId(tp.getScoutKey().getId());
-			scoutDTO.setFirstName(scout.getFirstName());
-			scoutDTO.setLastName(scout.getLastName());
-			tpDTO.setScout(scoutDTO);
+			try {
+				Scout scout = scoutMgr.getScout(tp.getScoutKey().getId());
+				ScoutDTO scoutDTO = new ScoutDTO();
+				scoutDTO.setId(tp.getScoutKey().getId());
+				scoutDTO.setFirstName(scout.getFirstName());
+				scoutDTO.setLastName(scout.getLastName());
+				tpDTO.setScout(scoutDTO);
 			
-			List<DateAttendanceDTO> attendanceList = new ArrayList<DateAttendanceDTO>();
-			for (DateAttendance da:tp.getAttendanceList()) {
-				DateAttendanceDTO daDTO = new DateAttendanceDTO();
-				daDTO.setDate(da.getDate());
-				daDTO.setPresent(da.isPresent());
-				attendanceList.add(daDTO);
+				List<DateAttendanceDTO> attendanceList = new ArrayList<DateAttendanceDTO>();
+				for (DateAttendance da:tp.getAttendanceList()) {
+					DateAttendanceDTO daDTO = new DateAttendanceDTO();
+					daDTO.setDate(da.getDate());
+					daDTO.setPresent(da.isPresent());
+					attendanceList.add(daDTO);
+				}
+				tpDTO.setAttendanceList(attendanceList);
+			
+				List<RequirementCompletionDTO> reqList = new ArrayList<RequirementCompletionDTO>();
+				for (RequirementCompletion rc:tp.getRequirementList()) {
+					RequirementCompletionDTO rcDTO = new RequirementCompletionDTO();
+					rcDTO.setCompleted(rc.isCompleted());
+					rcDTO.setReqNumber(rc.getReqNumber());
+					reqList.add(rcDTO);
+				}
+				tpDTO.setRequirementList(reqList);
+			
+				retList.add(tpDTO);
+			} catch (com.googlecode.objectify.NotFoundException nfe) {
+				//should never happen - a sign of corrupt data...
+				//TODO - log something in this case
+				continue;
 			}
-			tpDTO.setAttendanceList(attendanceList);
-			
-			List<RequirementCompletionDTO> reqList = new ArrayList<RequirementCompletionDTO>();
-			for (RequirementCompletion rc:tp.getRequirementList()) {
-				RequirementCompletionDTO rcDTO = new RequirementCompletionDTO();
-				rcDTO.setCompleted(rc.isCompleted());
-				rcDTO.setReqNumber(rc.getReqNumber());
-				reqList.add(rcDTO);
-			}
-			tpDTO.setRequirementList(reqList);
-			
-			retList.add(tpDTO);
 		}
 		
 		Collections.sort(retList, new Comparator<TrackProgressDTO>(){

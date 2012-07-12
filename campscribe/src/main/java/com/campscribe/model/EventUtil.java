@@ -6,7 +6,7 @@ import java.util.List;
 public class EventUtil {
 
 	public static Long findCurrentEventId(List<Event> events) {
-		long eventId = (events.size()>0?events.get(0).getId():0);
+		long eventId = (events.size()>0?events.get(events.size()-1).getId():0);
 
 		Date today = new Date();
 		for (Event e:events) {
@@ -32,6 +32,10 @@ public class EventUtil {
 			if (today.after(startDate) && today.before(endDate)) {
 				return e;
 			}
+		}
+		
+		if (events.size() > 0) {
+			return events.get(events.size()-1);
 		}
 		
 		return null;

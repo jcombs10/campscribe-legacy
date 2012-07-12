@@ -24,7 +24,7 @@
 			application to display correctly.</div>
 	</noscript>
 	<img src="images/campscribe.png" alt="CampScribe Logo"
-		class="leftfloat marginBottom10" />
+		class="leftfloat" />
 	<div class="logoTitle">Advancement Tracker</div>
 	<div class="rightfloat">
 		<sec:authorize access="isAuthenticated()">
