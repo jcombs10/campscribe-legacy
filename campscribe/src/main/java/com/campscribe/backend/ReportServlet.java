@@ -77,12 +77,15 @@ public class ReportServlet extends HttpServlet {
 		logger.info("done gathering camp data");
 
 		List<Event> events = getEventManager().listEvents();
-		Event event = EventUtil.findCurrentEvent(events);
+		Event event = null;
 
 		//get the request parms to filter results
 		Long eventIdParm = Long.valueOf(req.getParameter("eventId"));
 		if (eventIdParm == null) {
+			event = EventUtil.findCurrentEvent(events);
 			eventIdParm = EventUtil.findCurrentEventId(events);
+		} else {
+			event = eventMgr.getEvent(eventIdParm);
 		}
 		String programAreaParm = req.getParameter("programArea");
 		String unitParm = req.getParameter("unit");
