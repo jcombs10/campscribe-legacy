@@ -1,0 +1,121 @@
+/** Add css rules here for your application. */
+/* 
+khaki #9F9F5F
+*/
+h1 {
+	font-size: 2em;
+	font-weight: bold;
+	color: #777777;
+	margin: 40px 0px 70px;
+	text-align: center;
+}
+
+.leftfloat {
+	float: left;
+}
+
+.rightfloat {
+	float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.even {
+	background-color: lightGrey;
+}
+
+.odd {
+	background-color: white;
+}
+
+.center {
+    text-align: center;
+}
+
+.wide {
+    width: 100%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.borderBottom {
+    border-bottom: 1px solid black;
+}
+
+#footer {
+	margin-top: 40px;
+	font-style: italic;
+}
+
+.logoTitle {
+	font-size: 24pt;
+	font-weight: bold;
+	padding-top: 85px;
+	padding-left: 20px;
+	float: left;
+}
+
+#cancelButton,#saveButton {
+	margin: 5px;
+	padding: 5px;
+}
+
+#menuBar,.titleBar {
+	background-color: #9F9F5F;
+	color: #FFFFFF;
+	padding: 5px;
+	clear: both;
+}
+
+#menuBar a {
+	color: #FFFFFF;
+	padding-right: 10px;
+}
+
+.buttonBar {
+	text-align: center;
+}
+
+table.campscribeList {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+table.campscribeList th {
+	background-color: #9F9F5F;
+	color: #FFFFFF;
+}
+
+table.campscribeList td,table.campscribeList th {
+	padding: 0px 10px 0px 10px;
+	border: 1px solid black;
+}
+
+.marginBottom10 {
+	margin-bottom: 10px;
+}
+
+.paddingLeft20 {
+    padding-left: 20px;
+}
+
+.paddingLeft40 {
+    padding-left: 40px;
+}
+
+.paddingLeft50 {
+    padding-left: 50px;
+}
+
+.paddingTop10 {
+    padding-top: 10px;
+}
+

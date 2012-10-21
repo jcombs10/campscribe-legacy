@@ -1,0 +1,49 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>First Name:</td>
+				<td>
+					<g:TextBox ui:field="firstName" />
+				</td>
+			</tr>
+			<tr>
+				<td>Last Name:</td>
+				<td>
+					<g:TextBox ui:field="lastName" />
+				</td>
+			</tr>
+            <tr>
+                <td>Rank:</td>
+                <td>
+                    <g:ListBox ui:field="rank" />
+                </td>
+            </tr>
+            <tr>
+                <td>Unit Type:</td>
+                <td>
+                    <g:ListBox ui:field="unitType" />
+                </td>
+            </tr>
+            <tr>
+                <td>Unit Number:</td>
+                <td>
+                    <g:TextBox ui:field="unitNumber" />
+                </td>
+            </tr>
+            <tr>
+                <td>Event:</td>
+                <td>
+                    <g:ListBox ui:field="event" />
+                </td>
+            </tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

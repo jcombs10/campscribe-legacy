@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<table>
+			<tr>
+				<td>Camp Name:</td>
+				<td>
+					<g:TextBox ui:field="campName" />
+				</td>
+			</tr>
+            <tr>
+                <td>Address:</td>
+                <td>
+                    <g:TextBox ui:field="address" />
+                </td>
+            </tr>
+            <tr>
+                <td>City:</td>
+                <td>
+                    <g:TextBox ui:field="city" />
+                </td>
+            </tr>
+            <tr>
+                <td>State:</td>
+                <td>
+                    <g:TextBox ui:field="state" />
+                </td>
+            </tr>
+            <tr>
+                <td>Phone Number:</td>
+                <td>
+                    <g:TextBox ui:field="phoneNbr" />
+                </td>
+            </tr>
+            <tr>
+                <td>Zip:</td>
+                <td>
+                    <g:TextBox ui:field="zip" />
+                </td>
+            </tr>
+            <tr>
+                <td>Merit Badge Signer:</td>
+                <td>
+                    <g:TextBox ui:field="meritBadgeSigner" />
+                </td>
+            </tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 
