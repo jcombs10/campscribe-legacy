@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+	<datastore-index kind="Scout" ancestor="false" source="manual">
+		<property name="eventKey" direction="asc" />
+		<property name="unitNumber" direction="asc" />
+		<property name="unitType" direction="asc" />
+		<property name="lastName" direction="asc" />
+		<property name="firstName" direction="asc" />
+	</datastore-index>
+</datastore-indexes>
